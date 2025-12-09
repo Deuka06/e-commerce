@@ -1,0 +1,77 @@
+export const initialProducts = [
+  {
+    id: 1,
+    name: "iPhone 14 Pro",
+    price: 599990,
+    category: "electronics",
+    image: "",
+    description: "Жаңа iPhone 14 Pro, 256GB",
+  },
+  {
+    id: 2,
+    name: "Samsung Galaxy S23",
+    price: 499990,
+    category: "electronics",
+    image: "",
+    description: "Samsung Galaxy S23, 128GB",
+  },
+  {
+    id: 3,
+    name: "MacBook Air M2",
+    price: 799990,
+    category: "electronics",
+    image: "",
+    description: "Apple MacBook Air M2, 13.6''",
+  },
+  {
+    id: 4,
+    name: "Nike Air Max",
+    price: 45990,
+    category: "sports",
+    image: "",
+    description: "Nike Air Max 270, ерлерге арналған",
+  },
+  {
+    id: 5,
+    name: "Adidas жейде",
+    price: 12990,
+    category: "clothing",
+    image: "",
+    description: "Adidas жейде, әртүрлі өлшемдерде",
+  },
+  {
+    id: 6,
+    name: "Үй кітап сөресі",
+    price: 24990,
+    category: "home",
+    image: "",
+    description: "Ағаш кітап сөресі, 5 бөлімді",
+  },
+];
+
+export const initialOrders = [
+  {
+    id: "ORD-0012",
+    customer: "Айгүл Садырова",
+    product: "iPhone 14 Pro",
+    date: "15.11.2023",
+    amount: 45000,
+    status: "pending",
+  },
+  {
+    id: "ORD-0011",
+    customer: "Ерлан Жұманов",
+    product: "Samsung Galaxy S23",
+    date: "14.11.2023",
+    amount: 32500,
+    status: "shipped",
+  },
+  {
+    id: "ORD-0010",
+    customer: "Гүлназ Оразбаева",
+    product: "MacBook Air M2",
+    date: "14.11.2023",
+    amount: 67800,
+    status: "completed",
+  },
+];
