@@ -10,6 +10,7 @@ import Footer from "./components/Footer";
 import ProductModal from "./components/modals/ProductModal";
 import OrderModal from "./components/modals/OrderModal";
 import BasketModal from "./components/modals/BasketModal";
+import AuthModal from "./components/modals/AuthModal";
 import { initialProducts, initialOrders } from "./data/productData";
 import "./styles/global.css";
 
@@ -22,6 +23,7 @@ function App() {
   const [showProductModal, setShowProductModal] = useState(false);
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [showBasketModal, setShowBasketModal] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState(null);
   const [showCourierPage, setShowCourierPage] = useState(false);
   const [showPaymentPage, setShowPaymentPage] = useState(false);
@@ -104,6 +106,7 @@ function App() {
         cartCount={cart.length}
         onCartClick={() => setShowBasketModal(true)}
         onShowOrderHistory={() => setShowOrderHistoryPage(true)}
+        onLoginClick={() => setShowAuthModal(true)}
       />
       {showOrderHistoryPage ? (
         <OrderHistory
@@ -157,6 +160,11 @@ function App() {
         }}
       />
 
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+      />
+
       {notification && (
         <Notification message={notification.message} type={notification.type} />
       )}
@@ -203,8 +211,8 @@ function App() {
           left: 0;
           right: 0;
           background: white;
-          border-top: 1px solid #e0e0e0;
-          box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+          border-top: 1px solid rgba(0, 0, 0, 0.05);
+          box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.08);
           padding-bottom: env(safe-area-inset-bottom);
           z-index: 100;
         }
@@ -230,21 +238,23 @@ function App() {
           flex: 1;
           height: 100%;
           font-size: 0.75rem;
+          font-family: var(--font-body);
+          font-weight: 500;
         }
 
         .bottom-nav-item i {
-          font-size: 1.5rem;
-          margin-bottom: 0.3rem;
+          font-size: 1.3rem;
+          margin-bottom: 0.4rem;
           transition: var(--transition);
         }
 
         .bottom-nav-item:hover {
           color: var(--primary);
-          background: rgba(108, 99, 255, 0.05);
+          background: rgba(52, 152, 219, 0.05);
         }
 
         .bottom-nav-item:active {
-          color: var(--primary);
+          color: var(--primary-dark);
         }
 
         @media (max-width: 768px) {

@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 
-function Header({ onPanelChange, cartCount, onCartClick, onShowOrderHistory }) {
+function Header({
+  onPanelChange,
+  cartCount,
+  onCartClick,
+  onShowOrderHistory,
+  onLoginClick,
+}) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleNavClick = (e, target) => {
@@ -61,7 +67,7 @@ function Header({ onPanelChange, cartCount, onCartClick, onShowOrderHistory }) {
               <i className="fas fa-shopping-cart"></i>
               <span>Себет ({cartCount})</span>
             </button>
-            <button>
+            <button onClick={onLoginClick}>
               <i className="fas fa-user"></i>
               <span>Кіру</span>
             </button>

@@ -1,12 +1,18 @@
 import React, { useState } from "react";
 import { formatPrice } from "../utils/helpers";
 
-function Sidebar({ products, onFilterChange, selectedCategory, onBack }) {
+function Sidebar({
+  products,
+  onFilterChange,
+  selectedCategory,
+  onBack,
+  style,
+}) {
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(100000);
   const [selectedSort, setSelectedSort] = useState("popular");
   const [selectedCategories, setSelectedCategories] = useState(
-    selectedCategory ? [selectedCategory] : []
+    selectedCategory ? [selectedCategory] : [],
   );
 
   const handlePriceChange = (type, value) => {
@@ -27,7 +33,7 @@ function Sidebar({ products, onFilterChange, selectedCategory, onBack }) {
     sort = selectedSort,
     categories = selectedCategories,
     min = minPrice,
-    max = maxPrice
+    max = maxPrice,
   ) => {
     let filtered = [...products];
 
@@ -64,7 +70,7 @@ function Sidebar({ products, onFilterChange, selectedCategory, onBack }) {
   };
 
   return (
-    <aside className="sidebar">
+    <aside className="sidebar" style={style}>
       <div
         style={{
           marginBottom: "1rem",
