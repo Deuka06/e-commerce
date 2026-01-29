@@ -13,8 +13,8 @@
   --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   --card-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
   --transition: all 0.3s ease;
-  --font-heading: "Montserrat", "Segoe UI", sans-serif;
-  --font-body: "Open Sans", "Segoe UI", sans-serif;
+  --font-heading: 'Montserrat', 'Segoe UI', sans-serif;
+  --font-body: 'Open Sans', 'Segoe UI', sans-serif;
   --border-radius: 8px;
   --border-radius-lg: 12px;
   --border-radius-xl: 20px;
@@ -48,7 +48,8 @@ h6 {
 }
 
 h1 {
-  font-size: 2.5rem;
+  font-size: 1.5rem;
+  /* text-align: center; */
 }
 
 h2 {
@@ -70,14 +71,13 @@ p {
 .container {
   max-width: 1300px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 10px;
 }
 
 /* Header Styles */
 header {
   background: white;
   color: var(--dark);
-  padding: 1rem 0;
   position: sticky;
   top: 0;
   z-index: 100;
@@ -130,7 +130,7 @@ nav ul li a {
 }
 
 nav ul li a:after {
-  content: "";
+  content: '';
   position: absolute;
   width: 0;
   height: 2px;
@@ -195,13 +195,13 @@ nav ul li a:hover:after {
 .hero {
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   color: var(--dark);
-  padding: 6rem 0;
+  padding: 1rem 0;
   position: relative;
   overflow: hidden;
 }
 
 .hero:before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   right: 0;
@@ -215,10 +215,8 @@ nav ul li a:hover:after {
 .hero-content {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   position: relative;
   z-index: 1;
-  gap: 3rem;
 }
 
 .hero-text {
@@ -235,7 +233,7 @@ nav ul li a:hover:after {
 }
 
 .hero-text h1:after {
-  content: "";
+  content: '';
   position: absolute;
   bottom: -0.5rem;
   left: 0;
@@ -380,7 +378,7 @@ nav ul li a:hover:after {
 }
 
 .section-title:after {
-  content: "";
+  content: '';
   position: absolute;
   bottom: 0;
   left: 0;
@@ -459,7 +457,7 @@ nav ul li a:hover:after {
 }
 
 .product-image:after {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
@@ -518,7 +516,7 @@ nav ul li a:hover:after {
 }
 
 .product-price:before {
-  content: "";
+  content: '';
   display: inline-block;
   width: 6px;
   height: 20px;
@@ -889,7 +887,7 @@ nav ul li a:hover:after {
 }
 
 .notification:before {
-  content: "";
+  content: '';
   display: block;
   width: 24px;
   height: 24px;
@@ -937,7 +935,7 @@ footer {
 }
 
 footer:before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
@@ -963,7 +961,7 @@ footer:before {
 }
 
 .footer-section h3:after {
-  content: "";
+  content: '';
   position: absolute;
   bottom: 0;
   left: 0;

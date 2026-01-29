@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 function Header({
   onPanelChange,
@@ -38,7 +38,7 @@ function Header({
           <nav className="desktop-nav">
             <ul>
               <li>
-                <a href="#" onClick={(e) => handleNavClick(e, "client")}>
+                <a href="#" onClick={(e) => handleNavClick(e, 'client')}>
                   <i className="fas fa-home"></i> Басты бет
                 </a>
               </li>
@@ -58,8 +58,9 @@ function Header({
           {/* Mobile Menu Toggle */}
           <button
             className="mobile-menu-toggle"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-            <i className={`fas ${mobileMenuOpen ? "fa-times" : "fa-bars"}`}></i>
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            <i className={`fas ${mobileMenuOpen ? 'fa-times' : 'fa-bars'}`}></i>
           </button>
 
           <div className="user-actions">
@@ -79,7 +80,7 @@ function Header({
           <nav className="mobile-nav">
             <ul>
               <li>
-                <a href="#" onClick={(e) => handleNavClick(e, "client")}>
+                <a href="#" onClick={(e) => handleNavClick(e, 'client')}>
                   <i className="fas fa-home"></i> Басты бет
                 </a>
               </li>
@@ -153,7 +154,7 @@ function Header({
 
         @media (max-width: 768px) {
           .mobile-menu-toggle {
-            display: block;
+            display: none;
           }
 
           .desktop-nav {
@@ -161,38 +162,26 @@ function Header({
           }
 
           .mobile-nav {
-            display: block;
-          }
-
-          .user-actions {
-            gap: 0.5rem;
-          }
-
-          .user-actions button {
-            padding: 0.5rem 1rem;
-            font-size: 0.85rem;
-          }
-
-          .user-actions button span {
             display: none;
           }
 
-          .user-actions button i {
-            margin: 0;
+          .user-actions {
+            display: none;
           }
 
           .header-content {
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
+            justify-content: center;
+          }
+
+          .logo {
+            margin: 0 auto;
           }
         }
 
         @media (max-width: 480px) {
-          .user-actions button.secondary span {
-            display: inline;
-          }
-
-          .user-actions button i {
-            margin-right: 0.25rem;
+          .logo {
+            font-size: 1.2rem;
           }
         }
       `}</style>
