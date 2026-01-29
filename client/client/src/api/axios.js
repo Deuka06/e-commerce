@@ -2,7 +2,7 @@ import axios from "axios";
 
 const api = axios.create({
   // Swagger-дегі Production Server мекенжайы
-  baseURL: "http://194.32.142.105/api/v1",
+  baseURL: "http://46.247.41.196/api/v1",
   headers: {
     "Content-Type": "application/json",
   },

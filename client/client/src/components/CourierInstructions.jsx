@@ -1,41 +1,45 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { createCourierOrder } from "../store/courierSlice";
 
 function CourierInstructions({ onClose }) {
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state) => state.auth || {});
+  const { success: courierSuccess } = useSelector(
+    (state) => state.courier || {},
+  );
   const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
+    fullName: "", // Backend-ке сай 'name' -> 'fullName'
+    phoneNumber: "", // Backend-ке сай 'phone' -> 'phoneNumber'
     address: "",
-    institution: "",
-    nameOfRecipient: "",
-    notes: "",
+    institution: "Учреждение 12 (бывшее 99)", // Default value
+    deliveryTo: "", // Backend-ке сай 'nameOfRecipient' -> 'deliveryTo'
+    description: "", // Backend-ке сай 'notes' -> 'description'
   });
 
   const [submitted, setSubmitted] = useState(false);
 
   const handleChange = (e) => {
-    const { name, nameOfRecipient, value } = e.target;
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-      [nameOfRecipient]: value,
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Courier order submitted:", formData);
-    setSubmitted(true);
-    setTimeout(() => {
-      setFormData({
-        name: "",
-        phone: "",
-        address: "",
-        pickupTime: "",
-        notes: "",
-      });
-      setSubmitted(false);
-      onClose();
-    }, 2000);
+
+    // Redux арқылы серверге жіберу
+    const result = await dispatch(createCourierOrder(formData));
+
+    if (createCourierOrder.fulfilled.match(result)) {
+      setSubmitted(true);
+      setTimeout(() => {
+        setSubmitted(false);
+        onClose();
+      }, 3000);
+    }
   };
 
   return (
@@ -230,166 +234,60 @@ function CourierInstructions({ onClose }) {
                 <p style={{ fontSize: "1.1rem", fontWeight: "600" }}>
                   Тапсырыс сәтті жіберілді!
                 </p>
-                <p style={{ fontSize: "0.9rem", marginTop: "0.5rem" }}>
-                  Сіз басты бетке қайтарылысыз...
-                </p>
               </div>
             ) : (
               <form onSubmit={handleSubmit}>
+                {/* Аты-жөні */}
                 <div style={{ marginBottom: "1.5rem" }}>
-                  <label
-                    htmlFor="name"
-                    style={{
-                      display: "block",
-                      marginBottom: "0.5rem",
-                      fontWeight: "600",
-                      color: "var(--dark)",
-                    }}>
-                    Аты-жөні *
-                  </label>
+                  <label style={labelStyle}>Аты-жөні *</label>
                   <input
+                    style={inputStyle}
                     type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
+                    name="fullName" // name -> fullName
+                    value={formData.fullName}
                     onChange={handleChange}
                     placeholder="Сіздің толық есіміңіз"
                     required
-                    style={{
-                      width: "100%",
-                      padding: "0.8rem 1rem",
-                      border: "1px solid #e0e0e0",
-                      borderRadius: "8px",
-                      fontSize: "1rem",
-                      transition: "var(--transition)",
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = "var(--primary)";
-                      e.target.style.boxShadow =
-                        "0 0 0 3px rgba(108, 99, 255, 0.2)";
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = "#e0e0e0";
-                      e.target.style.boxShadow = "none";
-                    }}
                   />
                 </div>
 
+                {/* Телефон */}
                 <div style={{ marginBottom: "1.5rem" }}>
-                  <label
-                    htmlFor="phone"
-                    style={{
-                      display: "block",
-                      marginBottom: "0.5rem",
-                      fontWeight: "600",
-                      color: "var(--dark)",
-                    }}>
-                    Телефон нөмірі *
-                  </label>
+                  <label style={labelStyle}>Телефон нөмірі *</label>
                   <input
+                    style={inputStyle}
                     type="tel"
-                    id="phone"
-                    name="phone"
-                    value={formData.phone}
+                    name="phoneNumber" // phone -> phoneNumber
+                    value={formData.phoneNumber}
                     onChange={handleChange}
                     placeholder="+7 (___) ___-__-__"
                     required
-                    style={{
-                      width: "100%",
-                      padding: "0.8rem 1rem",
-                      border: "1px solid #e0e0e0",
-                      borderRadius: "8px",
-                      fontSize: "1rem",
-                      transition: "var(--transition)",
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = "var(--primary)";
-                      e.target.style.boxShadow =
-                        "0 0 0 3px rgba(108, 99, 255, 0.2)";
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = "#e0e0e0";
-                      e.target.style.boxShadow = "none";
-                    }}
                   />
                 </div>
 
+                {/* Мекен-жайы */}
                 <div style={{ marginBottom: "1.5rem" }}>
-                  <label
-                    htmlFor="address"
-                    style={{
-                      display: "block",
-                      marginBottom: "0.5rem",
-                      fontWeight: "600",
-                      color: "var(--dark)",
-                    }}>
-                    Мекен-жайы *
-                  </label>
+                  <label style={labelStyle}>Мекен-жайы *</label>
                   <textarea
-                    id="address"
+                    style={inputStyle}
                     name="address"
                     value={formData.address}
                     onChange={handleChange}
-                    placeholder="Қала, көшесі, үй нөмері, пәтер нөмері"
+                    placeholder="Қайдан алу керек (Адрес)"
                     rows="3"
                     required
-                    style={{
-                      width: "100%",
-                      padding: "0.8rem 1rem",
-                      border: "1px solid #e0e0e0",
-                      borderRadius: "8px",
-                      fontSize: "1rem",
-                      transition: "var(--transition)",
-                      fontFamily: "inherit",
-                      resize: "vertical",
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = "var(--primary)";
-                      e.target.style.boxShadow =
-                        "0 0 0 3px rgba(108, 99, 255, 0.2)";
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = "#e0e0e0";
-                      e.target.style.boxShadow = "none";
-                    }}
                   />
                 </div>
 
+                {/* Мекеме */}
                 <div style={{ marginBottom: "1.5rem" }}>
-                  <label
-                    htmlFor="pickupTime"
-                    style={{
-                      display: "block",
-                      marginBottom: "0.5rem",
-                      fontWeight: "600",
-                      color: "var(--dark)",
-                    }}>
-                    Жеткізу мекемесін таңдаңыз *
-                  </label>
+                  <label style={labelStyle}>Жеткізу мекемесін таңдаңыз *</label>
                   <select
-                    id="pickupTime"
-                    name="pickupTime"
+                    style={inputStyle}
+                    name="institution"
                     value={formData.institution}
                     onChange={handleChange}
-                    required
-                    style={{
-                      width: "100%",
-                      padding: "0.8rem 1rem",
-                      border: "1px solid #e0e0e0",
-                      borderRadius: "8px",
-                      fontSize: "1rem",
-                      transition: "var(--transition)",
-                      cursor: "pointer",
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = "var(--primary)";
-                      e.target.style.boxShadow =
-                        "0 0 0 3px rgba(108, 99, 255, 0.2)";
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = "#e0e0e0";
-                      e.target.style.boxShadow = "none";
-                    }}>
+                    required>
                     <option value="Учреждение 12 (бывшее 99)">
                       Учреждение 12 (бывшее 99)
                     </option>
@@ -397,117 +295,61 @@ function CourierInstructions({ onClose }) {
                       Учреждение 14 (бывшее 103)
                     </option>
                     <option value="Учреждение 57 (бывшее 71)">
-                      Учреждение 57 (бывшее 71)
+                      Учреждение 57 (бывшее 71)
                     </option>
                   </select>
                 </div>
 
+                {/* Кімге */}
                 <div style={{ marginBottom: "1.5rem" }}>
-                  <label
-                    htmlFor="nameOfRecipient"
-                    style={{
-                      display: "block",
-                      marginBottom: "0.5rem",
-                      fontWeight: "600",
-                      color: "var(--dark)",
-                    }}>
-                    Кімге жеткізілуі керек *
-                  </label>
+                  <label style={labelStyle}>Кімге жеткізілуі керек *</label>
                   <input
+                    style={inputStyle}
                     type="text"
-                    id="nameOfRecipient"
-                    name="nameOfRecipient"
-                    value={formData.nameOfRecipient}
+                    name="deliveryTo" // nameOfRecipient -> deliveryTo
+                    value={formData.deliveryTo}
                     onChange={handleChange}
                     placeholder="Қабылдаушының атын жазыңыз"
                     required
-                    style={{
-                      width: "100%",
-                      padding: "0.8rem 1rem",
-                      border: "1px solid #e0e0e0",
-                      borderRadius: "8px",
-                      fontSize: "1rem",
-                      transition: "var(--transition)",
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = "var(--primary)";
-                      e.target.style.boxShadow =
-                        "0 0 0 3px rgba(108, 99, 255, 0.2)";
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = "#e0e0e0";
-                      e.target.style.boxShadow = "none";
-                    }}
                   />
                 </div>
 
+                {/* Ескертпелер */}
                 <div style={{ marginBottom: "1.5rem" }}>
-                  <label
-                    htmlFor="notes"
-                    style={{
-                      display: "block",
-                      marginBottom: "0.5rem",
-                      fontWeight: "600",
-                      color: "var(--dark)",
-                    }}>
-                    Қосымша ескертпелер
-                  </label>
+                  <label style={labelStyle}>Қосымша ескертпелер</label>
                   <textarea
-                    id="notes"
-                    name="notes"
-                    value={formData.notes}
+                    style={inputStyle}
+                    name="description" // notes -> description
+                    value={formData.description}
                     onChange={handleChange}
-                    placeholder="Курьерге өтінем немесе ерекше сұрау"
+                    placeholder="Курьерге өтінім немесе ерекше сұрау"
                     rows="3"
-                    style={{
-                      width: "100%",
-                      padding: "0.8rem 1rem",
-                      border: "1px solid #e0e0e0",
-                      borderRadius: "8px",
-                      fontSize: "1rem",
-                      transition: "var(--transition)",
-                      fontFamily: "inherit",
-                      resize: "vertical",
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = "var(--primary)";
-                      e.target.style.boxShadow =
-                        "0 0 0 3px rgba(108, 99, 255, 0.2)";
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = "#e0e0e0";
-                      e.target.style.boxShadow = "none";
-                    }}
                   />
                 </div>
+
+                {/* Қате шықса көрсету */}
+                {error && (
+                  <p style={{ color: "red", marginBottom: "1rem" }}>{error}</p>
+                )}
 
                 <button
                   type="submit"
+                  disabled={loading}
                   style={{
                     width: "100%",
-                    background: "var(--gradient)",
+                    background: loading ? "#ccc" : "var(--gradient)",
                     color: "white",
                     border: "none",
                     padding: "1rem",
                     borderRadius: "8px",
-                    cursor: "pointer",
-                    transition: "var(--transition)",
+                    cursor: loading ? "not-allowed" : "pointer",
                     fontSize: "1.1rem",
                     fontWeight: "600",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.transform = "translateY(-3px)";
-                    e.target.style.boxShadow =
-                      "0 7px 15px rgba(108, 99, 255, 0.3)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.transform = "translateY(0)";
-                    e.target.style.boxShadow = "none";
                   }}>
                   <i
                     className="fas fa-check"
                     style={{ marginRight: "0.5rem" }}></i>
-                  Курьер тапсырысын жіберу
+                  {loading ? "Жіберілуде..." : "Курьер тапсырысын жіберу"}
                 </button>
               </form>
             )}
@@ -577,5 +419,20 @@ function CourierInstructions({ onClose }) {
     </div>
   );
 }
+
+const labelStyle = {
+  display: "block",
+  marginBottom: "0.5rem",
+  fontWeight: "600",
+  color: "var(--dark)",
+};
+const inputStyle = {
+  width: "100%",
+  padding: "0.8rem 1rem",
+  border: "1px solid #e0e0e0",
+  borderRadius: "8px",
+  fontSize: "1rem",
+  boxSizing: "border-box",
+};
 
 export default CourierInstructions;

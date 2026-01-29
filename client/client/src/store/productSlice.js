@@ -1,17 +1,22 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import API from "../api/axios"; // Өзің жасаған axios конфигін қолданған дұрыс
 
-// Категория бойынша тауарларды алу
 export const fetchProductsByCategory = createAsyncThunk(
   "products/fetchByCategory",
-  async (categoryId) => {
-    const response = await axios.get(
-      `http://194.32.142.105/api/v1/products?categoryId=${categoryId}`
-    );
-    // Backend "success: true, data: [...]" қайтаратын болса:
-    console.log(response, "efefefe");
-    return response.data;
-  }
+  async (categoryId, { rejectWithValue }) => {
+    try {
+      // Query параметр ретінде categoryId жібереміз
+      const response = await API.get(`/products`, {
+        params: { categoryId },
+      });
+      console.log("Fetched products:", response.data.data);
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || "Тауарларды алу мүмкін болмады",
+      );
+    }
+  },
 );
 
 const productSlice = createSlice({
@@ -22,9 +27,9 @@ const productSlice = createSlice({
     error: null,
   },
   reducers: {
-    // Тауарларды қолмен тазалау керек болса
     clearProducts: (state) => {
       state.itemProducts = [];
+      state.status = "idle";
     },
   },
   extraReducers: (builder) => {
@@ -34,11 +39,12 @@ const productSlice = createSlice({
       })
       .addCase(fetchProductsByCategory.fulfilled, (state, action) => {
         state.status = "succeeded";
+        // action.payload-та енді тек тауарлар массиві болады
         state.itemProducts = action.payload;
       })
       .addCase(fetchProductsByCategory.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
+        state.error = action.payload || action.error.message;
       });
   },
 });

@@ -5,9 +5,9 @@ import axios from "axios";
 export const fetchCategories = createAsyncThunk(
   "categories/fetchCategories",
   async () => {
-    const response = await axios.get("http://194.32.142.105/api/v1/categories");
+    const response = await axios.get("http://46.247.41.196/api/v1/categories");
     return response.data;
-  }
+  },
 );
 
 const categorySlice = createSlice({

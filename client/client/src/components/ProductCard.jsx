@@ -8,7 +8,9 @@ function ProductCard({ product, onAddToCart, isAdmin, onDelete }) {
         <i className="fas fa-image"></i>
       </div>
       <div className="product-info">
-        <div className="product-category">{product.category}</div>
+        <div className="product-category">
+          {product.category?.categoryName || "Санатсыз"}
+        </div>
         <div className="product-title">{product.name}</div>
         <div className="product-description">{product.description}</div>
         <div className="product-price">{formatPrice(product.price)} ₸</div>
