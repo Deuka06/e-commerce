@@ -11,6 +11,7 @@ function CategoriesTab({
   const [categoryFormData, setCategoryFormData] = useState({
     id: null,
     name: "",
+    slug: "",
     image: "",
   });
   const [isEditingCategory, setIsEditingCategory] = useState(false);
@@ -51,6 +52,7 @@ function CategoriesTab({
     setCategoryFormData({
       id: null,
       name: "",
+      slug: "",
       image: "",
     });
     setCategoryImagePreview(null);
@@ -61,6 +63,7 @@ function CategoriesTab({
     setCategoryFormData({
       id: category.id,
       name: category.name,
+      slug: category.slug,
       image: category.image || "",
     });
     setCategoryImagePreview(category.image || null);
@@ -72,6 +75,7 @@ function CategoriesTab({
     setCategoryFormData({
       id: null,
       name: "",
+      slug: "",
       image: "",
     });
     setCategoryImagePreview(null);
@@ -119,6 +123,17 @@ function CategoriesTab({
                 value={categoryFormData.name}
                 onChange={handleCategoryInputChange}
                 placeholder="Электроника"
+                required
+              />
+            </div>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Slug</label>
+              <input
+                style={styles.input}
+                name="slug"
+                value={categoryFormData.slug}
+                onChange={handleCategoryInputChange}
+                placeholder="slug"
                 required
               />
             </div>
