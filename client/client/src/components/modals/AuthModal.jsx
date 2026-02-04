@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux"; // Redux hook-тары
-import { loginUser, registerUser } from "../../store/authSlice"; // Register thunk-ын да қосыңыз
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux'; // Redux hook-тары
+import { loginUser, registerUser } from '../../store/authSlice'; // Register thunk-ын да қосыңыз
 
-function AuthModal({ isOpen, onClose }) {
+function AuthModal({ isOpen, onClose, onLogin }) {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    confirmPassword: "",
-    name: "",
+    email: '',
+    password: '',
+    confirmPassword: '',
+    name: '',
+    phone: '',
   });
   const [errors, setErrors] = useState({});
 
@@ -32,13 +33,13 @@ function AuthModal({ isOpen, onClose }) {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.email) newErrors.email = "Email қажет";
-    if (!formData.password) newErrors.password = "Құпия сөз қажет";
+    if (!formData.email) newErrors.email = 'Email қажет';
+    if (!formData.password) newErrors.password = 'Құпия сөз қажет';
 
     if (!isLogin) {
-      if (!formData.name) newErrors.name = "Аты-жөніңіз қажет";
+      if (!formData.name) newErrors.name = 'Аты-жөніңіз қажет';
       if (formData.password !== formData.confirmPassword) {
-        newErrors.confirmPassword = "Құпия сөздер сәйкес келмейді";
+        newErrors.confirmPassword = 'Құпия сөздер сәйкес келмейді';
       }
     }
     setErrors(newErrors);
@@ -49,23 +50,21 @@ function AuthModal({ isOpen, onClose }) {
     e.preventDefault();
     if (validateForm()) {
       if (isLogin) {
-        // ЛОГИН: /auth/login
-        dispatch(
-          loginUser({
-            email: formData.email,
-            password: formData.password,
-          }),
-        );
+        // Simulate login
+        const userData = {
+          name: formData.name || formData.email.split('@')[0],
+          email: formData.email,
+          phone: formData.phone || '+7 (___) ___-__-__',
+        };
+        onLogin?.(userData);
       } else {
-        // ТІРКЕЛУ: /auth/register
-        // Backend-ке жіберілетін объект Swagger-ге сай болуы керек
-        dispatch(
-          registerUser({
-            email: formData.email,
-            password: formData.password,
-            name: formData.name,
-          }),
-        );
+        // Simulate registration then login
+        const userData = {
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+        };
+        onLogin?.(userData);
       }
     }
   };
@@ -76,11 +75,11 @@ function AuthModal({ isOpen, onClose }) {
   };
 
   return (
-    <div className="modal" style={{ display: "flex" }}>
+    <div className="modal" style={{ display: 'flex' }}>
       <div className="modal-content">
         <div className="modal-header">
           <h2>
-            {isLogin ? "Кіру" : "Тіркелу"} {isLoading && "..."}
+            {isLogin ? 'Кіру' : 'Тіркелу'} {isLoading && '...'}
           </h2>
           <button className="close-modal" onClick={onClose}>
             &times;
@@ -89,7 +88,7 @@ function AuthModal({ isOpen, onClose }) {
         <div className="modal-body">
           {/* Backend-тен келген қате болса шығарамыз */}
           {error && (
-            <div className="error-message" style={{ marginBottom: "1rem" }}>
+            <div className="error-message" style={{ marginBottom: '1rem' }}>
               {error}
             </div>
           )}
@@ -158,19 +157,21 @@ function AuthModal({ isOpen, onClose }) {
             <button
               type="submit"
               className="btn btn-primary"
-              style={{ width: "100%", marginTop: "1rem" }}
-              disabled={isLoading}>
-              {isLoading ? "Жүктелуде..." : isLogin ? "Кіру" : "Тіркелу"}
+              style={{ width: '100%', marginTop: '1rem' }}
+              disabled={isLoading}
+            >
+              {isLoading ? 'Жүктелуде...' : isLogin ? 'Кіру' : 'Тіркелу'}
             </button>
           </form>
 
           <div
             className="auth-toggle"
-            style={{ marginTop: "1rem", textAlign: "center" }}>
+            style={{ marginTop: '1rem', textAlign: 'center' }}
+          >
             <button onClick={toggleAuthMode} className="link-button">
               {isLogin
-                ? "Тіркелмегенсіз бе? Тіркелу"
-                : "Аккаунтыңыз бар ма? Кіру"}
+                ? 'Тіркелмегенсіз бе? Тіркелу'
+                : 'Аккаунтыңыз бар ма? Кіру'}
             </button>
           </div>
         </div>

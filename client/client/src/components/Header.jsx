@@ -1,25 +1,14 @@
 import React, { useState } from 'react';
 
 function Header({
-  onPanelChange,
   cartCount,
   onCartClick,
-  onShowOrderHistory,
   onLoginClick,
+  onHomeClick,
+  isAuthenticated,
+  user,
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const handleNavClick = (e, target) => {
-    e.preventDefault();
-    onPanelChange(target);
-    setMobileMenuOpen(false);
-  };
-
-  const handleOrderHistoryClick = (e) => {
-    e.preventDefault();
-    onShowOrderHistory?.();
-    setMobileMenuOpen(false);
-  };
 
   const closeMobileMenu = () => {
     setMobileMenuOpen(false);
@@ -29,22 +18,27 @@ function Header({
     <header>
       <div className="container">
         <div className="header-content">
-          <div className="logo">
+          <div
+            className="logo"
+            onClick={onHomeClick}
+            style={{ cursor: 'pointer' }}
+          >
             <i className="fas fa-gem"></i>
-            <span>StyleShop</span>
+            <span>Qamqor</span>
           </div>
 
           {/* Desktop Navigation */}
           <nav className="desktop-nav">
             <ul>
               <li>
-                <a href="#" onClick={(e) => handleNavClick(e, 'client')}>
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onHomeClick();
+                  }}
+                >
                   <i className="fas fa-home"></i> Басты бет
-                </a>
-              </li>
-              <li>
-                <a href="#" onClick={handleOrderHistoryClick}>
-                  <i className="fas fa-history"></i> Тапсырыстар
                 </a>
               </li>
               <li>
@@ -68,9 +62,11 @@ function Header({
               <i className="fas fa-shopping-cart"></i>
               <span>Себет ({cartCount})</span>
             </button>
-            <button onClick={onLoginClick}>
-              <i className="fas fa-user"></i>
-              <span>Кіру</span>
+            <button className="btn btn-primary" onClick={onLoginClick}>
+              <i
+                className={`fas ${isAuthenticated ? 'fa-user-circle' : 'fa-sign-in-alt'}`}
+              ></i>
+              <span>{isAuthenticated ? user?.name || 'Профиль' : 'Кіру'}</span>
             </button>
           </div>
         </div>
@@ -80,13 +76,15 @@ function Header({
           <nav className="mobile-nav">
             <ul>
               <li>
-                <a href="#" onClick={(e) => handleNavClick(e, 'client')}>
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onHomeClick();
+                    closeMobileMenu();
+                  }}
+                >
                   <i className="fas fa-home"></i> Басты бет
-                </a>
-              </li>
-              <li>
-                <a href="#" onClick={handleOrderHistoryClick}>
-                  <i className="fas fa-history"></i> Тапсырыстар
                 </a>
               </li>
               <li>

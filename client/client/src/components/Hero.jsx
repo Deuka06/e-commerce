@@ -46,9 +46,9 @@ function Hero({ onShowCourier }) {
             >
               <h1>Стильді тауарлар бір жерде</h1>
               <p>
-                StyleShop - бұл сіздің сүйікті брендтеріңіз мен тауарларыңызды
-                таба алатын жер. Біз сізге ең жақсы сапаны және ерекше
-                тәжірибені ұсынамыз.
+                QAMQOR - бұл сіздің сүйікті брендтеріңіз мен тауарларыңызды таба
+                алатын жер. Біз сізге ең жақсы сапаны және ерекше тәжірибені
+                ұсынамыз.
               </p>
               <div className="hero-buttons">
                 <button
@@ -84,6 +84,7 @@ function Hero({ onShowCourier }) {
                   width: '100%',
                   maxWidth: '500px',
                   height: '350px',
+                  left: '70px',
                   borderRadius: 'var(--border-radius-lg)',
                   overflow: 'hidden',
                   boxShadow: '0 15px 30px rgba(52, 152, 219, 0.2)',
@@ -110,6 +111,7 @@ function Hero({ onShowCourier }) {
                 className="image-indicators"
                 style={{
                   display: 'flex',
+                  paddingLeft: '170px',
                   justifyContent: 'center',
                   marginTop: '15px',
                   gap: '8px',
@@ -185,10 +187,12 @@ function Hero({ onShowCourier }) {
           .image-container {
             height: 250px !important;
             max-width: 100% !important;
+            left: 0 !important;
           }
 
           .image-indicators {
             margin-top: 10px !important;
+            padding-left: 0 !important;
           }
 
           /* Уменьшение размера индикаторов для планшетов */
@@ -221,11 +225,13 @@ function Hero({ onShowCourier }) {
           .image-container {
             height: 200px !important;
             border-radius: var(--border-radius) !important;
+            left: 0 !important;
           }
 
           /* Дальнейшее уменьшение индикаторов для маленьких экранов */
           .image-indicators {
             gap: 6px !important;
+            padding-left: 0 !important;
           }
 
           .indicator-dot {
@@ -251,6 +257,7 @@ function Hero({ onShowCourier }) {
 
           .image-indicators {
             gap: 5px !important;
+            padding-left: 0 !important;
           }
         }
       `}</style>

@@ -16,9 +16,10 @@ function ProductGrid({
   const dispatch = useDispatch();
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
-  // const [filteredProducts, setFilteredProducts] = useState(products);
   const [isMobile, setIsMobile] = useState(false);
   const [sidebarVisible, setSidebarVisible] = useState(false);
+  const [filterVisible, setFilterVisible] = useState(false);
+  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
   const { items: serverCategories, status } = useSelector(
     (state) => state.categories,
   );
@@ -36,17 +37,27 @@ function ProductGrid({
   useEffect(() => {
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth <= 900);
+      if (isMobile) {
+        setFilterVisible(false);
+      }
     };
 
-    // Initial check
     checkIfMobile();
-
-    // Add event listener for window resize
     window.addEventListener('resize', checkIfMobile);
-
-    // Cleanup
     return () => window.removeEventListener('resize', checkIfMobile);
   }, []);
+
+  // Lock body scroll when mobile filter is open
+  useEffect(() => {
+    if (isMobile && filterVisible) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMobile, filterVisible]);
 
   const categories = useMemo(() => {
     const uniqueCategories = [...new Set(products.map((p) => p.category))];
@@ -94,7 +105,6 @@ function ProductGrid({
         dispatch(fetchProductsByCategory(categoryId));
       }
     }
-    ы;
   };
 
   const handleSubcategorySelect = (subcategory) => {
@@ -108,7 +118,7 @@ function ProductGrid({
   const handleBack = () => {
     setSelectedCategory(null);
     setSelectedSubcategory(null);
-    setFilteredProducts(products);
+    setFilterVisible(false);
   };
 
   const handleBackFromSubcategory = () => {
@@ -126,101 +136,36 @@ function ProductGrid({
         <section className="products-section">
           <div className="section-header">
             <h2 className="section-title">Тауарлар</h2>
-            <div className="view-options">
-              <button className="active">
-                <i className="fas fa-th"></i>
-              </button>
-              <button>
-                <i className="fas fa-list"></i>
-              </button>
-            </div>
           </div>
 
           {/* Category Cards */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)', // 3 тең баған
-              gap: '20px', // Карточкалар арасындағы қашықтық
-              padding: '20px',
-              maxWidth: '1200px', // Ортада әдемі тұруы үшін
-              margin: '0 auto',
-            }}
-          >
+          <div className="category-cards-container">
             {serverCategories.map((category) => {
-              // categoryLabels-тен иконканы серверден келген slug арқылы іздейміз
               const categoryInfo = categoryLabels[category.slug] || {
                 label: category.categoryName,
                 icon: 'fas fa-tag',
               };
 
-              // Осы категорияда қанша тауар бар екенін санау
               const categoryProductCount = products.filter(
                 (p) => p.category === category.slug,
               ).length;
 
               return (
                 <div
-                  key={category.id} // Енді id-ді серверден аламыз
+                  key={category.id}
                   onClick={() => handleCategorySelect(category.id)}
-                  style={{
-                    padding: '1.5rem',
-                    borderRadius: '12px',
-                    cursor: 'pointer',
-                    textAlign: 'center',
-                    transition: 'var(--transition)',
-                    background: 'white',
-                    border: '2px solid #e0e0e0',
-                    color: 'var(--dark)',
-                    boxShadow: 'var(--card-shadow)',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background =
-                      'rgba(108, 99, 255, 0.05)';
-                    e.currentTarget.style.transform = 'translateY(-3px)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'white';
-                    e.currentTarget.style.transform = 'translateY(0)';
-                  }}
+                  className="category-card"
                 >
-                  <i
-                    className={categoryInfo.icon}
-                    style={{
-                      fontSize: '2rem',
-                      marginBottom: '0.5rem',
-                      display: 'block',
-                    }}
-                  ></i>
-                  <div style={{ fontWeight: '600', fontSize: '0.95rem' }}>
-                    {category.categoryName}{' '}
-                    {/* Серверден келген атау (мысалы: "Спорт") */}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: '0.8rem',
-                      opacity: 0.7,
-                      marginTop: '0.25rem',
-                    }}
-                  >
-                    ({categoryProductCount})
-                  </div>
+                  <i className={categoryInfo.icon}></i>
+                  <div className="category-name">{category.categoryName}</div>
+                  <div className="category-count">({categoryProductCount})</div>
                 </div>
               );
             })}
           </div>
 
           {/* Default message when no category is selected */}
-          <div
-            style={{
-              textAlign: 'center',
-              padding: '3rem 2rem',
-              color: 'var(--gray)',
-              background: 'rgba(108, 99, 255, 0.05)',
-              borderRadius: '12px',
-              border: '2px dashed rgba(108, 99, 255, 0.2)',
-            }}
-          >
+          <div className="empty-state-message">
             <i
               className="fas fa-hand-pointer"
               style={{
@@ -263,14 +208,17 @@ function ProductGrid({
             className="back-button-container"
           >
             <span style={{ color: 'var(--dark)' }}>
-              <strong style={{ color: 'var(--primary)', fontSize: '1.1rem' }}>
+              <strong style={{ color: 'var(--secondary)', fontSize: '1.1rem' }}>
                 Подкатегорияны таңдаңыз
               </strong>
+              <span style={{ marginLeft: '0.5rem', color: 'var(--gray)' }}>
+                ({filteredProducts.length} тауар)
+              </span>
             </span>
             <button
               onClick={handleBack}
               style={{
-                background: 'var(--primary)',
+                background: 'var(--secondary)',
                 color: 'white',
                 border: 'none',
                 padding: '0.7rem 1.5rem',
@@ -284,11 +232,9 @@ function ProductGrid({
               }}
               onMouseEnter={(e) => {
                 e.target.style.transform = 'translateY(-3px)';
-                e.target.style.boxShadow = '0 7px 15px rgba(108, 99, 255, 0.3)';
               }}
               onMouseLeave={(e) => {
                 e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = 'none';
               }}
             >
               <i
@@ -352,44 +298,108 @@ function ProductGrid({
       )}
 
       {/* Show Sidebar and products when specific category/subcategory is selected */}
-      {/* Категория таңдалғанда (және ол charity емес болса) Sidebar мен Тауарларды көрсету */}
       {selectedCategory && selectedCategory !== 'charity' && (
-        <div style={{ display: 'flex', gap: '2rem', margin: '3rem 0' }}>
-          {/* Sidebar логикасы сақталады... */}
-          <Sidebar
-            products={products.filter((p) => p.category === selectedCategory)}
-            onFilterChange={handleFilterChange}
-            selectedCategory={selectedCategory}
-            onBack={isMobile ? () => setSidebarVisible(false) : handleBack}
-            style={{
-              flex: '0 0 250px',
-              ...(isMobile && {
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                height: '100vh',
-                width: '80%',
-                maxWidth: '300px',
-                zIndex: 1000,
-                background: 'white',
-                boxShadow: '2px 0 10px rgba(0,0,0,0.1)',
-                overflowY: 'auto',
-                padding: '20px',
-              }),
-            }}
-          />
+        <div className="products-with-sidebar">
+          {/* Filter Overlay for Mobile */}
+          {isMobile && filterVisible && (
+            <div
+              className="filter-overlay"
+              onClick={() => setFilterVisible(false)}
+            />
+          )}
 
-          <section className="products-section" style={{ flex: '1' }}>
+          {/* Sidebar */}
+          <div
+            className={`sidebar-wrapper ${isMobile && filterVisible ? 'visible' : ''} ${isMobile ? 'mobile' : ''}`}
+          >
+            {isMobile && filterVisible && (
+              <div className="sidebar-header">
+                <h3>Сүзгі</h3>
+                <button
+                  className="close-sidebar-btn"
+                  onClick={() => setFilterVisible(false)}
+                >
+                  <i className="fas fa-times"></i>
+                </button>
+              </div>
+            )}
+            <Sidebar
+              products={products.filter((p) => p.category === selectedCategory)}
+              onFilterChange={handleFilterChange}
+              selectedCategory={selectedCategory}
+              onBack={() => {
+                if (isMobile) {
+                  setFilterVisible(false);
+                }
+                handleBack();
+              }}
+              isMobile={isMobile}
+            />
+          </div>
+
+          <section className="products-section">
             <div className="section-header">
-              <h2 className="section-title">
-                {categoryLabels[selectedCategory]?.label || selectedCategory}
-              </h2>
+              <div className="header-left">
+                <h2 className="section-title">
+                  {categoryLabels[selectedCategory]?.label || selectedCategory}
+                </h2>
+                {filteredProducts && (
+                  <span className="product-count">
+                    ({filteredProducts.length} тауар)
+                  </span>
+                )}
+              </div>
+              <div className="header-right">
+                <div className="view-options">
+                  <button
+                    className={viewMode === 'grid' ? 'active' : ''}
+                    onClick={() => setViewMode('grid')}
+                    title="Торлы көрініс"
+                  >
+                    <i className="fas fa-th"></i>
+                  </button>
+                  <button
+                    className={viewMode === 'list' ? 'active' : ''}
+                    onClick={() => setViewMode('list')}
+                    title="Тізім көрінісі"
+                  >
+                    <i className="fas fa-list"></i>
+                  </button>
+                </div>
+                {!isMobile && (
+                  <button onClick={handleBack} className="back-button-desktop">
+                    <i className="fas fa-arrow-left"></i>
+                    Қайта оралу
+                  </button>
+                )}
+              </div>
             </div>
 
-            {/* Тауарлар торы (Grid) */}
-            <div className="products-grid">
+            {/* Mobile Filter Button - Below Header */}
+            {isMobile && (
+              <div className="mobile-controls">
+                <button
+                  onClick={() => setFilterVisible(!filterVisible)}
+                  className="mobile-filter-btn"
+                >
+                  <i className="fas fa-filter"></i>
+                  <span>Сүзгі</span>
+                  {filterVisible && <i className="fas fa-times close-icon"></i>}
+                </button>
+                <button onClick={handleBack} className="mobile-back-button">
+                  <i className="fas fa-arrow-left"></i>
+                  Қайта оралу
+                </button>
+              </div>
+            )}
+
+            {/* Products Grid/List */}
+            <div className={`products-${viewMode}`}>
               {productsStatus === 'loading' ? (
-                <div className="loading">Жүктелуде...</div>
+                <div className="loading">
+                  <i className="fas fa-spinner fa-spin"></i>
+                  <p>Жүктелуде...</p>
+                </div>
               ) : filteredProducts && filteredProducts.length > 0 ? (
                 filteredProducts.map((product) => (
                   <ProductCard
@@ -399,12 +409,13 @@ function ProductGrid({
                     onOrderClick={onOrderClick}
                     isAdmin={isAdmin}
                     onDelete={onDelete}
+                    viewMode={viewMode}
                   />
                 ))
               ) : (
                 <div className="no-products">
                   <i className="fas fa-box-open"></i>
-                  <p>Бұл категорияда әзірге тауар жоқ</p>
+                  <p>Бұл категорияда әзірше тауар жоқ</p>
                 </div>
               )}
             </div>
@@ -479,7 +490,7 @@ function ProductGrid({
           </div>
 
           {/* Products Grid */}
-          <div className="products-grid">
+          <div className={`products-${viewMode}`}>
             {filteredProducts.length > 0 ? (
               filteredProducts.map((product) => (
                 <ProductCard
@@ -516,190 +527,465 @@ function ProductGrid({
       )}
 
       <style>{`
-        /* Base styles for product grid */
-        .products-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-          gap: 1.5rem;
+        /* Products with sidebar container */
+        .products-with-sidebar {
+          display: flex;
+          gap: 2rem;
+          margin: 3rem 0;
+          width: 100%;
+          align-items: flex-start;
+          position: relative;
         }
 
-        /* Base styles for category cards */
-        .category-cards-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        .products-section {
+          flex: 1;
+          min-width: 0;
+          width: 100%;
+        }
+
+        /* Section header */
+        .section-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 1.5rem;
+          flex-wrap: wrap;
           gap: 1rem;
         }
 
-        /* Responsive styles */
-        @media (max-width: 1100px) {
-          .products-section {
-            flex: 1;
-            width: 100%;
-          }
-
-          .products-grid {
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 1.25rem;
-          }
+        .header-left {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          flex-wrap: wrap;
         }
 
-        @media (max-width: 900px) {
-          /* Switch back to column layout on smaller screens */
-          div[style*="flexDirection: row"] {
-            flex-direction: column !important;
-          }
-
-          .sidebar {
-            width: 100% !important;
-            flex: none !important;
-            margin-bottom: 2rem;
-          }
-
-          .products-section {
-            width: 100%;
-          }
-
-          /* Adjust category cards for tablets */
-          .category-cards-grid {
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 0.75rem;
-          }
+        .header-right {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          flex-wrap: wrap;
         }
 
-        @media (max-width: 768px) {
-          .section-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 1rem;
-          }
-
-          .section-title {
-            font-size: 1.5rem;
-          }
-
-          .view-options {
-            width: 100%;
-            justify-content: flex-start;
-          }
-
-          .products-grid {
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1rem;
-          }
-
-          .product-card {
-            border-radius: 10px;
-          }
-
-          .section-header {
-            display: flex;
-            flex-direction: column;
-          }
-
-          /* Make buttons more touch-friendly */
-          button {
-            min-height: 44px;
-          }
-
-          /* Improve spacing for mobile */
-          .filter-options label {
-            padding: 8px 0;
-            display: block;
-          }
-
-          /* Adjust charity subcategories grid */
-          .charity-subcategories-grid {
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important;
-            gap: 1rem !important;
-          }
+        .section-title {
+          margin: 0;
+          font-size: 1.8rem;
+          color: var(--dark);
+          font-weight: 700;
         }
 
-        @media (max-width: 480px) {
-          .products-grid {
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 0.75rem;
-          }
-
-          /* Smaller category cards for mobile */
-          .category-cards-grid {
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 0.5rem;
-          }
-
-          .product-card {
-            padding: 0.75rem;
-          }
-
-          .product-info {
-            padding: 0.75rem;
-          }
-
-          .product-title {
-            font-size: 0.95rem;
-          }
-
-          .product-price {
-            font-size: 1.1rem;
-          }
-
-          .btn {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.85rem;
-          }
-
-          .btn i {
-            margin-right: 4px;
-          }
-
-          .btn-secondary {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
-
-          .section-title {
-            font-size: 1.25rem;
-          }
-
-          .product-actions {
-            gap: 0.5rem;
-          }
-
-          /* Adjust back buttons for better mobile experience */
-          .back-button-container {
-            flex-direction: column;
-            gap: 1rem;
-          }
-
-          .back-button-container button {
-            width: 100%;
-            justify-content: center;
-          }
-
-          /* Charity subcategories for smallest screens */
-          .charity-subcategories-grid {
-            grid-template-columns: 1fr !important;
-          }
+        .product-count {
+          color: var(--gray);
+          font-size: 1rem;
+          font-weight: 500;
         }
 
-        /* Filter toggle button animation */
-        .filter-toggle-btn {
+        /* View options */
+        .view-options {
+          display: flex;
+          gap: 0.5rem;
+          background: #f5f5f5;
+          padding: 0.25rem;
+          border-radius: 8px;
+        }
+
+        .view-options button {
+          background: transparent;
+          border: none;
+          padding: 0.6rem 1rem;
+          border-radius: 6px;
+          cursor: pointer;
+          color: var(--gray);
+          transition: all 0.3s ease;
+          font-size: 1.1rem;
+        }
+
+        .view-options button:hover {
+          color: var(--primary);
+        }
+
+        .view-options button.active {
+          background: white;
+          color: var(--primary);
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Back button desktop */
+        .back-button-desktop {
+          background: var(--primary);
+          color: white;
+          border: none;
+          padding: 0.6rem 1.2rem;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          font-size: 0.95rem;
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .back-button-desktop:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3);
+        }
+
+        /* Mobile controls - Below header */
+        .mobile-controls {
+          display: flex;
+          gap: 0.75rem;
+          margin-bottom: 1.5rem;
+          width: 100%;
+        }
+
+        .mobile-filter-btn {
+          flex: 1;
+          background: var(--primary);
+          color: white;
+          border: none;
+          padding: 0.9rem 1rem;
+          border-radius: 10px;
+          cursor: pointer;
+          font-size: 1rem;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.6rem;
+          transition: all 0.3s ease;
+          box-shadow: 0 2px 8px rgba(108, 99, 255, 0.3);
+        }
+
+        .mobile-filter-btn .close-icon {
+          margin-left: auto;
+          font-size: 1.2rem;
+        }
+
+        .mobile-filter-btn:active {
+          transform: scale(0.98);
+        }
+
+        .mobile-back-button {
+          flex: 1;
+          background: #f5f5f5;
+          color: var(--dark);
+          border: none;
+          padding: 0.9rem 1rem;
+          border-radius: 10px;
+          cursor: pointer;
+          font-size: 1rem;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.6rem;
           transition: all 0.3s ease;
         }
 
-        .filter-toggle-btn:active {
-          transform: scale(0.95);
+        .mobile-back-button:active {
+          transform: scale(0.98);
         }
 
-        /* Ensure filter button is responsive */
-        @media (max-width: 480px) {
-          .filter-toggle-btn {
+        /* Filter overlay */
+        .filter-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 998;
+          animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
+        /* Sidebar wrapper */
+        .sidebar-wrapper {
+          flex: 0 0 250px;
+          min-width: 250px;
+          position: sticky;
+          top: 20px;
+          max-height: calc(100vh - 40px);
+          overflow-y: auto;
+          transition: all 0.3s ease;
+        }
+
+        .sidebar-wrapper.mobile {
+          position: fixed;
+          top: 0;
+          left: -100%;
+          height: 100vh;
+          width: 85%;
+          max-width: 320px;
+          z-index: 999;
+          background: white;
+          box-shadow: 2px 0 20px rgba(0,0,0,0.2);
+          overflow-y: auto;
+          padding: 0;
+          flex: none;
+          min-width: auto;
+          max-height: 100vh;
+        }
+
+        .sidebar-wrapper.mobile.visible {
+          left: 0;
+        }
+
+        .sidebar-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 1.5rem;
+          border-bottom: 1px solid #e0e0e0;
+          background: var(--primary);
+          color: white;
+        }
+
+        .sidebar-header h3 {
+          margin: 0;
+          font-size: 1.3rem;
+          font-weight: 600;
+        }
+
+        .close-sidebar-btn {
+          background: transparent;
+          border: none;
+          color: white;
+          font-size: 1.5rem;
+          cursor: pointer;
+          padding: 0.5rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        /* Category cards container */
+        .category-cards-container {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 20px;
+          padding: 20px;
+          max-width: 1200px;
+          margin: 0 auto;
+        }
+
+        .category-card {
+          padding: 2rem 1.5rem;
+          border-radius: 12px;
+          cursor: pointer;
+          text-align: center;
+          transition: all 0.3s ease;
+          background: white;
+          border: 2px solid #e0e0e0;
+          color: var(--dark);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          min-height: 180px;
+        }
+
+        .category-card:hover {
+          background: rgba(108, 99, 255, 0.05);
+          transform: translateY(-3px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .category-card i {
+          font-size: 3rem;
+          margin-bottom: 1rem;
+          display: block;
+          color: var(--primary);
+        }
+
+        .category-name {
+          font-weight: 600;
+          font-size: 1.1rem;
+          margin-bottom: 0.5rem;
+        }
+
+        .category-count {
+          font-size: 0.9rem;
+          opacity: 0.7;
+          margin-top: 0.25rem;
+          color: var(--gray);
+        }
+
+        /* Empty state message */
+        .empty-state-message {
+          text-align: center;
+          padding: 3rem 2rem;
+          color: var(--gray);
+          background: rgba(108, 99, 255, 0.05);
+          border-radius: 12px;
+          border: 2px dashed rgba(108, 99, 255, 0.2);
+          margin-top: 2rem;
+        }
+
+        /* Desktop Grid view - 3 columns */
+        .products-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 1.5rem;
+          width: 100%;
+        }
+
+        /* Desktop List view */
+        .products-list {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+          width: 100%;
+        }
+
+        /* Loading state */
+        .loading {
+          grid-column: 1 / -1;
+          text-align: center;
+          padding: 3rem;
+          color: var(--gray);
+        }
+
+        .loading i {
+          font-size: 2.5rem;
+          margin-bottom: 1rem;
+          display: block;
+          color: var(--primary);
+        }
+
+        .loading p {
+          font-size: 1.1rem;
+        }
+
+        /* No products state */
+        .no-products {
+          grid-column: 1 / -1;
+          text-align: center;
+          padding: 3rem 1rem;
+          color: var(--gray);
+        }
+
+        .no-products i {
+          font-size: 3rem;
+          display: block;
+          margin-bottom: 1rem;
+          opacity: 0.6;
+        }
+
+        /* Charity subcategories grid */
+        .charity-subcategories-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+          gap: 1.5rem;
+        }
+
+        /* Mobile responsive (≤900px) */
+        @media (max-width: 900px) {
+          .products-with-sidebar {
+            flex-direction: column;
+            margin: 1.5rem 0;
+            gap: 0;
+          }
+
+          .sidebar-wrapper:not(.mobile) {
+            display: none;
+          }
+
+          .products-section {
             width: 100%;
-            justify-content: center;
-            margin-bottom: 0.5rem;
+            flex: 1;
+          }
+
+          .section-header {
+            flex-direction: column;
+            align-items: stretch;
+          }
+
+          .header-left,
+          .header-right {
+            width: 100%;
+          }
+
+          .header-right {
+            justify-content: space-between;
+          }
+
+          .section-title {
+            font-size: 1.4rem;
+          }
+
+          .category-cards-container {
+            grid-template-columns: 1fr;
+            gap: 12px;
+            padding: 15px;
+          }
+
+          .category-card {
+            padding: 1.5rem;
+            min-height: auto;
+            flex-direction: row;
+            text-align: left;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 1.5rem;
+          }
+
+          .category-card i {
+            font-size: 2.5rem;
+            margin-bottom: 0;
+            margin-right: 0;
+            flex-shrink: 0;
+          }
+
+          .category-name {
+            font-size: 1rem;
+            margin-bottom: 0;
+            flex: 1;
+          }
+
+          .category-count {
+            font-size: 0.85rem;
+            margin-top: 0;
+            margin-left: auto;
+            flex-shrink: 0;
+          }
+
+          /* Mobile grid view: 1 column */
+          .products-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+          }
+
+          /* Mobile list view: 2 columns */
+          .products-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+          }
+
+          .mobile-controls {
+            flex-direction: column;
+            gap: 0.5rem;
+          }
+
+          .mobile-filter-btn,
+          .mobile-back-button {
+            width: 100%;
+          }
+
+          .sidebar-wrapper.mobile {
+            width: 90%;
+            max-width: 100%;
+          }
+
+          .charity-subcategories-grid {
+            grid-template-columns: 1fr;
           }
         }
       `}</style>

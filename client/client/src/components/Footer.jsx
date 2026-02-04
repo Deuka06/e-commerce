@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 function Footer() {
   return (
@@ -6,20 +6,14 @@ function Footer() {
       <div className="container">
         <div className="footer-content">
           <div className="footer-section">
-            <h3>StyleShop</h3>
+            <h3>Qamqor</h3>
             <p>
               Сіздің сенімді интернет-дүкеніңіз. Біз сізге ең жақсы сапаны және
               ерекше тәжірибені ұсынамыз.
             </p>
             <div className="social-links">
               <a href="#">
-                <i className="fab fa-facebook-f"></i>
-              </a>
-              <a href="#">
                 <i className="fab fa-instagram"></i>
-              </a>
-              <a href="#">
-                <i className="fab fa-twitter"></i>
               </a>
               <a href="#">
                 <i className="fab fa-youtube"></i>
@@ -39,6 +33,11 @@ function Footer() {
                   <i className="fas fa-chevron-right"></i> Біз туралы
                 </a>
               </li>
+            </ul>
+          </div>
+          <div className="footer-section">
+            <h3>Қосымша ақпарат</h3>
+            <ul>
               <li>
                 <a href="#">
                   <i className="fas fa-chevron-right"></i> Тауарлар
@@ -47,31 +46,6 @@ function Footer() {
               <li>
                 <a href="#">
                   <i className="fas fa-chevron-right"></i> Байланыс
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div className="footer-section">
-            <h3>Қосымша ақпарат</h3>
-            <ul>
-              <li>
-                <a href="#">
-                  <i className="fas fa-chevron-right"></i> Жеткізу шарттары
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  <i className="fas fa-chevron-right"></i> Төлем әдістері
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  <i className="fas fa-chevron-right"></i> Құпиялылық саясаты
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  <i className="fas fa-chevron-right"></i> Кері байланыс
                 </a>
               </li>
             </ul>
@@ -92,14 +66,14 @@ function Footer() {
               </li>
               <li>
                 <a href="#">
-                  <i className="fas fa-envelope"></i> info@styleshop.kz
+                  <i className="fas fa-envelope"></i> info@qamqor.kz
                 </a>
               </li>
             </ul>
           </div>
         </div>
         <div className="copyright">
-          &copy; 2025 StyleShop. Барлық құқықтар қорғалған.
+          &copy; 2026 Qamqor. Барлық құқықтар қорғалған.
         </div>
       </div>
     </footer>
