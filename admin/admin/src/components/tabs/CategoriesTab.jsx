@@ -1,23 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchCategories,
+  addCategory,
+  updateCategory,
+  deleteCategory,
+} from "../../store/categorySlice";
 import { styles } from "../../styles/adminPanelStyles";
 
 function CategoriesTab({
-  categories,
-  onAddCategory,
+  // categories,
+  // onAddCategory,
   onDeleteCategory,
   onUpdateCategory,
   isMobile,
 }) {
+  const dispatch = useDispatch();
   const [categoryFormData, setCategoryFormData] = useState({
     id: null,
     name: "",
     slug: "",
-    image: "",
+    parentId: 1,
+    imageUrl: "",
   });
+  const { items, loading } = useSelector((state) => state.categories);
   const [isEditingCategory, setIsEditingCategory] = useState(false);
   const [categoryImagePreview, setCategoryImagePreview] = useState(null);
   const [categoriesPage, setCategoriesPage] = useState(1);
   const itemsPerPage = 6;
+  const categories = items || [];
+
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
 
   const handleCategoryInputChange = (e) => {
     const { name, value } = e.target;
@@ -30,43 +45,58 @@ function CategoriesTab({
       const reader = new FileReader();
       reader.onloadend = () => {
         setCategoryImagePreview(reader.result);
-        setCategoryFormData((prev) => ({ ...prev, image: reader.result }));
+        setCategoryFormData((prev) => ({ ...prev, imageUrl: reader.result }));
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const handleCategorySubmit = (e) => {
+  const handleCategorySubmit = async (e) => {
     e.preventDefault();
+
+    // Backend күтетін деректер құрылымы (image_e06ac0.png бойынша)
+    const categoryData = {
+      categoryName: categoryFormData.name,
+      slug: categoryFormData.slug,
+      imageUrl: categoryFormData.imageUrl || "string", // егер бос болса "string" жіберу
+    };
+
     if (isEditingCategory) {
-      onUpdateCategory(categoryFormData.id, {
-        name: categoryFormData.name,
-        image: categoryFormData.image,
-      });
+      // ЖАҢАРТУ (PUT)
+      try {
+        await dispatch(
+          updateCategory({
+            id: categoryFormData.id,
+            categoryData,
+          }),
+        ).unwrap();
+        alert("Категория жаңартылды!");
+      } catch (err) {
+        alert("Қате: " + err);
+      }
     } else {
-      onAddCategory({
-        name: categoryFormData.name,
-        image: categoryFormData.image,
-      });
+      // ҚОСУ (POST)
+      try {
+        await dispatch(addCategory(categoryData)).unwrap();
+        alert("Категория қосылды!");
+      } catch (err) {
+        alert("Қате: " + err);
+      }
     }
-    setCategoryFormData({
-      id: null,
-      name: "",
-      slug: "",
-      image: "",
-    });
-    setCategoryImagePreview(null);
-    setIsEditingCategory(false);
+
+    // Форманы тазалау
+    handleCancelEdit();
   };
 
   const handleEditCategory = (category) => {
     setCategoryFormData({
       id: category.id,
-      name: category.name,
+      categoryName: category.name,
       slug: category.slug,
-      image: category.image || "",
+      parentId: category.parentId || 0,
+      imageUrl: category.imageUrl || "",
     });
-    setCategoryImagePreview(category.image || null);
+    setCategoryImagePreview(category.imageUrl || null);
     setIsEditingCategory(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -74,12 +104,26 @@ function CategoriesTab({
   const handleCancelEdit = () => {
     setCategoryFormData({
       id: null,
-      name: "",
+      categoryName: "",
       slug: "",
-      image: "",
+      parentId: 1,
+      imageUrl: "",
     });
     setCategoryImagePreview(null);
     setIsEditingCategory(false);
+  };
+
+  const handleDeleteCategory = async (id) => {
+    // Пайдаланушыдан растау сұрау
+    if (window.confirm("Бұл категорияны жоюға сенімдісіз бе?")) {
+      try {
+        // unwrap() қате болса catch-ке жіберу үшін керек
+        await dispatch(deleteCategory(id)).unwrap();
+        alert("Категория сәтті жойылды!");
+      } catch (err) {
+        alert("Жою мүмкін болмады: " + (err.message || err));
+      }
+    }
   };
 
   // Pagination logic for categories tab
@@ -134,6 +178,17 @@ function CategoriesTab({
                 value={categoryFormData.slug}
                 onChange={handleCategoryInputChange}
                 placeholder="slug"
+                required
+              />
+            </div>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>ParentId</label>
+              <input
+                style={styles.input}
+                name="parentId"
+                value={categoryFormData.parentId}
+                onChange={handleCategoryInputChange}
+                placeholder="parentId всегда должно быть 1"
                 required
               />
             </div>
@@ -281,15 +336,23 @@ function CategoriesTab({
                     currentCategories.map((category) => (
                       <tr key={category.id} style={styles.tableRow}>
                         <td style={styles.tableCell}>
-                          {category.image && (
+                          {category.image ? (
                             <img
-                              src={category.image}
-                              alt={category.name}
+                              src={
+                                category.image.startsWith("http")
+                                  ? category.image
+                                  : `http://46.247.41.196${category.image}`
+                              }
+                              alt={category.categoryName}
                               style={styles.categoryTableImage}
                             />
+                          ) : (
+                            "Сурет жоқ"
                           )}
                         </td>
-                        <td style={styles.tableCell}>{category.name}</td>
+                        <td style={styles.tableCell}>
+                          {category.categoryName}
+                        </td>
                         <td style={styles.tableCell}>
                           <div style={{ display: "flex", gap: "8px" }}>
                             <button
@@ -298,15 +361,7 @@ function CategoriesTab({
                               ✏️ Өңдеу
                             </button>
                             <button
-                              onClick={() => {
-                                if (
-                                  window.confirm(
-                                    "Категорияны жоюға сенімдісіз бе?",
-                                  )
-                                ) {
-                                  onDeleteCategory(category.id);
-                                }
-                              }}
+                              onClick={() => handleDeleteCategory(category.id)} // props-тан келген емес, осы жердегі функцияны шақырамыз
                               style={styles.deleteBtn}>
                               🗑️ Жою
                             </button>
