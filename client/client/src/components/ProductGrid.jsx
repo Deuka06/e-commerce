@@ -767,7 +767,7 @@ function ProductGrid({
         /* Category cards container */
         .category-cards-container {
           display: grid;
-          grid-template-columns: repeat(2, 1fr);
+          grid-template-columns: repeat(3, 1fr);
           gap: 20px;
           padding: 20px;
           max-width: 1200px;

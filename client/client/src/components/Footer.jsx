@@ -2,7 +2,7 @@ import React from 'react';
 
 function Footer() {
   return (
-    <footer>
+    <footer id="footer">
       <div className="container">
         <div className="footer-content">
           <div className="footer-section">
@@ -19,36 +19,6 @@ function Footer() {
                 <i className="fab fa-youtube"></i>
               </a>
             </div>
-          </div>
-          <div className="footer-section">
-            <h3>Жылдам сілтемелер</h3>
-            <ul>
-              <li>
-                <a href="#">
-                  <i className="fas fa-chevron-right"></i> Басты бет
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  <i className="fas fa-chevron-right"></i> Біз туралы
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div className="footer-section">
-            <h3>Қосымша ақпарат</h3>
-            <ul>
-              <li>
-                <a href="#">
-                  <i className="fas fa-chevron-right"></i> Тауарлар
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  <i className="fas fa-chevron-right"></i> Байланыс
-                </a>
-              </li>
-            </ul>
           </div>
           <div className="footer-section">
             <h3>Байланыс</h3>

@@ -14,6 +14,14 @@ function Header({
     setMobileMenuOpen(false);
   };
 
+  const handleContactClick = (e) => {
+    e.preventDefault();
+    const footer = document.getElementById('footer');
+    if (footer) {
+      footer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
     <header>
       <div className="container">
@@ -42,7 +50,7 @@ function Header({
                 </a>
               </li>
               <li>
-                <a href="#">
+                <a href="#footer" onClick={handleContactClick}>
                   <i className="fas fa-phone"></i> Байланыс
                 </a>
               </li>
@@ -88,7 +96,13 @@ function Header({
                 </a>
               </li>
               <li>
-                <a href="#">
+                <a
+                  href="#footer"
+                  onClick={(e) => {
+                    handleContactClick(e);
+                    closeMobileMenu();
+                  }}
+                >
                   <i className="fas fa-phone"></i> Байланыс
                 </a>
               </li>

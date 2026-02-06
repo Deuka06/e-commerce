@@ -172,108 +172,235 @@ function Payment({ cartItems, onClose, onPaymentSuccess, showNavBar = true }) {
             }}
             className="payment-grid"
           >
-            {/* Order Summary - LEFT on laptop, TOP on mobile */}
+            {/* LEFT COLUMN - Order Summary and Kaspi Instructions */}
             <div
-              style={{
-                background: 'white',
-                borderRadius: '12px',
-                padding: '2rem',
-                boxShadow: 'var(--card-shadow)',
-                height: 'fit-content',
-              }}
+              style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}
             >
-              <h2
-                style={{
-                  fontSize: '1.5rem',
-                  marginBottom: '1.5rem',
-                  color: 'var(--primary)',
-                }}
-              >
-                <i
-                  className="fas fa-shopping-cart"
-                  style={{ marginRight: '0.5rem' }}
-                ></i>
-                Тапсырыстың ұйғарымы
-              </h2>
-
+              {/* Order Summary */}
               <div
                 style={{
-                  marginBottom: '1.5rem',
-                  maxHeight: '300px',
-                  overflowY: 'auto',
+                  background: 'white',
+                  borderRadius: '12px',
+                  padding: '2rem',
+                  boxShadow: 'var(--card-shadow)',
+                  height: 'fit-content',
                 }}
               >
-                {cartItems.map((item, index) => (
+                <h2
+                  style={{
+                    fontSize: '1.5rem',
+                    marginBottom: '1.5rem',
+                    color: 'var(--primary)',
+                  }}
+                >
+                  <i
+                    className="fas fa-shopping-cart"
+                    style={{ marginRight: '0.5rem' }}
+                  ></i>
+                  Тапсырыстың ұйғарымы
+                </h2>
+
+                <div
+                  style={{
+                    marginBottom: '1.5rem',
+                    maxHeight: '300px',
+                    overflowY: 'auto',
+                  }}
+                >
+                  {cartItems.map((item, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        padding: '0.8rem 0',
+                        borderBottom: '1px solid #e0e0e0',
+                        fontSize: '0.95rem',
+                      }}
+                    >
+                      <span
+                        style={{
+                          color: 'var(--dark)',
+                          wordBreak: 'break-word',
+                        }}
+                      >
+                        {item.name} {item.quantity > 1 && `x${item.quantity}`}
+                      </span>
+                      <span
+                        style={{
+                          fontWeight: '600',
+                          color: 'var(--primary)',
+                          whiteSpace: 'nowrap',
+                          marginLeft: '0.5rem',
+                        }}
+                      >
+                        {formatPrice(item.price * (item.quantity || 1))} ₸
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                <div
+                  style={{
+                    padding: '1rem 0',
+                    borderTop: '2px solid var(--primary)',
+                    borderBottom: '2px solid var(--primary)',
+                    marginBottom: '1rem',
+                  }}
+                >
                   <div
-                    key={index}
                     style={{
                       display: 'flex',
                       justifyContent: 'space-between',
-                      padding: '0.8rem 0',
-                      borderBottom: '1px solid #e0e0e0',
-                      fontSize: '0.95rem',
+                      fontSize: '1.2rem',
+                      fontWeight: '700',
                     }}
                   >
-                    <span
-                      style={{ color: 'var(--dark)', wordBreak: 'break-word' }}
-                    >
-                      {item.name} {item.quantity > 1 && `x${item.quantity}`}
-                    </span>
-                    <span
-                      style={{
-                        fontWeight: '600',
-                        color: 'var(--primary)',
-                        whiteSpace: 'nowrap',
-                        marginLeft: '0.5rem',
-                      }}
-                    >
-                      {formatPrice(item.price * (item.quantity || 1))} ₸
+                    <span>Барлығы:</span>
+                    <span style={{ color: 'var(--primary)' }}>
+                      {formatPrice(total)} ₸
                     </span>
                   </div>
-                ))}
-              </div>
+                </div>
 
-              <div
-                style={{
-                  padding: '1rem 0',
-                  borderTop: '2px solid var(--primary)',
-                  borderBottom: '2px solid var(--primary)',
-                  marginBottom: '1rem',
-                }}
-              >
                 <div
                   style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    fontSize: '1.2rem',
-                    fontWeight: '700',
+                    background: 'rgba(108, 99, 255, 0.1)',
+                    padding: '1rem',
+                    borderRadius: '8px',
+                    fontSize: '0.85rem',
+                    color: 'var(--gray)',
+                    lineHeight: '1.5',
                   }}
                 >
-                  <span>Барлығы:</span>
-                  <span style={{ color: 'var(--primary)' }}>
-                    {formatPrice(total)} ₸
-                  </span>
+                  <i
+                    className="fas fa-shield-alt"
+                    style={{
+                      color: 'var(--primary)',
+                      marginRight: '0.5rem',
+                    }}
+                  ></i>
+                  Сіздің төлем ақпараты қауіпсіз болып сақталған.
                 </div>
               </div>
 
+              {/* Kaspi Payment Instructions */}
               <div
                 style={{
-                  background: 'rgba(108, 99, 255, 0.1)',
-                  padding: '1rem',
-                  borderRadius: '8px',
-                  fontSize: '0.85rem',
-                  color: 'var(--gray)',
-                  lineHeight: '1.5',
+                  background: 'white',
+                  borderRadius: '12px',
+                  padding: '2rem',
+                  boxShadow: 'var(--card-shadow)',
+                  height: 'fit-content',
                 }}
               >
-                <i
-                  className="fas fa-shield-alt"
+                <h2
                   style={{
+                    fontSize: '1.5rem',
+                    marginBottom: '1.5rem',
                     color: 'var(--primary)',
-                    marginRight: '0.5rem',
                   }}
-                ></i>
-                Сіздің төлем ақпараты қауіпсіз болып сақталған.
+                >
+                  <i
+                    className="fas fa-info-circle"
+                    style={{ marginRight: '0.5rem' }}
+                  ></i>
+                  Төлем нұсқауы
+                </h2>
+
+                <div
+                  style={{
+                    background: 'rgba(108, 99, 255, 0.05)',
+                    padding: '1.5rem',
+                    borderRadius: '8px',
+                    marginBottom: '1.5rem',
+                    borderLeft: '4px solid var(--primary)',
+                  }}
+                >
+                  <ol
+                    style={{
+                      margin: 0,
+                      paddingLeft: '1.2rem',
+                      color: 'var(--dark)',
+                      lineHeight: '1.8',
+                      fontSize: '0.95rem',
+                    }}
+                  >
+                    <li style={{ marginBottom: '0.8rem' }}>
+                      <strong>Бірінші</strong> толық сумманы Kaspi арқылы
+                      төлеңіз
+                    </li>
+                    <li style={{ marginBottom: '0.8rem' }}>
+                      Төлем жасап болғаннан кейін,{' '}
+                      <strong>форманы толтырыңыз</strong>
+                    </li>
+                    <li style={{ marginBottom: '0.8rem' }}>
+                      Форманы толтырғаннан кейін төлеміңіз{' '}
+                      <strong>тексеріске</strong> болады
+                    </li>
+                    <li>
+                      <strong>Күтіңіз</strong> - біз тапсырысыңызды тексереміз
+                    </li>
+                  </ol>
+                </div>
+
+                <button
+                  onClick={() =>
+                    window.open('https://pay.kaspi.kz/pay/wrwp3m82', '_blank')
+                  }
+                  style={{
+                    width: '100%',
+                    background:
+                      'linear-gradient(135deg, #f14635 0%, #d42727 100%)',
+                    color: 'white',
+                    border: 'none',
+                    padding: '1rem 1.5rem',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    transition: 'var(--transition)',
+                    fontSize: '1.1rem',
+                    fontWeight: '600',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.transform = 'translateY(-3px)';
+                    e.target.style.boxShadow =
+                      '0 7px 15px rgba(241, 70, 53, 0.3)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = 'none';
+                  }}
+                >
+                  <i
+                    className="fas fa-wallet"
+                    style={{ marginRight: '0.5rem', fontSize: '1.2rem' }}
+                  ></i>
+                  Kaspi-ге өту
+                </button>
+
+                <div
+                  style={{
+                    marginTop: '1rem',
+                    padding: '0.8rem',
+                    background: 'rgba(52, 199, 89, 0.1)',
+                    borderRadius: '6px',
+                    fontSize: '0.85rem',
+                    color: 'var(--gray)',
+                    textAlign: 'center',
+                  }}
+                >
+                  <i
+                    className="fas fa-lock"
+                    style={{
+                      color: '#34c759',
+                      marginRight: '0.4rem',
+                    }}
+                  ></i>
+                  Қауіпсіз төлем Kaspi арқылы
+                </div>
               </div>
             </div>
 
@@ -302,60 +429,6 @@ function Payment({ cartItems, onClose, onPaymentSuccess, showNavBar = true }) {
 
               <form onSubmit={handleSubmit}>
                 {/* Payment Method Selection */}
-                <div style={{ marginBottom: '1.5rem' }}>
-                  <label
-                    style={{
-                      fontWeight: '600',
-                      marginBottom: '0.5rem',
-                      display: 'block',
-                    }}
-                  >
-                    Төлем әдісін таңдаңыз
-                  </label>
-                  <div
-                    style={{
-                      display: 'flex',
-                      gap: '1rem',
-                      marginBottom: '1rem',
-                      flexWrap: 'wrap',
-                    }}
-                  >
-                    <label
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      <input
-                        type="radio"
-                        name="paymentMethod"
-                        value="card"
-                        checked={paymentMethod === 'card'}
-                        onChange={(e) => setPaymentMethod(e.target.value)}
-                        style={{ marginRight: '0.5rem' }}
-                      />
-                      <span>Банк картасы</span>
-                    </label>
-                    <label
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      <input
-                        type="radio"
-                        name="paymentMethod"
-                        value="mobile"
-                        checked={paymentMethod === 'mobile'}
-                        onChange={(e) => setPaymentMethod(e.target.value)}
-                        style={{ marginRight: '0.5rem' }}
-                      />
-                      <span>Мобильді төлем</span>
-                    </label>
-                  </div>
-                </div>
 
                 {paymentMethod === 'card' && (
                   <>
