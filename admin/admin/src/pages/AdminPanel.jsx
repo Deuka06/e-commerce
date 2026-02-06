@@ -26,6 +26,7 @@ function AdminPanel({
   const dispatch = useDispatch();
   const {
     token,
+    user,
     loading,
     error: loginErrorRedux,
   } = useSelector((state) => state.auth);
@@ -193,10 +194,14 @@ function AdminPanel({
 
         <div style={styles.sidebarFooter}>
           <div style={styles.userInfo}>
-            <div style={styles.avatar}>A</div>
+            <div style={styles.avatar}>
+              {user?.name ? user.name.charAt(0).toUpperCase() : 'A'}
+            </div>
             <div style={{ flex: 1 }}>
-              <div style={styles.userName}>Админ</div>
-              <div style={styles.userRole}>Менеджер</div>
+              <div style={styles.userName}>{user?.name || 'Админ'}</div>
+              <div style={styles.userRole}>
+                {user?.email || 'admin@example.com'}
+              </div>
             </div>
           </div>
           <button onClick={handleLogout} style={logoutBtnStyle}>
