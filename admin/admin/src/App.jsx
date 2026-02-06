@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import AdminPanel from './pages/AdminPanel';
-import { initialProducts, initialOrders } from './data/productData';
-import './styles/global.css';
+import React, { useState, useEffect } from "react";
+import AdminPanel from "./pages/AdminPanel";
+import { initialProducts, initialOrders } from "./data/productData";
+import "./styles/global.css";
 
 function App() {
   const [products, setProducts] = useState(initialProducts);
@@ -15,9 +15,16 @@ function App() {
   };
 
   const deleteProduct = (productId) => {
-    if (window.confirm('Бұл тауарды жойғыңыз келе ме?')) {
+    if (window.confirm("Бұл тауарды жойғыңыз келе ме?")) {
       setProducts(products.filter((p) => p.id !== productId));
-      showNotification('Тауар жойылды!', 'success');
+      showNotification("Тауар жойылды!", "success");
+    }
+  };
+
+  const editProduct = (productId) => {
+    if (window.confirm("Бұл тауарды өңдеуге сенімдісіз бе?")) {
+      setProducts(products.filter((p) => p.id !== productId));
+      showNotification("Тауар өңделді!", "success");
     }
   };
 
@@ -25,16 +32,16 @@ function App() {
     const updatedOrders = orders.map((order) => {
       if (order.id === orderId) {
         const statusMap = {
-          pending: 'shipped',
-          shipped: 'completed',
-          completed: 'pending',
+          pending: "shipped",
+          shipped: "completed",
+          completed: "pending",
         };
         return { ...order, status: statusMap[order.status] };
       }
       return order;
     });
     setOrders(updatedOrders);
-    showNotification('Тапсырыс статусы өзгертілді!', 'success');
+    showNotification("Тапсырыс статусы өзгертілді!", "success");
   };
 
   return (
@@ -44,6 +51,7 @@ function App() {
         orders={orders}
         onAddProduct={() => setShowProductModal(true)}
         onDeleteProduct={deleteProduct}
+        onEditProduct={editProduct}
         onUpdateOrderStatus={updateOrderStatus}
       />
     </div>
