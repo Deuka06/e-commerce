@@ -5,13 +5,15 @@ import authReducer from "./authSlice";
 import categoryReducer from "./categorySlice";
 import productReducer from "./productSlice";
 import courierReducer from "./courierSlice";
+import ordersReducer from "./ordersSlice";
 
 export const store = configureStore({
   reducer: {
     auth: authReducer, // Авторизация үшін
     categories: categoryReducer, // Категориялар үшін
     products: productReducer, // Тауарлар үшін
-    courier: courierReducer, // Курьерлік тапсырыстар үшін
+    courier: courierReducer,
+    orders: ordersReducer, // Курьерлік тапсырыстар үшін
     // adminProducts: adminProductReducer, // Админ панельдің өнімдері үшін
   },
 });

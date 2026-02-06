@@ -1,25 +1,56 @@
 import React, { useState } from 'react';
 import { formatPrice } from '../utils/helpers';
+import { createOrder, resetOrderState } from '../store/ordersSlice';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchInstitutions } from '../store/institutionsSlice'; // жолын тексер
 
 function Payment({ cartItems, onClose, onPaymentSuccess, showNavBar = true }) {
+  const dispatch = useDispatch();
   const [paymentMethod, setPaymentMethod] = useState('card');
   const [formData, setFormData] = useState({
-    cardNumber: '',
-    cardHolder: '',
-    expiryDate: '',
-    cvv: '',
-    email: '',
-    phone: '',
-    institution: '',
-    nameOfRecipient: '',
+    customerName: '', // Аты-жөні
+    phone: '', // Телефон
+    institutionId: '', // Мекеме ID-і (Select-тен келеді)
+    nameOfRecipient: '', // Кімге жеткізу керек
   });
   const [processing, setProcessing] = useState(false);
   const [success, setSuccess] = useState(false);
+  const {
+    loading: orderLoading,
+    success: orderSuccess,
+    error: orderError,
+  } = useSelector((state) => state.orders);
+  const { list: institutions, loading: instLoading } = useSelector(
+    (state) => state.institutions,
+  );
 
   const total = cartItems.reduce(
     (sum, item) => sum + item.price * (item.quantity || 1),
     0,
   );
+
+  useEffect(() => {
+    if (orderSuccess) {
+      setSuccess(true); // Компоненттің ішкі success күйі
+      setTimeout(() => {
+        dispatch(resetOrderState()); // State-ті тазалау
+        if (onPaymentSuccess) onPaymentSuccess();
+        if (onClose) onClose();
+        else window.location.href = '/';
+      }, 2000);
+    }
+  }, [orderSuccess, dispatch]);
+
+  useEffect(() => {
+    dispatch(fetchInstitutions());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (institutions.length > 0 && !formData.institution) {
+      setFormData((prev) => ({ ...prev, institution: institutions[0].name }));
+    }
+  }, [institutions]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -36,22 +67,22 @@ function Payment({ cartItems, onClose, onPaymentSuccess, showNavBar = true }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setProcessing(true);
 
-    setTimeout(() => {
-      setProcessing(false);
-      setSuccess(true);
-      setTimeout(() => {
-        if (onPaymentSuccess && typeof onPaymentSuccess === 'function') {
-          onPaymentSuccess();
-        }
-        if (onClose && typeof onClose === 'function') {
-          onClose();
-        } else {
-          window.location.href = '/';
-        }
-      }, 2000);
-    }, 2000);
+    // Серверге кететін объектіні дайындау (image_2d1abe.png бойынша)
+    const orderPayload = {
+      customerName: formData.customerName,
+      phoneNumber: formData.phone,
+      institutionsId: Number(formData.institutionId), // Сан түрінде жіберу
+      deliveryTo: formData.nameOfRecipient,
+      totalAmount: total,
+      items: cartItems.map((item) => ({
+        name: item.name,
+        quantity: item.quantity || 1,
+        price: item.price,
+      })),
+    };
+
+    dispatch(createOrder(orderPayload));
   };
 
   if (success) {
@@ -172,235 +203,108 @@ function Payment({ cartItems, onClose, onPaymentSuccess, showNavBar = true }) {
             }}
             className="payment-grid"
           >
-            {/* LEFT COLUMN - Order Summary and Kaspi Instructions */}
+            {/* Order Summary - LEFT on laptop, TOP on mobile */}
             <div
-              style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}
+              style={{
+                background: 'white',
+                borderRadius: '12px',
+                padding: '2rem',
+                boxShadow: 'var(--card-shadow)',
+                height: 'fit-content',
+              }}
             >
-              {/* Order Summary */}
-              <div
+              <h2
                 style={{
-                  background: 'white',
-                  borderRadius: '12px',
-                  padding: '2rem',
-                  boxShadow: 'var(--card-shadow)',
-                  height: 'fit-content',
+                  fontSize: '1.5rem',
+                  marginBottom: '1.5rem',
+                  color: 'var(--primary)',
                 }}
               >
-                <h2
-                  style={{
-                    fontSize: '1.5rem',
-                    marginBottom: '1.5rem',
-                    color: 'var(--primary)',
-                  }}
-                >
-                  <i
-                    className="fas fa-shopping-cart"
-                    style={{ marginRight: '0.5rem' }}
-                  ></i>
-                  Тапсырыстың ұйғарымы
-                </h2>
+                <i
+                  className="fas fa-shopping-cart"
+                  style={{ marginRight: '0.5rem' }}
+                ></i>
+                Тапсырыстың ұйғарымы
+              </h2>
 
-                <div
-                  style={{
-                    marginBottom: '1.5rem',
-                    maxHeight: '300px',
-                    overflowY: 'auto',
-                  }}
-                >
-                  {cartItems.map((item, index) => (
-                    <div
-                      key={index}
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        padding: '0.8rem 0',
-                        borderBottom: '1px solid #e0e0e0',
-                        fontSize: '0.95rem',
-                      }}
-                    >
-                      <span
-                        style={{
-                          color: 'var(--dark)',
-                          wordBreak: 'break-word',
-                        }}
-                      >
-                        {item.name} {item.quantity > 1 && `x${item.quantity}`}
-                      </span>
-                      <span
-                        style={{
-                          fontWeight: '600',
-                          color: 'var(--primary)',
-                          whiteSpace: 'nowrap',
-                          marginLeft: '0.5rem',
-                        }}
-                      >
-                        {formatPrice(item.price * (item.quantity || 1))} ₸
-                      </span>
-                    </div>
-                  ))}
-                </div>
-
-                <div
-                  style={{
-                    padding: '1rem 0',
-                    borderTop: '2px solid var(--primary)',
-                    borderBottom: '2px solid var(--primary)',
-                    marginBottom: '1rem',
-                  }}
-                >
+              <div
+                style={{
+                  marginBottom: '1.5rem',
+                  maxHeight: '300px',
+                  overflowY: 'auto',
+                }}
+              >
+                {cartItems.map((item, index) => (
                   <div
+                    key={index}
                     style={{
                       display: 'flex',
                       justifyContent: 'space-between',
-                      fontSize: '1.2rem',
-                      fontWeight: '700',
-                    }}
-                  >
-                    <span>Барлығы:</span>
-                    <span style={{ color: 'var(--primary)' }}>
-                      {formatPrice(total)} ₸
-                    </span>
-                  </div>
-                </div>
-
-                <div
-                  style={{
-                    background: 'rgba(108, 99, 255, 0.1)',
-                    padding: '1rem',
-                    borderRadius: '8px',
-                    fontSize: '0.85rem',
-                    color: 'var(--gray)',
-                    lineHeight: '1.5',
-                  }}
-                >
-                  <i
-                    className="fas fa-shield-alt"
-                    style={{
-                      color: 'var(--primary)',
-                      marginRight: '0.5rem',
-                    }}
-                  ></i>
-                  Сіздің төлем ақпараты қауіпсіз болып сақталған.
-                </div>
-              </div>
-
-              {/* Kaspi Payment Instructions */}
-              <div
-                style={{
-                  background: 'white',
-                  borderRadius: '12px',
-                  padding: '2rem',
-                  boxShadow: 'var(--card-shadow)',
-                  height: 'fit-content',
-                }}
-              >
-                <h2
-                  style={{
-                    fontSize: '1.5rem',
-                    marginBottom: '1.5rem',
-                    color: 'var(--primary)',
-                  }}
-                >
-                  <i
-                    className="fas fa-info-circle"
-                    style={{ marginRight: '0.5rem' }}
-                  ></i>
-                  Төлем нұсқауы
-                </h2>
-
-                <div
-                  style={{
-                    background: 'rgba(108, 99, 255, 0.05)',
-                    padding: '1.5rem',
-                    borderRadius: '8px',
-                    marginBottom: '1.5rem',
-                    borderLeft: '4px solid var(--primary)',
-                  }}
-                >
-                  <ol
-                    style={{
-                      margin: 0,
-                      paddingLeft: '1.2rem',
-                      color: 'var(--dark)',
-                      lineHeight: '1.8',
+                      padding: '0.8rem 0',
+                      borderBottom: '1px solid #e0e0e0',
                       fontSize: '0.95rem',
                     }}
                   >
-                    <li style={{ marginBottom: '0.8rem' }}>
-                      <strong>Бірінші</strong> толық сумманы Kaspi арқылы
-                      төлеңіз
-                    </li>
-                    <li style={{ marginBottom: '0.8rem' }}>
-                      Төлем жасап болғаннан кейін,{' '}
-                      <strong>форманы толтырыңыз</strong>
-                    </li>
-                    <li style={{ marginBottom: '0.8rem' }}>
-                      Форманы толтырғаннан кейін төлеміңіз{' '}
-                      <strong>тексеріске</strong> болады
-                    </li>
-                    <li>
-                      <strong>Күтіңіз</strong> - біз тапсырысыңызды тексереміз
-                    </li>
-                  </ol>
-                </div>
+                    <span
+                      style={{ color: 'var(--dark)', wordBreak: 'break-word' }}
+                    >
+                      {item.name} {item.quantity > 1 && `x${item.quantity}`}
+                    </span>
+                    <span
+                      style={{
+                        fontWeight: '600',
+                        color: 'var(--primary)',
+                        whiteSpace: 'nowrap',
+                        marginLeft: '0.5rem',
+                      }}
+                    >
+                      {formatPrice(item.price * (item.quantity || 1))} ₸
+                    </span>
+                  </div>
+                ))}
+              </div>
 
-                <button
-                  onClick={() =>
-                    window.open('https://pay.kaspi.kz/pay/wrwp3m82', '_blank')
-                  }
-                  style={{
-                    width: '100%',
-                    background:
-                      'linear-gradient(135deg, #f14635 0%, #d42727 100%)',
-                    color: 'white',
-                    border: 'none',
-                    padding: '1rem 1.5rem',
-                    borderRadius: '8px',
-                    cursor: 'pointer',
-                    transition: 'var(--transition)',
-                    fontSize: '1.1rem',
-                    fontWeight: '600',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.transform = 'translateY(-3px)';
-                    e.target.style.boxShadow =
-                      '0 7px 15px rgba(241, 70, 53, 0.3)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = 'none';
-                  }}
-                >
-                  <i
-                    className="fas fa-wallet"
-                    style={{ marginRight: '0.5rem', fontSize: '1.2rem' }}
-                  ></i>
-                  Kaspi-ге өту
-                </button>
-
+              <div
+                style={{
+                  padding: '1rem 0',
+                  borderTop: '2px solid var(--primary)',
+                  borderBottom: '2px solid var(--primary)',
+                  marginBottom: '1rem',
+                }}
+              >
                 <div
                   style={{
-                    marginTop: '1rem',
-                    padding: '0.8rem',
-                    background: 'rgba(52, 199, 89, 0.1)',
-                    borderRadius: '6px',
-                    fontSize: '0.85rem',
-                    color: 'var(--gray)',
-                    textAlign: 'center',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    fontSize: '1.2rem',
+                    fontWeight: '700',
                   }}
                 >
-                  <i
-                    className="fas fa-lock"
-                    style={{
-                      color: '#34c759',
-                      marginRight: '0.4rem',
-                    }}
-                  ></i>
-                  Қауіпсіз төлем Kaspi арқылы
+                  <span>Барлығы:</span>
+                  <span style={{ color: 'var(--primary)' }}>
+                    {formatPrice(total)} ₸
+                  </span>
                 </div>
+              </div>
+
+              <div
+                style={{
+                  background: 'rgba(108, 99, 255, 0.1)',
+                  padding: '1rem',
+                  borderRadius: '8px',
+                  fontSize: '0.85rem',
+                  color: 'var(--gray)',
+                  lineHeight: '1.5',
+                }}
+              >
+                <i
+                  className="fas fa-shield-alt"
+                  style={{
+                    color: 'var(--primary)',
+                    marginRight: '0.5rem',
+                  }}
+                ></i>
+                Сіздің төлем ақпараты қауіпсіз болып сақталған.
               </div>
             </div>
 
@@ -429,6 +333,60 @@ function Payment({ cartItems, onClose, onPaymentSuccess, showNavBar = true }) {
 
               <form onSubmit={handleSubmit}>
                 {/* Payment Method Selection */}
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <label
+                    style={{
+                      fontWeight: '600',
+                      marginBottom: '0.5rem',
+                      display: 'block',
+                    }}
+                  >
+                    Төлем әдісін таңдаңыз
+                  </label>
+                  <div
+                    style={{
+                      display: 'flex',
+                      gap: '1rem',
+                      marginBottom: '1rem',
+                      flexWrap: 'wrap',
+                    }}
+                  >
+                    <label
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value="card"
+                        checked={paymentMethod === 'card'}
+                        onChange={(e) => setPaymentMethod(e.target.value)}
+                        style={{ marginRight: '0.5rem' }}
+                      />
+                      <span>Банк картасы</span>
+                    </label>
+                    <label
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value="mobile"
+                        checked={paymentMethod === 'mobile'}
+                        onChange={(e) => setPaymentMethod(e.target.value)}
+                        style={{ marginRight: '0.5rem' }}
+                      />
+                      <span>Мобильді төлем</span>
+                    </label>
+                  </div>
+                </div>
 
                 {paymentMethod === 'card' && (
                   <>
@@ -441,14 +399,14 @@ function Payment({ cartItems, onClose, onPaymentSuccess, showNavBar = true }) {
                           color: 'var(--dark)',
                         }}
                       >
-                        Карта нөмірі *
+                        Аты-жөніңіз
                       </label>
                       <input
                         type="text"
                         name="cardNumber"
                         value={formData.cardNumber}
                         onChange={handleChange}
-                        placeholder="1234 5678 9012 3456"
+                        placeholder="Ержан"
                         required
                         maxLength="19"
                         style={{
@@ -470,135 +428,12 @@ function Payment({ cartItems, onClose, onPaymentSuccess, showNavBar = true }) {
                         }}
                       />
                     </div>
-
-                    <div style={{ marginBottom: '1.5rem' }}>
-                      <label
-                        style={{
-                          display: 'block',
-                          marginBottom: '0.5rem',
-                          fontWeight: '600',
-                          color: 'var(--dark)',
-                        }}
-                      >
-                        Карта иесінің аты *
-                      </label>
-                      <input
-                        type="text"
-                        name="cardHolder"
-                        value={formData.cardHolder}
-                        onChange={handleChange}
-                        placeholder="Аты Фамилиасы"
-                        required
-                        style={{
-                          width: '100%',
-                          padding: '0.8rem 1rem',
-                          border: '1px solid #e0e0e0',
-                          borderRadius: '8px',
-                          fontSize: '1rem',
-                          transition: 'var(--transition)',
-                        }}
-                        onFocus={(e) => {
-                          e.target.style.borderColor = 'var(--primary)';
-                          e.target.style.boxShadow =
-                            '0 0 0 3px rgba(108, 99, 255, 0.2)';
-                        }}
-                        onBlur={(e) => {
-                          e.target.style.borderColor = '#e0e0e0';
-                          e.target.style.boxShadow = 'none';
-                        }}
-                      />
-                    </div>
-
-                    <div
-                      style={{
-                        display: 'grid',
-                        gridTemplateColumns: '1fr 1fr',
-                        gap: '1rem',
-                        marginBottom: '1.5rem',
-                      }}
-                    >
-                      <div>
-                        <label
-                          style={{
-                            display: 'block',
-                            marginBottom: '0.5rem',
-                            fontWeight: '600',
-                            color: 'var(--dark)',
-                          }}
-                        >
-                          Аяқталу датасы *
-                        </label>
-                        <input
-                          type="text"
-                          name="expiryDate"
-                          value={formData.expiryDate}
-                          onChange={handleChange}
-                          placeholder="MM/YY"
-                          required
-                          maxLength="5"
-                          style={{
-                            width: '100%',
-                            padding: '0.8rem 1rem',
-                            border: '1px solid #e0e0e0',
-                            borderRadius: '8px',
-                            fontSize: '1rem',
-                            transition: 'var(--transition)',
-                          }}
-                          onFocus={(e) => {
-                            e.target.style.borderColor = 'var(--primary)';
-                            e.target.style.boxShadow =
-                              '0 0 0 3px rgba(108, 99, 255, 0.2)';
-                          }}
-                          onBlur={(e) => {
-                            e.target.style.borderColor = '#e0e0e0';
-                            e.target.style.boxShadow = 'none';
-                          }}
-                        />
-                      </div>
-                      <div>
-                        <label
-                          style={{
-                            display: 'block',
-                            marginBottom: '0.5rem',
-                            fontWeight: '600',
-                            color: 'var(--dark)',
-                          }}
-                        >
-                          CVV *
-                        </label>
-                        <input
-                          type="text"
-                          name="cvv"
-                          value={formData.cvv}
-                          onChange={handleChange}
-                          placeholder="123"
-                          required
-                          maxLength="3"
-                          style={{
-                            width: '100%',
-                            padding: '0.8rem 1rem',
-                            border: '1px solid #e0e0e0',
-                            borderRadius: '8px',
-                            fontSize: '1rem',
-                            transition: 'var(--transition)',
-                          }}
-                          onFocus={(e) => {
-                            e.target.style.borderColor = 'var(--primary)';
-                            e.target.style.boxShadow =
-                              '0 0 0 3px rgba(108, 99, 255, 0.2)';
-                          }}
-                          onBlur={(e) => {
-                            e.target.style.borderColor = '#e0e0e0';
-                            e.target.style.boxShadow = 'none';
-                          }}
-                        />
-                      </div>
-                    </div>
                   </>
                 )}
 
                 <div style={{ marginBottom: '1.5rem' }}>
                   <label
+                    htmlFor="institution"
                     style={{
                       display: 'block',
                       marginBottom: '0.5rem',
@@ -606,53 +441,16 @@ function Payment({ cartItems, onClose, onPaymentSuccess, showNavBar = true }) {
                       color: 'var(--dark)',
                     }}
                   >
-                    Электронды пошта *
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="email@example.com"
-                    required
-                    style={{
-                      width: '100%',
-                      padding: '0.8rem 1rem',
-                      border: '1px solid #e0e0e0',
-                      borderRadius: '8px',
-                      fontSize: '1rem',
-                      transition: 'var(--transition)',
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = 'var(--primary)';
-                      e.target.style.boxShadow =
-                        '0 0 0 3px rgba(108, 99, 255, 0.2)';
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = '#e0e0e0';
-                      e.target.style.boxShadow = 'none';
-                    }}
-                  />
-                </div>
-
-                <div style={{ marginBottom: '1.5rem' }}>
-                  <label
-                    htmlFor="pickupTime"
-                    style={{
-                      display: 'block',
-                      marginBottom: '0.5rem',
-                      fontWeight: '600',
-                      color: 'var(--dark)',
-                    }}
-                  >
-                    Жеткізу мекемесін таңдаңыз *
+                    Жеткізу мекемесін таңдаңыз *{' '}
+                    {instLoading && <i className="fas fa-spinner fa-spin"></i>}
                   </label>
                   <select
-                    id="pickupTime"
-                    name="pickupTime"
-                    value={formData.institution}
+                    id="institution"
+                    name="institutionId"
+                    value={formData.institutionId}
                     onChange={handleChange}
                     required
+                    disabled={instLoading}
                     style={{
                       width: '100%',
                       padding: '0.8rem 1rem',
@@ -660,27 +458,15 @@ function Payment({ cartItems, onClose, onPaymentSuccess, showNavBar = true }) {
                       borderRadius: '8px',
                       fontSize: '1rem',
                       transition: 'var(--transition)',
-                      cursor: 'pointer',
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = 'var(--primary)';
-                      e.target.style.boxShadow =
-                        '0 0 0 3px rgba(108, 99, 255, 0.2)';
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = '#e0e0e0';
-                      e.target.style.boxShadow = 'none';
+                      cursor: instLoading ? 'not-allowed' : 'pointer',
                     }}
                   >
-                    <option value="Учреждение 12 (бывшее 99)">
-                      Учреждение 12 (бывшее 99)
-                    </option>
-                    <option value="Учреждение 14 (бывшее 103)">
-                      Учреждение 14 (бывшее 103)
-                    </option>
-                    <option value="Учреждение 57 (бывшее 71)">
-                      Учреждение 57 (бывшее 71)
-                    </option>
+                    <option value="">Таңдаңыз...</option>
+                    {institutions.map((inst) => (
+                      <option key={inst.id} value={inst.id}>
+                        {inst.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
