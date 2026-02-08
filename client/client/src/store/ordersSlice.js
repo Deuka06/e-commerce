@@ -59,7 +59,7 @@ const ordersSlice = createSlice({
       })
       .addCase(fetchMyOrders.fulfilled, (state, action) => {
         state.loading = false;
-        state.list = action.payload; // Деректерді list-ке сақтаймыз
+        state.list = action.payload.data || []; // Деректерді list-ке сақтаймыз
       })
       .addCase(fetchMyOrders.rejected, (state, action) => {
         state.loading = false;
