@@ -63,7 +63,7 @@ function ProfilePage({ user, onLogout, onBack }) {
 
     return (
       <div style={{ display: "grid", gap: "1rem" }}>
-        {orders.map((order) => (
+        {orders?.map((order) => (
           <div
             key={order.id}
             style={{

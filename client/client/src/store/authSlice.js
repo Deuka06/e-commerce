@@ -1,36 +1,36 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../api/axios';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import api from "../api/axios";
 
 // Асинхронды Login функциясы
 export const loginUser = createAsyncThunk(
-  'auth/login',
+  "auth/login",
   async (credentials, thunkAPI) => {
     try {
-      const response = await api.post('/auth/login', credentials);
+      const response = await api.post("/auth/login", credentials);
       if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
+        localStorage.setItem("token", response.data.token);
       }
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data?.message || 'Қате орын алды',
+        error.response?.data?.message || "Қате орын алды",
       );
     }
   },
 );
 
 export const registerUser = createAsyncThunk(
-  'auth/register',
+  "auth/register",
   async (userData, thunkAPI) => {
     try {
-      const response = await api.post('/auth/register', userData);
+      const response = await api.post("/auth/register", userData);
       if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
+        localStorage.setItem("token", response.data.token);
       }
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data?.message || 'Тіркелу қатесі',
+        error.response?.data?.message || "Тіркелу қатесі",
       );
     }
   },
@@ -38,24 +38,24 @@ export const registerUser = createAsyncThunk(
 
 // Добавьте функцию для проверки токена
 export const verifyToken = createAsyncThunk(
-  'auth/verify',
+  "auth/verify",
   async (_, thunkAPI) => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (!token) {
-        return thunkAPI.rejectWithValue('Токен жоқ');
+        return thunkAPI.rejectWithValue("Токен жоқ");
       }
-      const response = await api.get('/auth/me');
+      const response = await api.get("/auth/profile");
       return response.data;
     } catch (error) {
-      localStorage.removeItem('token');
-      return thunkAPI.rejectWithValue('Токен жарамсыз');
+      localStorage.removeItem("token");
+      return thunkAPI.rejectWithValue("Токен жарамсыз");
     }
   },
 );
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState: {
     user: null,
     isAuthenticated: false,
@@ -64,7 +64,7 @@ const authSlice = createSlice({
   },
   reducers: {
     logout: (state) => {
-      localStorage.removeItem('token');
+      localStorage.removeItem("token");
       state.user = null;
       state.isAuthenticated = false;
     },
