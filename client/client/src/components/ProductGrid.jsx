@@ -1,9 +1,9 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchCategories } from '../store/categorySlice';
-import ProductCard from './ProductCard';
-import Sidebar from './Sidebar';
-import { fetchProductsByCategory } from '../store/productSlice';
+import React, { useState, useMemo, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCategories } from "../store/categorySlice";
+import ProductCard from "./ProductCard";
+import Sidebar from "./Sidebar";
+import { fetchProductsByCategory } from "../store/productSlice";
 
 function ProductGrid({
   products,
@@ -19,7 +19,7 @@ function ProductGrid({
   const [isMobile, setIsMobile] = useState(false);
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const [filterVisible, setFilterVisible] = useState(false);
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
+  const [viewMode, setViewMode] = useState("grid"); // 'grid' or 'list'
   const { items: serverCategories, status } = useSelector(
     (state) => state.categories,
   );
@@ -28,7 +28,7 @@ function ProductGrid({
 
   // Categories fetching
   useEffect(() => {
-    if (status === 'idle') {
+    if (status === "idle") {
       dispatch(fetchCategories());
     }
   }, [status, dispatch]);
@@ -43,19 +43,19 @@ function ProductGrid({
     };
 
     checkIfMobile();
-    window.addEventListener('resize', checkIfMobile);
-    return () => window.removeEventListener('resize', checkIfMobile);
+    window.addEventListener("resize", checkIfMobile);
+    return () => window.removeEventListener("resize", checkIfMobile);
   }, []);
 
   // Lock body scroll when mobile filter is open
   useEffect(() => {
     if (isMobile && filterVisible) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     }
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, [isMobile, filterVisible]);
 
@@ -65,26 +65,66 @@ function ProductGrid({
   }, [products]);
 
   const categoryLabels = {
-    electronics: { label: 'Электроника', icon: 'fas fa-laptop' },
-    clothing: { label: 'Киім', icon: 'fas fa-shirt' },
-    home: { label: 'Үйге арналған', icon: 'fas fa-home' },
-    sports: { label: 'Спорт', icon: 'fas fa-dumbbell' },
-    soda: { label: 'Сода', icon: 'fas fa-bottle-water' },
-    drinks: { label: 'Ішімдіктер', icon: 'fas fa-wine-glass' },
-    food: { label: 'Тағам', icon: 'fas fa-utensils' },
-    charity: { label: 'Благотворительность', icon: 'fas fa-heart' },
+    electronics: {
+      label: "Электроника",
+      icon: "fas fa-laptop",
+      image:
+        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop",
+    },
+    clothing: {
+      label: "Киім",
+      icon: "fas fa-shirt",
+      image:
+        "https://images.unsplash.com/photo-1489368079519-c21cc028cb7f?w=400&h=300&fit=crop",
+    },
+    home: {
+      label: "Үйге арналған",
+      icon: "fas fa-home",
+      image:
+        "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop",
+    },
+    sports: {
+      label: "Спорт",
+      icon: "fas fa-dumbbell",
+      image:
+        "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=400&h=300&fit=crop",
+    },
+    soda: {
+      label: "Сода",
+      icon: "fas fa-bottle-water",
+      image:
+        "https://images.unsplash.com/photo-1554866585-c4db88b1fb91?w=400&h=300&fit=crop",
+    },
+    drinks: {
+      label: "Ішімдіктер",
+      icon: "fas fa-wine-glass",
+      image:
+        "https://images.unsplash.com/photo-1510812431401-41d2cab2707d?w=400&h=300&fit=crop",
+    },
+    food: {
+      label: "Тағам",
+      icon: "fas fa-utensils",
+      image:
+        "https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=400&h=300&fit=crop",
+    },
+    charity: {
+      label: "Благотворительность",
+      icon: "fas fa-heart",
+      image:
+        "https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=400&h=300&fit=crop",
+    },
   };
 
   const charitySubcategories = [
     {
-      id: 'collection',
-      label: 'Қажетті адамдарға арналған қаржы',
-      icon: 'fas fa-handshake',
+      id: "collection",
+      label: "Қажетті адамдарға арналған қаржы",
+      icon: "fas fa-handshake",
     },
     {
-      id: 'products',
-      label: 'Қажетті адамдарға арналған тауарлар',
-      icon: 'fas fa-gift',
+      id: "products",
+      label: "Қажетті адамдарға арналған тауарлар",
+      icon: "fas fa-gift",
     },
   ];
 
@@ -95,11 +135,11 @@ function ProductGrid({
   const handleCategorySelect = (categoryId) => {
     const categoryObj = serverCategories.find((c) => c.id === categoryId);
 
-    console.log('Таңдалған категория объектісі:', categoryObj);
+    console.log("Таңдалған категория объектісі:", categoryObj);
 
     if (categoryObj) {
-      if (categoryObj.slug === 'charity') {
-        setSelectedCategory('charity');
+      if (categoryObj.slug === "charity") {
+        setSelectedCategory("charity");
       } else {
         setSelectedCategory(categoryObj.slug);
         dispatch(fetchProductsByCategory(categoryId));
@@ -111,7 +151,7 @@ function ProductGrid({
     setSelectedSubcategory(subcategory);
     // Filter products based on subcategory logic
     // This can be expanded based on your product data structure
-    const filtered = products.filter((p) => p.category === 'charity');
+    const filtered = products.filter((p) => p.category === "charity");
     setFilteredProducts(filtered);
   };
 
@@ -143,22 +183,44 @@ function ProductGrid({
             {serverCategories.map((category) => {
               const categoryInfo = categoryLabels[category.slug] || {
                 label: category.categoryName,
-                icon: 'fas fa-tag',
+                icon: "fas fa-tag",
               };
 
               const categoryProductCount = products.filter(
                 (p) => p.category === category.slug,
               ).length;
 
+              // Суреттің бар-жоғын тексеру
+              const hasS3Image =
+                category.imageUrl && category.imageUrl !== "string";
+
               return (
                 <div
                   key={category.id}
                   onClick={() => handleCategorySelect(category.id)}
-                  className="category-card"
-                >
-                  <i className={categoryInfo.icon}></i>
-                  <div className="category-name">{category.categoryName}</div>
-                  <div className="category-count">({categoryProductCount})</div>
+                  className="category-card">
+                  {/* Үстіңгі жағы: Сурет немесе Иконка */}
+                  <div className="category-img-box">
+                    {hasS3Image ? (
+                      <img
+                        src={category.imageUrl}
+                        alt={category.categoryName}
+                        className="category-main-img"
+                      />
+                    ) : (
+                      <div className="category-placeholder-icon">
+                        <i className={categoryInfo.icon}></i>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Астыңғы жағы: Аты мен Саны */}
+                  <div className="category-info-text">
+                    <div className="category-name">{category.categoryName}</div>
+                    <div className="category-count">
+                      {categoryProductCount} тауар
+                    </div>
+                  </div>
                 </div>
               );
             })}
@@ -169,16 +231,15 @@ function ProductGrid({
             <i
               className="fas fa-hand-pointer"
               style={{
-                fontSize: '3rem',
-                marginBottom: '1rem',
-                display: 'block',
+                fontSize: "3rem",
+                marginBottom: "1rem",
+                display: "block",
                 opacity: 0.6,
-              }}
-            ></i>
-            <p style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>
+              }}></i>
+            <p style={{ fontSize: "1.1rem", marginBottom: "0.5rem" }}>
               Тауарларды көру үшін категорияны таңдаңыз
             </p>
-            <p style={{ fontSize: '0.95rem', opacity: 0.7 }}>
+            <p style={{ fontSize: "0.95rem", opacity: 0.7 }}>
               Жоғарыдағы категориялардың бірін басыңыз
             </p>
           </div>
@@ -186,7 +247,7 @@ function ProductGrid({
       )}
 
       {/* Show Charity Subcategories when Charity is selected */}
-      {selectedCategory === 'charity' && !selectedSubcategory && (
+      {selectedCategory === "charity" && !selectedSubcategory && (
         <section className="products-section">
           <div className="section-header">
             <h2 className="section-title">Благотворительность</h2>
@@ -195,52 +256,49 @@ function ProductGrid({
           {/* Back Button */}
           <div
             style={{
-              marginBottom: '1.5rem',
-              padding: '1rem',
-              background: 'rgba(108, 99, 255, 0.1)',
-              borderRadius: '8px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: '1rem',
+              marginBottom: "1.5rem",
+              padding: "1rem",
+              background: "rgba(108, 99, 255, 0.1)",
+              borderRadius: "8px",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: "1rem",
             }}
-            className="back-button-container"
-          >
-            <span style={{ color: 'var(--dark)' }}>
-              <strong style={{ color: 'var(--secondary)', fontSize: '1.1rem' }}>
+            className="back-button-container">
+            <span style={{ color: "var(--dark)" }}>
+              <strong style={{ color: "var(--secondary)", fontSize: "1.1rem" }}>
                 Подкатегорияны таңдаңыз
               </strong>
-              <span style={{ marginLeft: '0.5rem', color: 'var(--gray)' }}>
+              <span style={{ marginLeft: "0.5rem", color: "var(--gray)" }}>
                 ({filteredProducts.length} тауар)
               </span>
             </span>
             <button
               onClick={handleBack}
               style={{
-                background: 'var(--secondary)',
-                color: 'white',
-                border: 'none',
-                padding: '0.7rem 1.5rem',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                transition: 'var(--transition)',
-                fontSize: '1rem',
-                fontWeight: '500',
-                display: 'flex',
-                alignItems: 'center',
+                background: "var(--secondary)",
+                color: "white",
+                border: "none",
+                padding: "0.7rem 1.5rem",
+                borderRadius: "8px",
+                cursor: "pointer",
+                transition: "var(--transition)",
+                fontSize: "1rem",
+                fontWeight: "500",
+                display: "flex",
+                alignItems: "center",
               }}
               onMouseEnter={(e) => {
-                e.target.style.transform = 'translateY(-3px)';
+                e.target.style.transform = "translateY(-3px)";
               }}
               onMouseLeave={(e) => {
-                e.target.style.transform = 'translateY(0)';
-              }}
-            >
+                e.target.style.transform = "translateY(0)";
+              }}>
               <i
                 className="fas fa-arrow-left"
-                style={{ marginRight: '0.5rem' }}
-              ></i>
+                style={{ marginRight: "0.5rem" }}></i>
               Қайта оралу
             </button>
           </div>
@@ -248,47 +306,44 @@ function ProductGrid({
           {/* Charity Subcategories */}
           <div
             style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-              gap: '1.5rem',
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+              gap: "1.5rem",
             }}
-            className="charity-subcategories-grid"
-          >
+            className="charity-subcategories-grid">
             {charitySubcategories.map((sub) => (
               <div
                 key={sub.id}
                 onClick={() => handleSubcategorySelect(sub.id)}
                 style={{
-                  padding: '2rem',
-                  borderRadius: '12px',
-                  cursor: 'pointer',
-                  textAlign: 'center',
-                  transition: 'var(--transition)',
-                  background: 'white',
-                  border: '2px solid var(--secondary)',
-                  color: 'var(--dark)',
-                  boxShadow: 'var(--card-shadow)',
+                  padding: "2rem",
+                  borderRadius: "12px",
+                  cursor: "pointer",
+                  textAlign: "center",
+                  transition: "var(--transition)",
+                  background: "white",
+                  border: "2px solid var(--secondary)",
+                  color: "var(--dark)",
+                  boxShadow: "var(--card-shadow)",
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background =
-                    'rgba(255, 101, 132, 0.05)';
-                  e.currentTarget.style.transform = 'translateY(-3px)';
+                    "rgba(255, 101, 132, 0.05)";
+                  e.currentTarget.style.transform = "translateY(-3px)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'white';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                }}
-              >
+                  e.currentTarget.style.background = "white";
+                  e.currentTarget.style.transform = "translateY(0)";
+                }}>
                 <i
                   className={sub.icon}
                   style={{
-                    fontSize: '2.5rem',
-                    marginBottom: '1rem',
-                    display: 'block',
-                    color: 'var(--secondary)',
-                  }}
-                ></i>
-                <div style={{ fontWeight: '600', fontSize: '1.1rem' }}>
+                    fontSize: "2.5rem",
+                    marginBottom: "1rem",
+                    display: "block",
+                    color: "var(--secondary)",
+                  }}></i>
+                <div style={{ fontWeight: "600", fontSize: "1.1rem" }}>
                   {sub.label}
                 </div>
               </div>
@@ -298,7 +353,7 @@ function ProductGrid({
       )}
 
       {/* Show Sidebar and products when specific category/subcategory is selected */}
-      {selectedCategory && selectedCategory !== 'charity' && (
+      {selectedCategory && selectedCategory !== "charity" && (
         <div className="products-with-sidebar">
           {/* Filter Overlay for Mobile */}
           {isMobile && filterVisible && (
@@ -310,15 +365,13 @@ function ProductGrid({
 
           {/* Sidebar */}
           <div
-            className={`sidebar-wrapper ${isMobile && filterVisible ? 'visible' : ''} ${isMobile ? 'mobile' : ''}`}
-          >
+            className={`sidebar-wrapper ${isMobile && filterVisible ? "visible" : ""} ${isMobile ? "mobile" : ""}`}>
             {isMobile && filterVisible && (
               <div className="sidebar-header">
                 <h3>Сүзгі</h3>
                 <button
                   className="close-sidebar-btn"
-                  onClick={() => setFilterVisible(false)}
-                >
+                  onClick={() => setFilterVisible(false)}>
                   <i className="fas fa-times"></i>
                 </button>
               </div>
@@ -352,17 +405,15 @@ function ProductGrid({
               <div className="header-right">
                 <div className="view-options">
                   <button
-                    className={viewMode === 'grid' ? 'active' : ''}
-                    onClick={() => setViewMode('grid')}
-                    title="Торлы көрініс"
-                  >
+                    className={viewMode === "grid" ? "active" : ""}
+                    onClick={() => setViewMode("grid")}
+                    title="Торлы көрініс">
                     <i className="fas fa-th"></i>
                   </button>
                   <button
-                    className={viewMode === 'list' ? 'active' : ''}
-                    onClick={() => setViewMode('list')}
-                    title="Тізім көрінісі"
-                  >
+                    className={viewMode === "list" ? "active" : ""}
+                    onClick={() => setViewMode("list")}
+                    title="Тізім көрінісі">
                     <i className="fas fa-list"></i>
                   </button>
                 </div>
@@ -380,8 +431,7 @@ function ProductGrid({
               <div className="mobile-controls">
                 <button
                   onClick={() => setFilterVisible(!filterVisible)}
-                  className="mobile-filter-btn"
-                >
+                  className="mobile-filter-btn">
                   <i className="fas fa-filter"></i>
                   <span>Сүзгі</span>
                   {filterVisible && <i className="fas fa-times close-icon"></i>}
@@ -395,7 +445,7 @@ function ProductGrid({
 
             {/* Products Grid/List */}
             <div className={`products-${viewMode}`}>
-              {productsStatus === 'loading' ? (
+              {productsStatus === "loading" ? (
                 <div className="loading">
                   <i className="fas fa-spinner fa-spin"></i>
                   <p>Жүктелуде...</p>
@@ -424,7 +474,7 @@ function ProductGrid({
       )}
 
       {/* Show Charity Subcategory Products */}
-      {selectedCategory === 'charity' && selectedSubcategory && (
+      {selectedCategory === "charity" && selectedSubcategory && (
         <section className="products-section">
           <div className="section-header">
             <h2 className="section-title">
@@ -438,53 +488,50 @@ function ProductGrid({
           {/* Back Button */}
           <div
             style={{
-              marginBottom: '1.5rem',
-              padding: '1rem',
-              background: 'rgba(255, 101, 132, 0.1)',
-              borderRadius: '8px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
+              marginBottom: "1.5rem",
+              padding: "1rem",
+              background: "rgba(255, 101, 132, 0.1)",
+              borderRadius: "8px",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
             }}
-            className="back-button-container"
-          >
-            <span style={{ color: 'var(--dark)' }}>
-              <strong style={{ color: 'var(--secondary)', fontSize: '1.1rem' }}>
+            className="back-button-container">
+            <span style={{ color: "var(--dark)" }}>
+              <strong style={{ color: "var(--secondary)", fontSize: "1.1rem" }}>
                 {
                   charitySubcategories.find((s) => s.id === selectedSubcategory)
                     ?.label
                 }
               </strong>
-              <span style={{ marginLeft: '0.5rem', color: 'var(--gray)' }}>
+              <span style={{ marginLeft: "0.5rem", color: "var(--gray)" }}>
                 ({filteredProducts.length} тауар)
               </span>
             </span>
             <button
               onClick={handleBackFromSubcategory}
               style={{
-                background: 'var(--secondary)',
-                color: 'white',
-                border: 'none',
-                padding: '0.7rem 1.5rem',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                transition: 'var(--transition)',
-                fontSize: '1rem',
-                fontWeight: '500',
-                display: 'flex',
-                alignItems: 'center',
+                background: "var(--secondary)",
+                color: "white",
+                border: "none",
+                padding: "0.7rem 1.5rem",
+                borderRadius: "8px",
+                cursor: "pointer",
+                transition: "var(--transition)",
+                fontSize: "1rem",
+                fontWeight: "500",
+                display: "flex",
+                alignItems: "center",
               }}
               onMouseEnter={(e) => {
-                e.target.style.transform = 'translateY(-3px)';
+                e.target.style.transform = "translateY(-3px)";
               }}
               onMouseLeave={(e) => {
-                e.target.style.transform = 'translateY(0)';
-              }}
-            >
+                e.target.style.transform = "translateY(0)";
+              }}>
               <i
                 className="fas fa-arrow-left"
-                style={{ marginRight: '0.5rem' }}
-              ></i>
+                style={{ marginRight: "0.5rem" }}></i>
               Қайта оралу
             </button>
           </div>
@@ -505,20 +552,18 @@ function ProductGrid({
             ) : (
               <div
                 style={{
-                  gridColumn: '1 / -1',
-                  textAlign: 'center',
-                  padding: '2rem',
-                  color: 'var(--gray)',
-                }}
-              >
+                  gridColumn: "1 / -1",
+                  textAlign: "center",
+                  padding: "2rem",
+                  color: "var(--gray)",
+                }}>
                 <i
                   className="fas fa-heart"
                   style={{
-                    fontSize: '3rem',
-                    marginBottom: '1rem',
-                    display: 'block',
-                  }}
-                ></i>
+                    fontSize: "3rem",
+                    marginBottom: "1rem",
+                    display: "block",
+                  }}></i>
                 <p>Осы подкатегориядағы тауарлар табылмады</p>
               </div>
             )}
@@ -607,7 +652,7 @@ function ProductGrid({
         .view-options button.active {
           background: white;
           color: var(--primary);
-          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         /* Back button desktop */
@@ -700,8 +745,12 @@ function ProductGrid({
         }
 
         @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
         }
 
         /* Sidebar wrapper */
@@ -724,7 +773,7 @@ function ProductGrid({
           max-width: 320px;
           z-index: 999;
           background: white;
-          box-shadow: 2px 0 20px rgba(0,0,0,0.2);
+          box-shadow: 2px 0 20px rgba(0, 0, 0, 0.2);
           overflow-y: auto;
           padding: 0;
           flex: none;
@@ -764,58 +813,85 @@ function ProductGrid({
           justify-content: center;
         }
 
-        /* Category cards container */
-        .category-cards-container {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 20px;
-          padding: 20px;
-          max-width: 1200px;
-          margin: 0 auto;
-        }
+/* Категориялар контейнері */
+.category-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Өлшемді автоматты реттеу */
+  gap: 25px;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
 
-        .category-card {
-          padding: 2rem 1.5rem;
-          border-radius: 12px;
-          cursor: pointer;
-          text-align: center;
-          transition: all 0.3s ease;
-          background: white;
-          border: 2px solid #e0e0e0;
-          color: var(--dark);
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          min-height: 180px;
-        }
+/* Картаның негізгі стилі */
+.category-card {
+  background: white;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid #eee;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column; /* Элементтерді бірінің астына бірін қою */
+  overflow: hidden; /* Сурет бұрыштары дөңгелек болуы үшін */
+  height: 100%;
+}
 
-        .category-card:hover {
-          background: rgba(108, 99, 255, 0.05);
-          transform: translateY(-3px);
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
+.category-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+  border-color: var(--primary);
+}
 
-        .category-card i {
-          font-size: 3rem;
-          margin-bottom: 1rem;
-          display: block;
-          color: var(--primary);
-        }
+/* Сурет тұратын блок */
+.category-img-box {
+  width: 100%;
+  height: 180px; /* Суреттің биіктігін осы жерден ретте */
+  overflow: hidden;
+  background: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-        .category-name {
-          font-weight: 600;
-          font-size: 1.1rem;
-          margin-bottom: 0.5rem;
-        }
+.category-main-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Суретті созбай, әдемі толтырады */
+  transition: transform 0.5s ease;
+}
 
-        .category-count {
-          font-size: 0.9rem;
-          opacity: 0.7;
-          margin-top: 0.25rem;
-          color: var(--gray);
-        }
+.category-card:hover .category-main-img {
+  transform: scale(1.1); /* Ховер болғанда сурет сәл үлкейеді */
+}
+
+/* Мәтін орналасқан блок */
+.category-info-text {
+  padding: 15px;
+  text-align: center;
+  background: white;
+}
+
+.category-name {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #333 !important; /* Мәтін түсі қара/қою */
+  margin-bottom: 5px;
+  text-shadow: none !important; /* Көлеңкені алып тастаймыз */
+}
+
+.category-count {
+  font-size: 0.95rem;
+  color: #888 !important; /* Саны сұр түспен */
+  font-weight: 500;
+  text-shadow: none !important;
+}
+
+/* Иконка (егер сурет жоқ болса) */
+.category-placeholder-icon i {
+  font-size: 3rem;
+  color: var(--primary);
+}
 
         /* Empty state message */
         .empty-state-message {
@@ -936,17 +1012,38 @@ function ProductGrid({
             gap: 1.5rem;
           }
 
-          .category-card i {
-            font-size: 2.5rem;
-            margin-bottom: 0;
-            margin-right: 0;
+          .category-image {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin: 0;
             flex-shrink: 0;
+            border-radius: 8px;
+          }
+
+          .category-overlay {
+            position: static;
+            background: none;
+            padding: 0;
+            width: auto;
+            height: auto;
+            flex-direction: row;
+            align-items: center;
+            gap: 1rem;
+          }
+
+          .category-card i {
+            font-size: 0;
+            margin: 0;
+            display: none;
           }
 
           .category-name {
             font-size: 1rem;
             margin-bottom: 0;
             flex: 1;
+            color: var(--dark);
+            text-shadow: none;
           }
 
           .category-count {
@@ -954,6 +1051,8 @@ function ProductGrid({
             margin-top: 0;
             margin-left: auto;
             flex-shrink: 0;
+            color: var(--gray);
+            text-shadow: none;
           }
 
           /* Mobile grid view: 1 column */
