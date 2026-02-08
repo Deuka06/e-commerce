@@ -32,6 +32,20 @@ export const createNewOrder = createAsyncThunk(
   },
 );
 
+export const updateOrderStatus = createAsyncThunk(
+  "orders/updateStatus",
+  async ({ orderId, newStatus }, thunkAPI) => {
+    try {
+      const response = await api.patch(`/orders/${orderId}/status`, {
+        status: newStatus,
+      });
+      return response.data; // Серверден жаңартылған тапсырыс қайтады
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  },
+);
+
 const ordersSlice = createSlice({
   name: "orders",
   initialState: {
@@ -62,6 +76,14 @@ const ordersSlice = createSlice({
       // createNewOrder
       .addCase(createNewOrder.fulfilled, (state, action) => {
         state.list.unshift(action.payload);
+      })
+      // updateOrderStatus
+      .addCase(updateOrderStatus.fulfilled, (state, action) => {
+        const updatedOrder = action.payload.data || action.payload;
+        // Тізімдегі ескі тапсырысты жаңасымен ауыстырамыз
+        state.list = state.list.map((order) =>
+          order.id === updatedOrder.id ? updatedOrder : order,
+        );
       });
   },
 });
