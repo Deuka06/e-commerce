@@ -160,6 +160,7 @@ function OrdersTab({ orders, onUpdateOrderStatus, isMobile }) {
             <OrdersTable
               orders={orders || []}
               onUpdateStatus={onUpdateOrderStatus}
+              onOpenModal={handleOpenModal}
             />
           </div>
         )}

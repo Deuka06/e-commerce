@@ -1,11 +1,14 @@
-import React from "react";
-import StatsGrid from "../dashboard/StatsGrid";
-import OrdersTable from "../tables/OrdersTable";
-import { styles } from "../../styles/adminPanelStyles";
-import { getStatusText, getStatusStyle } from "../../utils/statusHelpers";
+import React from 'react';
+import StatsGrid from '../dashboard/StatsGrid';
+import OrdersTable from '../tables/OrdersTable';
+import OrderStatusModal from '../modals/OrderStatusModal';
+import { styles } from '../../styles/adminPanelStyles';
+import { getStatusText, getStatusStyle } from '../../utils/statusHelpers';
 
-function DashboardTab({ orders, isMobile }) {
+function DashboardTab({ orders, onUpdateOrderStatus, isMobile }) {
   const [currentPage, setCurrentPage] = React.useState(1);
+  const [selectedOrder, setSelectedOrder] = React.useState(null);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
   const ordersPerPage = 6;
 
   const indexOfLastOrder = currentPage * ordersPerPage;
@@ -18,6 +21,16 @@ function DashboardTab({ orders, isMobile }) {
     setCurrentPage(pageNumber);
   };
 
+  const handleOpenModal = (order) => {
+    setSelectedOrder(order);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedOrder(null);
+  };
+
   return (
     <div style={styles.dashboardGrid}>
       <div style={styles.fullWidth}>
@@ -26,12 +39,14 @@ function DashboardTab({ orders, isMobile }) {
             style={{
               ...styles.cardHeader,
               ...(isMobile ? styles.cardHeaderMobile : {}),
-            }}>
+            }}
+          >
             <h3
               style={{
                 ...styles.cardTitle,
                 ...(isMobile ? styles.cardTitleMobile : {}),
-              }}>
+              }}
+            >
               📊 Жалпы статистика
             </h3>
           </div>
@@ -39,7 +54,8 @@ function DashboardTab({ orders, isMobile }) {
             style={{
               ...styles.cardBody,
               ...(isMobile ? styles.cardBodyMobile : {}),
-            }}>
+            }}
+          >
             <div style={isMobile ? styles.statsGridMobile : {}}>
               <StatsGrid orders={orders} />
             </div>
@@ -52,12 +68,14 @@ function DashboardTab({ orders, isMobile }) {
             style={{
               ...styles.cardHeader,
               ...(isMobile ? styles.cardHeaderMobile : {}),
-            }}>
+            }}
+          >
             <h3
               style={{
                 ...styles.cardTitle,
                 ...(isMobile ? styles.cardTitleMobile : {}),
-              }}>
+              }}
+            >
               🕐 Соңғы тапсырыстар
             </h3>
           </div>
@@ -65,7 +83,8 @@ function DashboardTab({ orders, isMobile }) {
             style={{
               ...styles.cardBody,
               ...(isMobile ? styles.cardBodyMobile : {}),
-            }}>
+            }}
+          >
             {isMobile ? (
               <div style={styles.ordersCardsContainer}>
                 {currentOrders.length > 0 ? (
@@ -79,7 +98,8 @@ function DashboardTab({ orders, isMobile }) {
                           style={{
                             ...styles.statusBadge,
                             ...getStatusStyle(order.status),
-                          }}>
+                          }}
+                        >
                           {getStatusText(order.status)}
                         </div>
                       </div>
@@ -109,6 +129,23 @@ function DashboardTab({ orders, isMobile }) {
                           </span>
                         </div>
                       </div>
+                      <div style={styles.orderCardFooter}>
+                        <button
+                          onClick={() => handleOpenModal(order)}
+                          style={{
+                            ...styles.statusSelect,
+                            cursor: 'pointer',
+                            backgroundColor: '#3b82f6',
+                            color: '#fff',
+                            border: 'none',
+                            padding: '10px 16px',
+                            borderRadius: '8px',
+                            fontWeight: '500',
+                          }}
+                        >
+                          Статусты өзгерту
+                        </button>
+                      </div>
                     </div>
                   ))
                 ) : (
@@ -124,7 +161,8 @@ function DashboardTab({ orders, isMobile }) {
                           : {}),
                       }}
                       onClick={() => handlePageChange(currentPage - 1)}
-                      disabled={currentPage === 1}>
+                      disabled={currentPage === 1}
+                    >
                       ←
                     </button>
                     <span style={styles.paginationInfo}>
@@ -138,20 +176,31 @@ function DashboardTab({ orders, isMobile }) {
                           : {}),
                       }}
                       onClick={() => handlePageChange(currentPage + 1)}
-                      disabled={currentPage === totalPages}>
+                      disabled={currentPage === totalPages}
+                    >
                       →
                     </button>
                   </div>
                 )}
               </div>
             ) : (
-              <div style={{ overflowX: "auto" }}>
-                <OrdersTable orders={orders?.slice(-3) || []} />
+              <div style={{ overflowX: 'auto' }}>
+                <OrdersTable
+                  orders={orders?.slice(-3) || []}
+                  onUpdateStatus={onUpdateOrderStatus}
+                  onOpenModal={handleOpenModal}
+                />
               </div>
             )}
           </div>
         </div>
       </div>
+      <OrderStatusModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        order={selectedOrder}
+        onUpdateStatus={onUpdateOrderStatus}
+      />
     </div>
   );
 }
