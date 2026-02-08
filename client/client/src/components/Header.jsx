@@ -7,6 +7,7 @@ function Header({
   onHomeClick,
   isAuthenticated,
   user,
+  onProfileClick, // Добавьте новый prop
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -70,7 +71,10 @@ function Header({
               <i className="fas fa-shopping-cart"></i>
               <span>Себет ({cartCount})</span>
             </button>
-            <button className="btn btn-primary" onClick={onLoginClick}>
+            <button
+              className="btn btn-primary"
+              onClick={isAuthenticated ? onProfileClick : onLoginClick}
+            >
               <i
                 className={`fas ${isAuthenticated ? 'fa-user-circle' : 'fa-sign-in-alt'}`}
               ></i>

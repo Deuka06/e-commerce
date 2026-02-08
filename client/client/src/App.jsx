@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { verifyToken, logout } from './store/authSlice';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import ClientPanel from './pages/ClientPanel';
@@ -15,6 +17,8 @@ import { initialProducts, initialOrders } from './data/productData';
 import './styles/global.css';
 
 function App() {
+  const dispatch = useDispatch();
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
   const [currentPage, setCurrentPage] = useState('home'); // 'home', 'cart', 'courier', 'profile', 'payment'
   const [products, setProducts] = useState(initialProducts);
   const [orders, setOrders] = useState(initialOrders);
@@ -25,8 +29,23 @@ function App() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState(null);
   const [showPaymentPage, setShowPaymentPage] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    // Проверяем токен при загрузке приложения
+    const token = localStorage.getItem('token');
+    if (token) {
+      dispatch(verifyToken());
+    }
+  }, [dispatch]);
+
+  // Переход на страницу профиля после успешной авторизации
+  useEffect(() => {
+    if (isAuthenticated && showAuthModal) {
+      setShowAuthModal(false);
+      setCurrentPage('profile');
+      showNotification('Сәтті кірдіңіз!', 'success');
+    }
+  }, [isAuthenticated, showAuthModal]);
 
   const showNotification = (message, type) => {
     setNotification({ message, type });
@@ -125,17 +144,8 @@ function App() {
     showNotification('Төлем сәтті аяқталды!', 'success');
   };
 
-  const handleLogin = (userData) => {
-    setIsAuthenticated(true);
-    setUser(userData);
-    setShowAuthModal(false);
-    setCurrentPage('profile');
-    showNotification('Сәтті кірдіңіз!', 'success');
-  };
-
   const handleLogout = () => {
-    setIsAuthenticated(false);
-    setUser(null);
+    dispatch(logout());
     setCurrentPage('home');
     showNotification('Сіз шықтыңыз', 'success');
   };
@@ -215,6 +225,7 @@ function App() {
         onHomeClick={() => setCurrentPage('home')}
         isAuthenticated={isAuthenticated}
         user={user}
+        onProfileClick={handleProfileClick}
       />
 
       {renderPage()}
@@ -237,9 +248,7 @@ function App() {
         isOpen={showAuthModal}
         onClose={() => {
           setShowAuthModal(false);
-          setCurrentPage('home');
         }}
-        onLogin={handleLogin}
       />
 
       {notification && (
