@@ -14,7 +14,8 @@ function AddProductTab({ onAddProduct, isMobile }) {
     name: "",
     description: "",
     price: "",
-    image: "",
+    image: null,
+    imagePreview: "",
     categoryId: "",
   });
 
@@ -27,30 +28,44 @@ function AddProductTab({ onAddProduct, isMobile }) {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData((prev) => ({
+          ...prev,
+          image: file,
+          imagePreview: reader.result,
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Swagger талабына сай деректерді дайындау
-    const productData = {
-      name: formData.name,
-      description: formData.description,
-      price: parseFloat(formData.price), // Санға айналдыру
-      categoryId: parseInt(formData.categoryId), // ID-ді бүтін санға айналдыру
-      image: formData.image,
-    };
+    const formDataToSend = new FormData();
+    formDataToSend.append("name", formData.name);
+    formDataToSend.append("description", formData.description);
+    formDataToSend.append("price", parseFloat(formData.price));
+    formDataToSend.append("categoryId", parseInt(formData.categoryId));
+    if (formData.image) {
+      formDataToSend.append("image", formData.image);
+    }
 
     try {
-      // 2. Redux арқылы серверге жіберу
-      await dispatch(addProduct(productData)).unwrap();
+      await dispatch(addProduct(formDataToSend)).unwrap();
 
       alert("Тауар сәтті қосылды!");
 
-      // Форманы тазалау
       setFormData({
         name: "",
         description: "",
         price: "",
-        image: "",
+        image: null,
+        imagePreview: "",
         categoryId: "",
       });
     } catch (error) {
@@ -125,15 +140,28 @@ function AddProductTab({ onAddProduct, isMobile }) {
             </div>
           </div>
           <div style={styles.formGroup}>
-            <label style={styles.label}>Сурет URL</label>
+            <label style={styles.label}>Сурет</label>
             <input
               style={styles.input}
+              type="file"
               name="image"
-              value={formData.image}
-              onChange={handleInputChange}
-              placeholder="Суреттің сілтемесін енгізіңіз"
+              onChange={handleImageChange}
+              accept="image/*"
               required
             />
+            {formData.imagePreview && (
+              <div style={{ marginTop: "10px" }}>
+                <img
+                  src={formData.imagePreview}
+                  alt="Preview"
+                  style={{
+                    maxWidth: "200px",
+                    maxHeight: "200px",
+                    borderRadius: "4px",
+                  }}
+                />
+              </div>
+            )}
           </div>
           <div style={styles.formGroup}>
             <label style={styles.label}>Сипаттама</label>
@@ -150,8 +178,7 @@ function AddProductTab({ onAddProduct, isMobile }) {
           <button
             type="submit"
             style={styles.submitBtn}
-            disabled={isSubmitting} // Жүктеліп жатқанда батырманы бұғаттау
-          >
+            disabled={isSubmitting}>
             {isSubmitting ? "Сақталуда..." : "Тауарды сақтау"}
           </button>
         </form>

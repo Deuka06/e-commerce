@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   fetchCategories,
   addCategory,
   updateCategory,
   deleteCategory,
-} from '../../store/categorySlice';
-import { styles } from '../../styles/adminPanelStyles';
+} from "../../store/categorySlice";
+import { styles } from "../../styles/adminPanelStyles";
 
 function CategoriesTab({
   // categories,
@@ -18,13 +18,14 @@ function CategoriesTab({
   const dispatch = useDispatch();
   const [categoryFormData, setCategoryFormData] = useState({
     id: null,
-    name: '',
-    slug: '',
+    name: "",
+    slug: "",
     parentId: 1,
-    imageUrl: '',
+    imageUrl: "",
   });
   const { items, loading } = useSelector((state) => state.categories);
   const [isEditingCategory, setIsEditingCategory] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
   const [categoryImagePreview, setCategoryImagePreview] = useState(null);
   const [categoriesPage, setCategoriesPage] = useState(1);
   const itemsPerPage = 6;
@@ -42,49 +43,44 @@ function CategoriesTab({
   const handleCategoryImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setCategoryImagePreview(reader.result);
-        setCategoryFormData((prev) => ({ ...prev, imageUrl: reader.result }));
-      };
-      reader.readAsDataURL(file);
+      setSelectedFile(file); // Файлды сақтаймыз
+      setCategoryImagePreview(URL.createObjectURL(file)); // Көру үшін уақытша сілтеме
     }
   };
 
   const handleCategorySubmit = async (e) => {
     e.preventDefault();
 
-    // Backend күтетін деректер құрылымы (image_e06ac0.png бойынша)
-    const categoryData = {
-      categoryName: categoryFormData.name,
-      slug: categoryFormData.slug,
-      imageUrl: categoryFormData.imageUrl || 'string', // егер бос болса "string" жіберу
-    };
+    const formData = new FormData();
+    formData.append("categoryName", categoryFormData.name);
+    formData.append("slug", categoryFormData.slug);
+    formData.append("parentId", categoryFormData.parentId);
+
+    if (selectedFile) {
+      formData.append("image", selectedFile); // "image" кілті Multer баптауына сай болуы керек
+    }
 
     if (isEditingCategory) {
-      // ЖАҢАРТУ (PUT)
       try {
         await dispatch(
           updateCategory({
             id: categoryFormData.id,
-            categoryData,
+            categoryData: formData, // FormData жібереміз
           }),
         ).unwrap();
-        alert('Категория жаңартылды!');
+        alert("Категория жаңартылды!");
       } catch (err) {
-        alert('Қате: ' + err);
+        alert("Қате: " + (err.message || err));
       }
     } else {
-      // ҚОСУ (POST)
       try {
-        await dispatch(addCategory(categoryData)).unwrap();
-        alert('Категория қосылды!');
+        await dispatch(addCategory(formData)).unwrap(); // FormData жібереміз
+        alert("Категория қосылды!");
       } catch (err) {
-        alert('Қате: ' + err);
+        alert("Қате: " + (err.message || err));
       }
     }
 
-    // Форманы тазалау
     handleCancelEdit();
   };
 
@@ -93,21 +89,21 @@ function CategoriesTab({
       id: category.id,
       categoryName: category.name,
       slug: category.slug,
-      parentId: category.parentId || 0,
-      imageUrl: category.imageUrl || '',
+      parentId: category.parentId || 1,
+      imageUrl: category.imageUrl || "",
     });
     setCategoryImagePreview(category.imageUrl || null);
     setIsEditingCategory(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleCancelEdit = () => {
     setCategoryFormData({
       id: null,
-      categoryName: '',
-      slug: '',
+      categoryName: "",
+      slug: "",
       parentId: 1,
-      imageUrl: '',
+      imageUrl: "",
     });
     setCategoryImagePreview(null);
     setIsEditingCategory(false);
@@ -115,13 +111,13 @@ function CategoriesTab({
 
   const handleDeleteCategory = async (id) => {
     // Пайдаланушыдан растау сұрау
-    if (window.confirm('Бұл категорияны жоюға сенімдісіз бе?')) {
+    if (window.confirm("Бұл категорияны жоюға сенімдісіз бе?")) {
       try {
         // unwrap() қате болса catch-ке жіберу үшін керек
         await dispatch(deleteCategory(id)).unwrap();
-        alert('Категория сәтті жойылды!');
+        alert("Категория сәтті жойылды!");
       } catch (err) {
-        alert('Жою мүмкін болмады: ' + (err.message || err));
+        alert("Жою мүмкін болмады: " + (err.message || err));
       }
     }
   };
@@ -144,24 +140,22 @@ function CategoriesTab({
           style={{
             ...styles.cardHeader,
             ...(isMobile ? styles.cardHeaderMobile : {}),
-          }}
-        >
+          }}>
           <h3
             style={{
               ...styles.cardTitle,
               ...(isMobile ? styles.cardTitleMobile : {}),
-            }}
-          >
-            📑 {isEditingCategory ? 'Категорияны өңдеу' : 'Жаңа категория қосу'}
+            }}>
+            📑 {isEditingCategory ? "Категорияны өңдеу" : "Жаңа категория қосу"}
           </h3>
         </div>
         <div
           style={{
             ...styles.cardBody,
             ...(isMobile ? styles.cardBodyMobile : {}),
-          }}
-        >
+          }}>
           <form onSubmit={handleCategorySubmit} style={styles.form}>
+            {/* Атауы, Slug, ParentId input-тары өзгеріссіз қалады */}
             <div style={styles.formGroup}>
               <label style={styles.label}>Категория атауы</label>
               <input
@@ -169,10 +163,10 @@ function CategoriesTab({
                 name="name"
                 value={categoryFormData.name}
                 onChange={handleCategoryInputChange}
-                placeholder="Электроника"
                 required
               />
             </div>
+
             <div style={styles.formGroup}>
               <label style={styles.label}>Slug</label>
               <input
@@ -180,21 +174,10 @@ function CategoriesTab({
                 name="slug"
                 value={categoryFormData.slug}
                 onChange={handleCategoryInputChange}
-                placeholder="slug"
                 required
               />
             </div>
-            <div style={styles.formGroup}>
-              <label style={styles.label}>ParentId</label>
-              <input
-                style={styles.input}
-                name="parentId"
-                value={categoryFormData.parentId}
-                onChange={handleCategoryInputChange}
-                placeholder="parentId всегда должно быть 1"
-                required
-              />
-            </div>
+
             <div style={styles.formGroup}>
               <label style={styles.label}>Категория суреті</label>
               <input
@@ -204,13 +187,10 @@ function CategoriesTab({
                 onChange={handleCategoryImageChange}
                 required={!isEditingCategory}
               />
-              <small style={styles.helpText}>
-                JPG, PNG немесе GIF форматында сурет таңдаңыз
-              </small>
             </div>
+
             {categoryImagePreview && (
               <div style={styles.imagePreviewContainer}>
-                <label style={styles.label}>Сурет алдын ала қарау</label>
                 <img
                   src={categoryImagePreview}
                   alt="Preview"
@@ -218,16 +198,16 @@ function CategoriesTab({
                 />
               </div>
             )}
-            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+
+            <div style={{ display: "flex", gap: "12px" }}>
               <button type="submit" style={styles.submitBtn}>
-                {isEditingCategory ? '✓ Жаңарту' : '+ Қосу'}
+                {isEditingCategory ? "✓ Жаңарту" : "+ Қосу"}
               </button>
               {isEditingCategory && (
                 <button
                   type="button"
                   onClick={handleCancelEdit}
-                  style={styles.cancelBtn}
-                >
+                  style={styles.cancelBtn}>
                   ✕ Болдырмау
                 </button>
               )}
@@ -236,19 +216,17 @@ function CategoriesTab({
         </div>
       </div>
 
-      <div style={{ ...styles.card, marginTop: '28px' }}>
+      <div style={{ ...styles.card, marginTop: "28px" }}>
         <div
           style={{
             ...styles.cardHeader,
             ...(isMobile ? styles.cardHeaderMobile : {}),
-          }}
-        >
+          }}>
           <h3
             style={{
               ...styles.cardTitle,
               ...(isMobile ? styles.cardTitleMobile : {}),
-            }}
-          >
+            }}>
             📋 Барлық категориялар ({categories?.length || 0})
           </h3>
         </div>
@@ -256,8 +234,7 @@ function CategoriesTab({
           style={{
             ...styles.cardBody,
             ...(isMobile ? styles.cardBodyMobile : {}),
-          }}
-        >
+          }}>
           {isMobile ? (
             <div style={styles.categoriesGrid}>
               {categories && currentCategories.length > 0 ? (
@@ -267,7 +244,7 @@ function CategoriesTab({
                       {category.image ? (
                         <img
                           src={
-                            category.image.startsWith('http')
+                            category.image.startsWith("http")
                               ? category.image
                               : `http://46.247.41.196${category.image}`
                           }
@@ -278,14 +255,13 @@ function CategoriesTab({
                         <div
                           style={{
                             ...styles.categoryImage,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: '#e5e9f2',
-                            color: '#6b7280',
-                            fontSize: '12px',
-                          }}
-                        >
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            backgroundColor: "#e5e9f2",
+                            color: "#6b7280",
+                            fontSize: "12px",
+                          }}>
                           Сурет жоқ
                         </div>
                       )}
@@ -298,14 +274,12 @@ function CategoriesTab({
                     <div style={styles.categoryActions}>
                       <button
                         onClick={() => handleEditCategory(category)}
-                        style={styles.editBtn}
-                      >
+                        style={styles.editBtn}>
                         ✏️ Өңдеу
                       </button>
                       <button
                         onClick={() => handleDeleteCategory(category.id)}
-                        style={styles.deleteBtn}
-                      >
+                        style={styles.deleteBtn}>
                         🗑️ Жою
                       </button>
                     </div>
@@ -324,8 +298,7 @@ function CategoriesTab({
                         : {}),
                     }}
                     onClick={() => handlePageChange(categoriesPage - 1)}
-                    disabled={categoriesPage === 1}
-                  >
+                    disabled={categoriesPage === 1}>
                     ←
                   </button>
                   <span style={styles.paginationInfo}>
@@ -339,15 +312,14 @@ function CategoriesTab({
                         : {}),
                     }}
                     onClick={() => handlePageChange(categoriesPage + 1)}
-                    disabled={categoriesPage === totalPages}
-                  >
+                    disabled={categoriesPage === totalPages}>
                     →
                   </button>
                 </div>
               )}
             </div>
           ) : (
-            <div style={{ overflowX: 'auto' }}>
+            <div style={{ overflowX: "auto" }}>
               <table style={styles.table}>
                 <thead>
                   <tr style={styles.tableHeaderRow}>
@@ -364,7 +336,7 @@ function CategoriesTab({
                           {category.image ? (
                             <img
                               src={
-                                category.image.startsWith('http')
+                                category.image.startsWith("http")
                                   ? category.image
                                   : `http://46.247.41.196${category.image}`
                               }
@@ -372,24 +344,22 @@ function CategoriesTab({
                               style={styles.categoryTableImage}
                             />
                           ) : (
-                            'Сурет жоқ'
+                            "Сурет жоқ"
                           )}
                         </td>
                         <td style={styles.tableCell}>
                           {category.categoryName}
                         </td>
                         <td style={styles.tableCell}>
-                          <div style={{ display: 'flex', gap: '8px' }}>
+                          <div style={{ display: "flex", gap: "8px" }}>
                             <button
                               onClick={() => handleEditCategory(category)}
-                              style={styles.editBtn}
-                            >
+                              style={styles.editBtn}>
                               ✏️ Өңдеу
                             </button>
                             <button
                               onClick={() => handleDeleteCategory(category.id)} // props-тан келген емес, осы жердегі функцияны шақырамыз
-                              style={styles.deleteBtn}
-                            >
+                              style={styles.deleteBtn}>
                               🗑️ Жою
                             </button>
                           </div>
@@ -402,10 +372,9 @@ function CategoriesTab({
                         colSpan="3"
                         style={{
                           ...styles.tableCell,
-                          textAlign: 'center',
-                          padding: '40px',
-                        }}
-                      >
+                          textAlign: "center",
+                          padding: "40px",
+                        }}>
                         <div style={styles.emptyState}>Категориялар жоқ</div>
                       </td>
                     </tr>
@@ -422,8 +391,7 @@ function CategoriesTab({
                         : {}),
                     }}
                     onClick={() => handlePageChange(categoriesPage - 1)}
-                    disabled={categoriesPage === 1}
-                  >
+                    disabled={categoriesPage === 1}>
                     ←
                   </button>
                   <span style={styles.paginationInfo}>
@@ -437,8 +405,7 @@ function CategoriesTab({
                         : {}),
                     }}
                     onClick={() => handlePageChange(categoriesPage + 1)}
-                    disabled={categoriesPage === totalPages}
-                  >
+                    disabled={categoriesPage === totalPages}>
                     →
                   </button>
                 </div>

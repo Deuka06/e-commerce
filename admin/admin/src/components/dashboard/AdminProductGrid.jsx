@@ -3,19 +3,22 @@ import React, { useState } from "react";
 function AdminProductGrid({ products, onDelete, onEdit, isMobile }) {
   const [editingProduct, setEditingProduct] = useState(null);
   const [formData, setFormData] = useState({});
+  const [imagePreview, setImagePreview] = useState("");
 
   const handleEditClick = (product) => {
     setEditingProduct(product);
     setFormData({
       name: product.name || product.categoryName,
       price: product.price,
-      image: product.image || product.imageUrl,
+      image: null,
     });
+    setImagePreview(product.image || product.imageUrl || "");
   };
 
   const handleModalClose = () => {
     setEditingProduct(null);
     setFormData({});
+    setImagePreview("");
   };
 
   const handleInputChange = (e) => {
@@ -26,9 +29,30 @@ function AdminProductGrid({ products, onDelete, onEdit, isMobile }) {
     }));
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData((prev) => ({
+          ...prev,
+          image: file,
+        }));
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSaveChanges = () => {
     if (onEdit) {
-      onEdit(editingProduct._id || editingProduct.id, formData);
+      const dataToSend = new FormData();
+      dataToSend.append("name", formData.name);
+      dataToSend.append("price", formData.price);
+      if (formData.image) {
+        dataToSend.append("image", formData.image);
+      }
+      onEdit(editingProduct._id || editingProduct.id, dataToSend);
     }
     handleModalClose();
   };
@@ -297,10 +321,10 @@ function AdminProductGrid({ products, onDelete, onEdit, isMobile }) {
                 Сурет:
               </label>
               <input
-                type="text"
+                type="file"
                 name="image"
-                value={formData.image || ""}
-                onChange={handleInputChange}
+                onChange={handleImageChange}
+                accept="image/*"
                 style={{
                   width: "100%",
                   padding: "0.75rem",
@@ -310,6 +334,19 @@ function AdminProductGrid({ products, onDelete, onEdit, isMobile }) {
                   boxSizing: "border-box",
                 }}
               />
+              {imagePreview && (
+                <div style={{ marginTop: "1rem" }}>
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    style={{
+                      maxWidth: "100%",
+                      maxHeight: "200px",
+                      borderRadius: "8px",
+                    }}
+                  />
+                </div>
+              )}
             </div>
 
             <div style={{ display: "flex", gap: "1rem" }}>
