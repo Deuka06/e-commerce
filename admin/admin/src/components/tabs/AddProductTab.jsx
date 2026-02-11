@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { styles } from "../../styles/adminPanelStyles";
-import { fetchCategories } from "../../store/categorySlice";
-import { addProduct } from "../../store/productSlice";
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { styles } from '../../styles/adminPanelStyles';
+import { fetchCategories } from '../../store/categorySlice';
+import { addProduct } from '../../store/productSlice';
 
 function AddProductTab({ onAddProduct, isMobile }) {
   const dispatch = useDispatch();
@@ -11,12 +11,12 @@ function AddProductTab({ onAddProduct, isMobile }) {
   const { loading: isSubmitting } = useSelector((state) => state.products);
 
   const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    price: "",
+    name: '',
+    description: '',
+    price: '',
     image: null,
-    imagePreview: "",
-    categoryId: "",
+    imagePreview: '',
+    categoryId: '',
   });
 
   useEffect(() => {
@@ -47,31 +47,31 @@ function AddProductTab({ onAddProduct, isMobile }) {
     e.preventDefault();
 
     const formDataToSend = new FormData();
-    formDataToSend.append("name", formData.name);
-    formDataToSend.append("description", formData.description);
-    formDataToSend.append("price", parseFloat(formData.price));
-    formDataToSend.append("categoryId", parseInt(formData.categoryId));
+    formDataToSend.append('name', formData.name);
+    formDataToSend.append('description', formData.description);
+    formDataToSend.append('price', parseFloat(formData.price));
+    formDataToSend.append('categoryId', parseInt(formData.categoryId));
     if (formData.image) {
-      formDataToSend.append("image", formData.image);
+      formDataToSend.append('image', formData.image);
     }
 
     try {
       await dispatch(addProduct(formDataToSend)).unwrap();
 
-      alert("Тауар сәтті қосылды!");
+      alert('Товар успешно добавлен!');
 
       setFormData({
-        name: "",
-        description: "",
-        price: "",
+        name: '',
+        description: '',
+        price: '',
         image: null,
-        imagePreview: "",
-        categoryId: "",
+        imagePreview: '',
+        categoryId: '',
       });
     } catch (error) {
       alert(
-        "Қате орын алды: " +
-          (error.message || "Серверге қосылу мүмкін болмады"),
+        'Произошла ошибка: ' +
+          (error.message || 'Не удалось подключиться к серверу.'),
       );
     }
   };
@@ -82,35 +82,38 @@ function AddProductTab({ onAddProduct, isMobile }) {
         style={{
           ...styles.cardHeader,
           ...(isMobile ? styles.cardHeaderMobile : {}),
-        }}>
+        }}
+      >
         <h3
           style={{
             ...styles.cardTitle,
             ...(isMobile ? styles.cardTitleMobile : {}),
-          }}>
-          ➕ Жаңа тауар қосу
+          }}
+        >
+          ➕ Добавить новый товар
         </h3>
       </div>
       <div
         style={{
           ...styles.cardBody,
           ...(isMobile ? styles.cardBodyMobile : {}),
-        }}>
+        }}
+      >
         <form onSubmit={handleSubmit} style={styles.form}>
           <div style={styles.formGroup}>
-            <label style={styles.label}>Тауар атауы</label>
+            <label style={styles.label}>Название товара</label>
             <input
               style={styles.input}
               name="name"
               value={formData.name}
               onChange={handleInputChange}
-              placeholder="Тауардың атын енгізіңіз"
+              placeholder="Введите название продукта"
               required
             />
           </div>
           <div style={styles.formRow}>
             <div style={{ ...styles.formGroup, flex: 1 }}>
-              <label style={styles.label}>Бағасы (₸)</label>
+              <label style={styles.label}>Цена (₸)</label>
               <input
                 style={styles.input}
                 type="number"
@@ -128,8 +131,9 @@ function AddProductTab({ onAddProduct, isMobile }) {
                 name="categoryId"
                 value={formData.categoryId}
                 onChange={handleInputChange}
-                required>
-                <option value="">Категорияны таңдаңыз</option>
+                required
+              >
+                <option value="">Выберите категорию</option>
                 {Array.isArray(categories) &&
                   categories.map((cat) => (
                     <option key={cat.id} value={cat.id}>
@@ -140,7 +144,7 @@ function AddProductTab({ onAddProduct, isMobile }) {
             </div>
           </div>
           <div style={styles.formGroup}>
-            <label style={styles.label}>Сурет</label>
+            <label style={styles.label}>Изображение</label>
             <input
               style={styles.input}
               type="file"
@@ -150,27 +154,27 @@ function AddProductTab({ onAddProduct, isMobile }) {
               required
             />
             {formData.imagePreview && (
-              <div style={{ marginTop: "10px" }}>
+              <div style={{ marginTop: '10px' }}>
                 <img
                   src={formData.imagePreview}
                   alt="Preview"
                   style={{
-                    maxWidth: "200px",
-                    maxHeight: "200px",
-                    borderRadius: "4px",
+                    maxWidth: '200px',
+                    maxHeight: '200px',
+                    borderRadius: '4px',
                   }}
                 />
               </div>
             )}
           </div>
           <div style={styles.formGroup}>
-            <label style={styles.label}>Сипаттама</label>
+            <label style={styles.label}>Описание</label>
             <textarea
               style={styles.textarea}
               name="description"
               value={formData.description}
               onChange={handleInputChange}
-              placeholder="Тауар туралы толық мәлімет"
+              placeholder="Информация о продукте"
               rows="4"
               required
             />
@@ -178,8 +182,9 @@ function AddProductTab({ onAddProduct, isMobile }) {
           <button
             type="submit"
             style={styles.submitBtn}
-            disabled={isSubmitting}>
-            {isSubmitting ? "Сақталуда..." : "Тауарды сақтау"}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Сохранение...' : 'Сохранить товар'}
           </button>
         </form>
       </div>

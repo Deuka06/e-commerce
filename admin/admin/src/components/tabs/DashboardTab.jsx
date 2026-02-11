@@ -47,7 +47,7 @@ function DashboardTab({ orders, onUpdateOrderStatus, isMobile }) {
                 ...(isMobile ? styles.cardTitleMobile : {}),
               }}
             >
-              📊 Жалпы статистика
+              📊 Общая статистика
             </h3>
           </div>
           <div
@@ -76,7 +76,7 @@ function DashboardTab({ orders, onUpdateOrderStatus, isMobile }) {
                 ...(isMobile ? styles.cardTitleMobile : {}),
               }}
             >
-              🕐 Соңғы тапсырыстар
+              🕐 Недавние заказы
             </h3>
           </div>
           <div
@@ -91,9 +91,7 @@ function DashboardTab({ orders, onUpdateOrderStatus, isMobile }) {
                   currentOrders.map((order) => (
                     <div key={order.id} style={styles.orderCard}>
                       <div style={styles.orderCardHeader}>
-                        <div style={styles.orderCardId}>
-                          Тапсырыс #{order.id}
-                        </div>
+                        <div style={styles.orderCardId}>Заказ #{order.id}</div>
                         <div
                           style={{
                             ...styles.statusBadge,
@@ -117,13 +115,13 @@ function DashboardTab({ orders, onUpdateOrderStatus, isMobile }) {
                           </span>
                         </div>
                         <div style={styles.orderCardRow}>
-                          <span style={styles.orderCardLabel}>Сома:</span>
+                          <span style={styles.orderCardLabel}>Сумма:</span>
                           <span style={styles.orderCardPrice}>
                             {order.total?.toLocaleString()} ₸
                           </span>
                         </div>
                         <div style={styles.orderCardRow}>
-                          <span style={styles.orderCardLabel}>Тауарлар:</span>
+                          <span style={styles.orderCardLabel}>Товары:</span>
                           <span style={styles.orderCardValue}>
                             {order.items?.length || 0}
                           </span>
@@ -143,13 +141,13 @@ function DashboardTab({ orders, onUpdateOrderStatus, isMobile }) {
                             fontWeight: '500',
                           }}
                         >
-                          Статусты өзгерту
+                          Изменить статус
                         </button>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <div style={styles.emptyState}>Тапсырыстар жоқ</div>
+                  <div style={styles.emptyState}>Нет заказов</div>
                 )}
                 {totalPages > 1 && (
                   <div style={styles.pagination}>

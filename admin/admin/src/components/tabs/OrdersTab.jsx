@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import OrdersTable from "../tables/OrdersTable";
-import OrderStatusModal from "../modals/OrderStatusModal";
-import { styles } from "../../styles/adminPanelStyles";
-import { getStatusText, getStatusStyle } from "../../utils/statusHelpers";
+import React, { useState } from 'react';
+import OrdersTable from '../tables/OrdersTable';
+import OrderStatusModal from '../modals/OrderStatusModal';
+import { styles } from '../../styles/adminPanelStyles';
+import { getStatusText, getStatusStyle } from '../../utils/statusHelpers';
 
 function OrdersTab({ orders, onUpdateOrderStatus, isMobile }) {
   const [ordersPage, setOrdersPage] = useState(1);
@@ -36,32 +36,36 @@ function OrdersTab({ orders, onUpdateOrderStatus, isMobile }) {
         style={{
           ...styles.cardHeader,
           ...(isMobile ? styles.cardHeaderMobile : {}),
-        }}>
+        }}
+      >
         <h3
           style={{
             ...styles.cardTitle,
             ...(isMobile ? styles.cardTitleMobile : {}),
-          }}>
-          🛒 Барлық тапсырыстар ({orders?.length || 0})
+          }}
+        >
+          🛒 Все заказы ({orders?.length || 0})
         </h3>
       </div>
       <div
         style={{
           ...styles.cardBody,
           ...(isMobile ? styles.cardBodyMobile : {}),
-        }}>
+        }}
+      >
         {isMobile ? (
           <div style={styles.ordersCardsContainer}>
             {currentOrders.length > 0 ? (
               currentOrders.map((order) => (
                 <div key={order.id} style={styles.orderCard}>
                   <div style={styles.orderCardHeader}>
-                    <div style={styles.orderCardId}>Тапсырыс #{order.id}</div>
+                    <div style={styles.orderCardId}>Заказы #{order.id}</div>
                     <div
                       style={{
                         ...styles.statusBadge,
                         ...getStatusStyle(order.status),
-                      }}>
+                      }}
+                    >
                       {getStatusText(order.status)}
                     </div>
                   </div>
@@ -79,23 +83,23 @@ function OrdersTab({ orders, onUpdateOrderStatus, isMobile }) {
                       </span>
                     </div>
                     <div style={styles.orderCardRow}>
-                      <span style={styles.orderCardLabel}>Сома:</span>
+                      <span style={styles.orderCardLabel}>Сумма:</span>
                       <span style={styles.orderCardPrice}>
                         {order.total?.toLocaleString()} ₸
                       </span>
                     </div>
                     <div style={styles.orderCardRow}>
-                      <span style={styles.orderCardLabel}>Тауарлар:</span>
+                      <span style={styles.orderCardLabel}>Товары:</span>
                       <span style={styles.orderCardValue}>
                         {order.items?.length || 0}
                       </span>
                     </div>
                     <div style={styles.orderCardRow}>
-                      <span style={styles.orderCardLabel}>Күні:</span>
+                      <span style={styles.orderCardLabel}>Дата:</span>
                       <span style={styles.orderCardValue}>
                         {new Date(
                           order.createdAt || Date.now(),
-                        ).toLocaleDateString("kk-KZ")}
+                        ).toLocaleDateString('kk-KZ')}
                       </span>
                     </div>
                   </div>
@@ -104,21 +108,22 @@ function OrdersTab({ orders, onUpdateOrderStatus, isMobile }) {
                       onClick={() => handleOpenModal(order)}
                       style={{
                         ...styles.statusSelect,
-                        cursor: "pointer",
-                        backgroundColor: "#3b82f6",
-                        color: "#fff",
-                        border: "none",
-                        padding: "10px 16px",
-                        borderRadius: "8px",
-                        fontWeight: "500",
-                      }}>
-                      Статусты өзгерту
+                        cursor: 'pointer',
+                        backgroundColor: '#3b82f6',
+                        color: '#fff',
+                        border: 'none',
+                        padding: '10px 16px',
+                        borderRadius: '8px',
+                        fontWeight: '500',
+                      }}
+                    >
+                      Изменить статус
                     </button>
                   </div>
                 </div>
               ))
             ) : (
-              <div style={styles.emptyState}>Тапсырыстар жоқ</div>
+              <div style={styles.emptyState}>Нет заказов</div>
             )}
             {totalPages > 1 && (
               <div style={styles.pagination}>
@@ -128,7 +133,8 @@ function OrdersTab({ orders, onUpdateOrderStatus, isMobile }) {
                     ...(ordersPage === 1 ? styles.paginationBtnDisabled : {}),
                   }}
                   onClick={() => handlePageChange(ordersPage - 1)}
-                  disabled={ordersPage === 1}>
+                  disabled={ordersPage === 1}
+                >
                   ←
                 </button>
                 <span style={styles.paginationInfo}>
@@ -142,14 +148,15 @@ function OrdersTab({ orders, onUpdateOrderStatus, isMobile }) {
                       : {}),
                   }}
                   onClick={() => handlePageChange(ordersPage + 1)}
-                  disabled={ordersPage === totalPages}>
+                  disabled={ordersPage === totalPages}
+                >
                   →
                 </button>
               </div>
             )}
           </div>
         ) : (
-          <div style={{ overflowX: "auto" }}>
+          <div style={{ overflowX: 'auto' }}>
             <OrdersTable
               orders={orders || []}
               onUpdateStatus={onUpdateOrderStatus}

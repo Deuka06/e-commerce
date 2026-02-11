@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import AdminPanel from "./pages/AdminPanel";
-import { initialProducts, initialOrders } from "./data/productData";
-import "./styles/global.css";
+import React, { useState, useEffect } from 'react';
+import AdminPanel from './pages/AdminPanel';
+import { initialProducts, initialOrders } from './data/productData';
+import './styles/global.css';
 
 function App() {
   const [products, setProducts] = useState(initialProducts);
@@ -15,16 +15,16 @@ function App() {
   };
 
   const deleteProduct = (productId) => {
-    if (window.confirm("Бұл тауарды жойғыңыз келе ме?")) {
+    if (window.confirm('Вы хотите удалить этот элемент?')) {
       setProducts(products.filter((p) => p.id !== productId));
-      showNotification("Тауар жойылды!", "success");
+      showNotification('Товар удален!', 'success');
     }
   };
 
   const editProduct = (productId) => {
-    if (window.confirm("Бұл тауарды өңдеуге сенімдісіз бе?")) {
+    if (window.confirm('Вы уверены, что хотите изменить этот товар??')) {
       setProducts(products.filter((p) => p.id !== productId));
-      showNotification("Тауар өңделді!", "success");
+      showNotification('Товар изменен!', 'success');
     }
   };
 
@@ -32,16 +32,16 @@ function App() {
     const updatedOrders = orders.map((order) => {
       if (order.id === orderId) {
         const statusMap = {
-          pending: "shipped",
-          shipped: "completed",
-          completed: "pending",
+          pending: 'shipped',
+          shipped: 'completed',
+          completed: 'pending',
         };
         return { ...order, status: statusMap[order.status] };
       }
       return order;
     });
     setOrders(updatedOrders);
-    showNotification("Тапсырыс статусы өзгертілді!", "success");
+    showNotification('Статус заказа изменен!', 'success');
   };
 
   return (

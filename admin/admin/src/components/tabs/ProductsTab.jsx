@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchCategories } from "../../store/categorySlice";
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCategories } from '../../store/categorySlice';
 import {
   fetchProductsByCategory,
   deleteProduct,
   updateProduct,
-} from "../../store/productSlice";
-import AdminProductGrid from "../dashboard/AdminProductGrid";
-import { styles } from "../../styles/adminPanelStyles";
+} from '../../store/productSlice';
+import AdminProductGrid from '../dashboard/AdminProductGrid';
+import { styles } from '../../styles/adminPanelStyles';
 
 function ProductsTab({ onDeleteProduct, onEditProduct, isMobile }) {
   const dispatch = useDispatch();
@@ -70,15 +70,15 @@ function ProductsTab({ onDeleteProduct, onEditProduct, isMobile }) {
         }),
       ).unwrap();
 
-      alert("Тауар сәтті жаңартылды!");
+      alert('Продукт успешно обновлен!');
     } catch (err) {
-      alert("Қате: " + err.message);
+      alert('Ошибка: ' + err.message);
     }
   };
 
   if (loading && categories.length === 0) {
     return (
-      <div style={{ textAlign: "center", padding: "2rem" }}>Жүктелуде...</div>
+      <div style={{ textAlign: 'center', padding: '2rem' }}>Загрузка...</div>
     );
   }
 
@@ -89,13 +89,15 @@ function ProductsTab({ onDeleteProduct, onEditProduct, isMobile }) {
         style={{
           ...styles.cardHeader,
           ...(isMobile ? styles.cardHeaderMobile : {}),
-        }}>
+        }}
+      >
         <h3
           style={{
             ...styles.cardTitle,
             ...(isMobile ? styles.cardTitleMobile : {}),
-          }}>
-          🏷️ Категориялар ({categories?.length || 0})
+          }}
+        >
+          🏷️ Категории ({categories?.length || 0})
         </h3>
       </div>
 
@@ -103,21 +105,23 @@ function ProductsTab({ onDeleteProduct, onEditProduct, isMobile }) {
         style={{
           ...styles.cardBody,
           ...(isMobile ? styles.cardBodyMobile : {}),
-          marginBottom: "2rem",
-        }}>
+          marginBottom: '2rem',
+        }}
+      >
         {categories?.length === 0 ? (
           <div
             style={{
-              textAlign: "center",
-              padding: "2rem",
-              color: "#999",
-              fontSize: "14px",
-            }}>
-            Категориялар табылмады. "Категориялар" бөліміне кіріп жаңа категория
-            қосыңыз.
+              textAlign: 'center',
+              padding: '2rem',
+              color: '#999',
+              fontSize: '14px',
+            }}
+          >
+            Категории не найдены. Пожалуйста, перейдите в раздел «Категории» и
+            добавьте новую категорию.
           </div>
         ) : (
-          <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
             {categories.map((category) => {
               const catId = category.id || category._id;
               const productCount = getCategoryProductCount(catId);
@@ -128,32 +132,34 @@ function ProductsTab({ onDeleteProduct, onEditProduct, isMobile }) {
                   key={catId}
                   onClick={() => setSelectedCategory(catId)}
                   style={{
-                    padding: "0.75rem 1.25rem",
+                    padding: '0.75rem 1.25rem',
                     border: isSelected
-                      ? "2px solid #667eea"
-                      : "1px solid #e0e0e0",
-                    borderRadius: "12px",
-                    background: isSelected ? "#667eea" : "white",
-                    color: isSelected ? "white" : "#333",
-                    cursor: "pointer",
-                    fontWeight: "500",
-                    fontSize: "14px",
-                    transition: "all 0.2s",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.5rem",
-                  }}>
+                      ? '2px solid #667eea'
+                      : '1px solid #e0e0e0',
+                    borderRadius: '12px',
+                    background: isSelected ? '#667eea' : 'white',
+                    color: isSelected ? 'white' : '#333',
+                    cursor: 'pointer',
+                    fontWeight: '500',
+                    fontSize: '14px',
+                    transition: 'all 0.2s',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                  }}
+                >
                   {category.categoryName}
                   <span
                     style={{
                       background: isSelected
-                        ? "rgba(255,255,255,0.2)"
-                        : "#f0f0f0",
-                      padding: "2px 8px",
-                      borderRadius: "10px",
-                      fontSize: "12px",
-                      fontWeight: "600",
-                    }}>
+                        ? 'rgba(255,255,255,0.2)'
+                        : '#f0f0f0',
+                      padding: '2px 8px',
+                      borderRadius: '10px',
+                      fontSize: '12px',
+                      fontWeight: '600',
+                    }}
+                  >
                     {productCount}
                   </span>
                 </button>
@@ -166,7 +172,7 @@ function ProductsTab({ onDeleteProduct, onEditProduct, isMobile }) {
       {/* Products Section */}
       <div style={styles.cardBody}>
         {productsLoading ? (
-          <p>Тауарлар жүктелуде...</p>
+          <p>Идет загрузка товара....</p>
         ) : (
           <AdminProductGrid
             products={products} // Енді бұл жерде тек таңдалған категория тауарлары

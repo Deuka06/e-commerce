@@ -18,10 +18,10 @@ function OrdersTable({ orders, onUpdateStatus }) {
   // Backend-тегі (Prisma) статус түрлеріне сәйкестендіру
   const getStatusBadge = (status) => {
     const statusMap = {
-      PENDING: { class: 'status-pending', text: 'Тексерілуде' },
-      ACCEPTED: { class: 'status-shipped', text: 'Қабылданды' },
-      DELIVERED: { class: 'status-completed', text: 'Жеткізілді' },
-      CANCELLED: { class: 'status-cancelled', text: 'Бас тартылды' },
+      PENDING: { class: 'status-pending', text: 'В ожидании' },
+      ACCEPTED: { class: 'status-shipped', text: 'В процессе' },
+      DELIVERED: { class: 'status-completed', text: 'Завершен' },
+      CANCELLED: { class: 'status-cancelled', text: 'Отклонен' },
     };
     return statusMap[status] || { class: '', text: status };
   };
@@ -33,11 +33,11 @@ function OrdersTable({ orders, onUpdateStatus }) {
           <tr>
             <th>ID</th>
             <th>Клиент</th>
-            <th>Тауарлар</th>
-            <th>Күні</th>
-            <th>Сома</th>
+            <th>Товары</th>
+            <th>Дата</th>
+            <th>Сумма</th>
             <th>Статус</th>
-            <th>Әрекеттер</th>
+            <th>Действия</th>
           </tr>
         </thead>
         <tbody>
@@ -51,7 +51,7 @@ function OrdersTable({ orders, onUpdateStatus }) {
                 <td>
                   {/* Тауарлар тізімін қысқаша көрсету */}
                   {order.items?.map((item) => item.name).join(', ') ||
-                    'Тауар жоқ'}
+                    'Товара нет'}
                 </td>
                 <td>{new Date(order.createdAt).toLocaleDateString()}</td>
                 <td>{formatPrice(order.totalAmount)} ₸</td>
@@ -65,7 +65,7 @@ function OrdersTable({ orders, onUpdateStatus }) {
                     className="btn btn-primary"
                     onClick={() => handleOpenModal(order)}
                   >
-                    Өзгерту
+                    Изменить
                   </button>
                 </td>
               </tr>

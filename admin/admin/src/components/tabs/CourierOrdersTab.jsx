@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchCourierOrders } from "../../store/courierSlice";
-import { styles } from "../../styles/adminPanelStyles";
-import { getStatusText, getStatusStyle } from "../../utils/statusHelpers";
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCourierOrders } from '../../store/courierSlice';
+import { styles } from '../../styles/adminPanelStyles';
+import { getStatusText, getStatusStyle } from '../../utils/statusHelpers';
 
 function CourierOrdersTab({
   courierOrders,
@@ -30,8 +30,8 @@ function CourierOrdersTab({
   const totalPages =
     pagination?.totalPages || Math.ceil((orders?.length || 0) / ordersPerPage);
 
-  if (status === "loading" && orders.length === 0) {
-    return <div style={styles.emptyState}>Жүктелуде...</div>;
+  if (status === 'loading' && orders.length === 0) {
+    return <div style={styles.emptyState}>Загрузка...</div>;
   }
 
   return (
@@ -40,14 +40,15 @@ function CourierOrdersTab({
         style={{
           ...styles.cardHeader,
           ...(isMobile ? styles.cardHeaderMobile : {}),
-        }}>
+        }}
+      >
         <h3
           style={{
             ...styles.cardTitle,
             ...(isMobile ? styles.cardTitleMobile : {}),
-          }}>
-          🚚 Курьерлік тапсырыстар (
-          {pagination?.totalItems || orders?.length || 0})
+          }}
+        >
+          🚚 Курьерские заказы ({pagination?.totalItems || orders?.length || 0})
         </h3>
       </div>
 
@@ -55,7 +56,8 @@ function CourierOrdersTab({
         style={{
           ...styles.cardBody,
           ...(isMobile ? styles.cardBodyMobile : {}),
-        }}>
+        }}
+      >
         {isMobile ? (
           <div style={styles.ordersCardsContainer}>
             {orders.length > 0 ? (
@@ -67,7 +69,8 @@ function CourierOrdersTab({
                       style={{
                         ...styles.statusBadge,
                         ...getStatusStyle(order.status),
-                      }}>
+                      }}
+                    >
                       {getStatusText(order.status)}
                     </div>
                   </div>
@@ -85,17 +88,17 @@ function CourierOrdersTab({
                       </span>
                     </div>
                     <div style={styles.orderCardRow}>
-                      <span style={styles.orderCardLabel}>Қайдан:</span>
+                      <span style={styles.orderCardLabel}>Откуда:</span>
                       <span style={styles.orderCardValue}>{order.address}</span>
                     </div>
                     <div style={styles.orderCardRow}>
-                      <span style={styles.orderCardLabel}>Қайда:</span>
+                      <span style={styles.orderCardLabel}>Куда:</span>
                       <span style={styles.orderCardValue}>
                         {order.institution}
                       </span>
                     </div>
                     <div style={styles.orderCardRow}>
-                      <span style={styles.orderCardLabel}>Кімге:</span>
+                      <span style={styles.orderCardLabel}>Кому:</span>
                       <span style={styles.orderCardValue}>
                         {order.deliveryTo}
                       </span>
@@ -108,32 +111,33 @@ function CourierOrdersTab({
                       onChange={(e) =>
                         handleStatusChange(order.id, e.target.value)
                       }
-                      style={styles.statusSelect}>
-                      <option value="pending">Күтуде</option>
-                      <option value="processing">Өңделуде</option>
-                      <option value="completed">Аяқталды</option>
-                      <option value="cancelled">Жойылды</option>
+                      style={styles.statusSelect}
+                    >
+                      <option value="pending">В ожидании</option>
+                      <option value="processing">В процессе</option>
+                      <option value="completed">Завершен</option>
+                      <option value="cancelled">Отклонен</option>
                     </select>
                   </div>
                 </div>
               ))
             ) : (
-              <div style={styles.emptyState}>Курьерлік тапсырыстар жоқ</div>
+              <div style={styles.emptyState}>Заказов нет</div>
             )}
           </div>
         ) : (
-          <div style={{ overflowX: "auto" }}>
+          <div style={{ overflowX: 'auto' }}>
             <table style={styles.table}>
               <thead>
                 <tr style={styles.tableHeaderRow}>
                   <th style={styles.tableHeader}>ID</th>
                   <th style={styles.tableHeader}>Клиент</th>
                   <th style={styles.tableHeader}>Телефон</th>
-                  <th style={styles.tableHeader}>Қайдан (Адрес)</th>
-                  <th style={styles.tableHeader}>Қайда (Мекеме)</th>
-                  <th style={styles.tableHeader}>Кімге</th>
-                  <th style={styles.tableHeader}>Күні</th>
-                  <th style={styles.tableHeader}>Сипаттама</th>
+                  <th style={styles.tableHeader}>Откуда (Адрес)</th>
+                  <th style={styles.tableHeader}>Куда (Учреждение)</th>
+                  <th style={styles.tableHeader}>Кому</th>
+                  <th style={styles.tableHeader}>Дата</th>
+                  <th style={styles.tableHeader}>Описание</th>
                 </tr>
               </thead>
               <tbody>
@@ -146,7 +150,7 @@ function CourierOrdersTab({
                     <td style={styles.tableCell}>{order.institution}</td>
                     <td style={styles.tableCell}>{order.deliveryTo}</td>
                     <td style={styles.tableCell}>
-                      {new Date(order.createdAt).toLocaleDateString("kk-KZ")}
+                      {new Date(order.createdAt).toLocaleDateString('kk-KZ')}
                     </td>
                     <td style={styles.tableCell}>{order.description}</td>
                     {/* <td style={styles.tableCell}>
@@ -178,9 +182,10 @@ function CourierOrdersTab({
                 ...(currentPage === 1 ? styles.paginationBtnDisabled : {}),
               }}
               onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}>
-              {" "}
-              ←{" "}
+              disabled={currentPage === 1}
+            >
+              {' '}
+              ←{' '}
             </button>
             <span style={styles.paginationInfo}>
               {currentPage} / {totalPages}
@@ -193,9 +198,10 @@ function CourierOrdersTab({
                   : {}),
               }}
               onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}>
-              {" "}
-              →{" "}
+              disabled={currentPage === totalPages}
+            >
+              {' '}
+              →{' '}
             </button>
           </div>
         )}
