@@ -17,6 +17,7 @@ function ProductGrid({
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [displayItems, setDisplayItems] = useState([]);
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const [filterVisible, setFilterVisible] = useState(false);
   const [viewMode, setViewMode] = useState("grid"); // 'grid' or 'list'
@@ -32,6 +33,13 @@ function ProductGrid({
       dispatch(fetchCategories());
     }
   }, [status, dispatch]);
+
+  useEffect(() => {
+    // Тек Redux-тан тауарлар келгенде немесе категория ауысқанда ғана жаңарту
+    if (filteredProducts) {
+      setDisplayItems(filteredProducts);
+    }
+  }, [filteredProducts, selectedCategory]);
 
   // Check if screen is mobile size
   useEffect(() => {
@@ -166,7 +174,9 @@ function ProductGrid({
   };
 
   const handleFilterChange = (filtered) => {
-    setFilteredProducts(filtered);
+    // Sidebar-дан келген дайын сүзілген тізімді экранға шығарамыз
+    console.log("Sidebar-дан келген сүзілген тізім:", filtered);
+    setDisplayItems(filtered);
   };
 
   return (
@@ -377,7 +387,7 @@ function ProductGrid({
               </div>
             )}
             <Sidebar
-              products={products.filter((p) => p.category === selectedCategory)}
+              products={filteredProducts}
               onFilterChange={handleFilterChange}
               selectedCategory={selectedCategory}
               onBack={() => {
@@ -450,8 +460,8 @@ function ProductGrid({
                   <i className="fas fa-spinner fa-spin"></i>
                   <p>Жүктелуде...</p>
                 </div>
-              ) : filteredProducts && filteredProducts.length > 0 ? (
-                filteredProducts.map((product) => (
+              ) : displayItems && displayItems.length > 0 ? (
+                displayItems.map((product) => (
                   <ProductCard
                     key={product.id}
                     product={product}

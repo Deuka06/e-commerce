@@ -1,26 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { verifyToken, logout } from './store/authSlice';
-import Header from './components/Header';
-import Hero from './components/Hero';
-import ClientPanel from './pages/ClientPanel';
-import CourierInstructions from './components/CourierInstructions';
-import Payment from './components/Payment';
-import ProfilePage from './pages/ProfilePage';
-import Notification from './components/Notification';
-import Footer from './components/Footer';
-import ProductModal from './components/modals/ProductModal';
-import OrderModal from './components/modals/OrderModal';
-import BasketModal from './components/modals/BasketModal';
-import AuthModal from './components/modals/AuthModal';
-import { initialProducts, initialOrders } from './data/productData';
-import './styles/global.css';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { verifyToken, logout } from "./store/authSlice";
+import Header from "./components/Header";
+import Hero from "./components/Hero";
+import ClientPanel from "./pages/ClientPanel";
+import CourierInstructions from "./components/CourierInstructions";
+import Payment from "./components/Payment";
+import ProfilePage from "./pages/ProfilePage";
+import Notification from "./components/Notification";
+import Footer from "./components/Footer";
+import ProductModal from "./components/modals/ProductModal";
+import OrderModal from "./components/modals/OrderModal";
+import BasketModal from "./components/modals/BasketModal";
+import AuthModal from "./components/modals/AuthModal";
+import { fetchProductsByCategory } from "./store/productSlice";
+import { initialProducts, initialOrders } from "./data/productData";
+import "./styles/global.css";
 
 function App() {
   const dispatch = useDispatch();
   const { user, isAuthenticated } = useSelector((state) => state.auth);
-  const [currentPage, setCurrentPage] = useState('home'); // 'home', 'cart', 'courier', 'profile', 'payment'
+  const [currentPage, setCurrentPage] = useState("home"); // 'home', 'cart', 'courier', 'profile', 'payment'
   const [products, setProducts] = useState(initialProducts);
+  const { itemProducts } = useSelector((state) => state.products);
   const [orders, setOrders] = useState(initialOrders);
   const [cart, setCart] = useState([]);
   const [notification, setNotification] = useState(null);
@@ -31,8 +33,9 @@ function App() {
   const [showPaymentPage, setShowPaymentPage] = useState(false);
 
   useEffect(() => {
+    dispatch(fetchProductsByCategory());
     // Проверяем токен при загрузке приложения
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (token) {
       dispatch(verifyToken());
     }
@@ -42,8 +45,8 @@ function App() {
   useEffect(() => {
     if (isAuthenticated && showAuthModal) {
       setShowAuthModal(false);
-      setCurrentPage('profile');
-      showNotification('Сәтті кірдіңіз!', 'success');
+      setCurrentPage("profile");
+      showNotification("Сәтті кірдіңіз!", "success");
     }
   }, [isAuthenticated, showAuthModal]);
 
@@ -53,7 +56,9 @@ function App() {
   };
 
   const addToCart = (productId) => {
-    const product = products.find((p) => p.id === productId);
+    // Redux-тағы таңдалған категорияның тауарлары ішінен іздейміз
+    const product = itemProducts.find((p) => p.id === productId);
+
     if (product) {
       const existingItemIndex = cart.findIndex((item) => item.id === productId);
 
@@ -65,9 +70,10 @@ function App() {
         };
         setCart(updatedCart);
       } else {
+        // Серверден келген тауардың барлық деректерін (аты, бағасы, суреті) себетке сақтаймыз
         setCart([...cart, { ...product, quantity: 1 }]);
       }
-      showNotification('Тауар себетке қосылды!', 'success');
+      showNotification("Тауар себетке қосылды!", "success");
     }
   };
 
@@ -81,7 +87,7 @@ function App() {
 
     if (newQuantity <= 0) {
       setCart(cart.filter((_, i) => i !== index));
-      showNotification('Тауар себеттен алынды', 'success');
+      showNotification("Тауар себеттен алынды", "success");
     } else {
       updatedCart[index] = {
         ...updatedCart[index],
@@ -97,62 +103,39 @@ function App() {
       ...newProduct,
     };
     setProducts([...products, product]);
-    showNotification('Тауар сәтті қосылды!', 'success');
-  };
-
-  const deleteProduct = (productId) => {
-    if (window.confirm('Бұл тауарды жойғыңыз келе ме?')) {
-      setProducts(products.filter((p) => p.id !== productId));
-      showNotification('Тауар жойылды!', 'success');
-    }
-  };
-
-  const updateOrderStatus = (orderId) => {
-    const updatedOrders = orders.map((order) => {
-      if (order.id === orderId) {
-        const statusMap = {
-          pending: 'shipped',
-          shipped: 'completed',
-          completed: 'pending',
-        };
-        return { ...order, status: statusMap[order.status] };
-      }
-      return order;
-    });
-    setOrders(updatedOrders);
-    showNotification('Тапсырыс статусы өзгертілді!', 'success');
+    showNotification("Тауар сәтті қосылды!", "success");
   };
 
   const placeOrder = (orderData) => {
     const newOrder = {
-      id: `ORD-${String(orders.length + 1).padStart(4, '0')}`,
+      id: `ORD-${String(orders.length + 1).padStart(4, "0")}`,
       customer: orderData.name,
       product: orderData.productName,
-      date: new Date().toLocaleDateString('kk-KZ'),
+      date: new Date().toLocaleDateString("kk-KZ"),
       amount: orderData.amount,
-      status: 'pending',
+      status: "pending",
     };
     setOrders([...orders, newOrder]);
     setCart([]);
-    showNotification('Тапсырыс сәтті берілді!', 'success');
+    showNotification("Тапсырыс сәтті берілді!", "success");
   };
 
   const handlePaymentSuccess = () => {
     setCart([]);
-    setCurrentPage('home');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    showNotification('Төлем сәтті аяқталды!', 'success');
+    setCurrentPage("home");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    showNotification("Төлем сәтті аяқталды!", "success");
   };
 
   const handleLogout = () => {
     dispatch(logout());
-    setCurrentPage('home');
-    showNotification('Сіз шықтыңыз', 'success');
+    setCurrentPage("home");
+    showNotification("Сіз шықтыңыз", "success");
   };
 
   const handleProfileClick = () => {
     if (isAuthenticated) {
-      setCurrentPage('profile');
+      setCurrentPage("profile");
     } else {
       setShowAuthModal(true);
     }
@@ -161,12 +144,12 @@ function App() {
   // Render current page content
   const renderPage = () => {
     switch (currentPage) {
-      case 'home':
+      case "home":
         return (
           <>
-            <Hero onShowCourier={() => setCurrentPage('courier')} />
+            <Hero onShowCourier={() => setCurrentPage("courier")} />
             <ClientPanel
-              products={products}
+              products={itemProducts}
               onAddToCart={addToCart}
               onOrderClick={(id) => {
                 setSelectedProductId(id);
@@ -175,40 +158,40 @@ function App() {
             />
           </>
         );
-      case 'cart':
+      case "cart":
         return (
           <BasketModal
             isOpen={true}
-            onClose={() => setCurrentPage('home')}
+            onClose={() => setCurrentPage("home")}
             cartItems={cart}
             onRemoveItem={removeFromCart}
             onUpdateQuantity={updateCartQuantity}
-            onCheckout={() => setCurrentPage('payment')}
+            onCheckout={() => setCurrentPage("payment")}
           />
         );
-      case 'courier':
-        return <CourierInstructions onClose={() => setCurrentPage('home')} />;
-      case 'payment':
+      case "courier":
+        return <CourierInstructions onClose={() => setCurrentPage("home")} />;
+      case "payment":
         return (
           <Payment
             cartItems={cart}
-            onClose={() => setCurrentPage('home')}
+            onClose={() => setCurrentPage("home")}
             onPaymentSuccess={handlePaymentSuccess}
             showNavBar={true}
           />
         );
-      case 'profile':
+      case "profile":
         if (isAuthenticated) {
           return (
             <ProfilePage
               user={user}
               onLogout={handleLogout}
-              onBack={() => setCurrentPage('home')}
+              onBack={() => setCurrentPage("home")}
             />
           );
         } else {
           setShowAuthModal(true);
-          setCurrentPage('home');
+          setCurrentPage("home");
           return null;
         }
       default:
@@ -220,9 +203,9 @@ function App() {
     <div className="app">
       <Header
         cartCount={cart.length}
-        onCartClick={() => setCurrentPage('cart')}
+        onCartClick={() => setCurrentPage("cart")}
         onLoginClick={handleProfileClick}
-        onHomeClick={() => setCurrentPage('home')}
+        onHomeClick={() => setCurrentPage("home")}
         isAuthenticated={isAuthenticated}
         user={user}
         onProfileClick={handleProfileClick}
@@ -258,37 +241,33 @@ function App() {
       {/* Bottom Navigation Bar for Mobile */}
       <nav className="bottom-navbar">
         <button
-          className={`bottom-nav-item ${currentPage === 'home' ? 'active' : ''}`}
-          onClick={() => setCurrentPage('home')}
-          title="Басты бет"
-        >
+          className={`bottom-nav-item ${currentPage === "home" ? "active" : ""}`}
+          onClick={() => setCurrentPage("home")}
+          title="Басты бет">
           <i className="fas fa-home"></i>
           <span>Басты бет</span>
         </button>
         <button
-          className={`bottom-nav-item ${currentPage === 'cart' ? 'active' : ''}`}
-          onClick={() => setCurrentPage('cart')}
-          title="Себет"
-        >
+          className={`bottom-nav-item ${currentPage === "cart" ? "active" : ""}`}
+          onClick={() => setCurrentPage("cart")}
+          title="Себет">
           <i className="fas fa-shopping-cart"></i>
           <span>Себет</span>
           {cart.length > 0 && <span className="cart-badge">{cart.length}</span>}
         </button>
         <button
-          className={`bottom-nav-item ${currentPage === 'courier' ? 'active' : ''}`}
-          onClick={() => setCurrentPage('courier')}
-          title="Курьер"
-        >
+          className={`bottom-nav-item ${currentPage === "courier" ? "active" : ""}`}
+          onClick={() => setCurrentPage("courier")}
+          title="Курьер">
           <i className="fas fa-truck"></i>
           <span>Курьер</span>
         </button>
         <button
-          className={`bottom-nav-item ${currentPage === 'profile' ? 'active' : ''}`}
+          className={`bottom-nav-item ${currentPage === "profile" ? "active" : ""}`}
           onClick={handleProfileClick}
-          title={isAuthenticated ? 'Профиль' : 'Кіру'}
-        >
+          title={isAuthenticated ? "Профиль" : "Кіру"}>
           <i className="fas fa-user"></i>
-          <span>{isAuthenticated ? 'Профиль' : 'Кіру'}</span>
+          <span>{isAuthenticated ? "Профиль" : "Кіру"}</span>
         </button>
       </nav>
 

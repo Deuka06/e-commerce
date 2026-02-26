@@ -11,38 +11,24 @@ function Sidebar({
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(100000);
   const [selectedSort, setSelectedSort] = useState("popular");
-  const [selectedCategories, setSelectedCategories] = useState(
+  const [selectedCategories] = useState(
     selectedCategory ? [selectedCategory] : [],
   );
 
-  const handlePriceChange = (type, value) => {
-    if (type === "min") {
-      setMinPrice(parseInt(value));
-    } else {
-      setMaxPrice(parseInt(value));
-    }
-    applyFilters({ ...selectedCategories }, parseInt(value));
-  };
-
-  const handleSortChange = (sort) => {
-    setSelectedSort(sort);
-    applyFilters(selectedCategories, maxPrice, sort);
-  };
-
-  const applyFilters = (
-    sort = selectedSort,
-    categories = selectedCategories,
-    min = minPrice,
-    max = maxPrice,
-  ) => {
+  const applyFilters = (sort, min, max) => {
     let filtered = [...products];
 
-    if (categories.length > 0) {
-      filtered = filtered.filter((p) => categories.includes(p.category));
-    }
+    // 1. Категория бойынша сүзу
+    // if (selectedCategories.length > 0) {
+    //   filtered = filtered.filter((p) =>
+    //     selectedCategories.includes(p.category),
+    //   );
+    // }
 
+    // 2. Баға бойынша сүзу
     filtered = filtered.filter((p) => p.price >= min && p.price <= max);
 
+    // 3. Сұрыптау (Sorting) - Мұнда қате жоқ, бірақ дұрыс шақырылуы тиіс
     switch (sort) {
       case "price-low":
         filtered.sort((a, b) => a.price - b.price);
@@ -51,13 +37,36 @@ function Sidebar({
         filtered.sort((a, b) => b.price - a.price);
         break;
       case "hot":
-        filtered = shuffleArray(filtered);
+        // shuffleArray функциясын қолдану
+        const newArray = [...filtered];
+        for (let i = newArray.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+        }
+        filtered = newArray;
         break;
       default:
+        // 'popular' немесе басқа жағдайда өзгеріссіз қалады
         break;
     }
 
     onFilterChange(filtered);
+  };
+
+  const handlePriceChange = (type, value) => {
+    const numValue = parseInt(value);
+    if (type === "min") {
+      setMinPrice(numValue);
+      applyFilters(selectedSort, numValue, maxPrice);
+    } else {
+      setMaxPrice(numValue);
+      applyFilters(selectedSort, minPrice, numValue);
+    }
+  };
+
+  const handleSortChange = (sort) => {
+    setSelectedSort(sort);
+    applyFilters(sort, minPrice, maxPrice);
   };
 
   const shuffleArray = (array) => {
@@ -119,7 +128,7 @@ function Sidebar({
             value="popular"
             checked={selectedSort === "popular"}
             onChange={(e) => handleSortChange(e.target.value)}
-          />
+          />{" "}
           Популярлы
         </label>
         <label>
@@ -129,7 +138,7 @@ function Sidebar({
             value="price-low"
             checked={selectedSort === "price-low"}
             onChange={(e) => handleSortChange(e.target.value)}
-          />
+          />{" "}
           Бағасы бойынша (өсу)
         </label>
         <label>
@@ -139,7 +148,7 @@ function Sidebar({
             value="price-high"
             checked={selectedSort === "price-high"}
             onChange={(e) => handleSortChange(e.target.value)}
-          />
+          />{" "}
           Бағасы бойынша (кему)
         </label>
       </div>
