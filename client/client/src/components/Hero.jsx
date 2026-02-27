@@ -57,7 +57,7 @@ function Hero({ onShowCourier }) {
                   onClick={() => onShowCourier?.(true)}
                 >
                   <i className="fas fa-shopping-bag"></i>
-                  <span>Вызов курьера</span>
+                  <span>Вызвать курьера</span>
                 </button>
                 <button
                   className="btn secondary"
