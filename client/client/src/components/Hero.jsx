@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import InstructionsModal from './modals/InstructionsModal';
+import img1 from '../assets/img1.png';
+import img2 from '../assets/img2.png';
 
 function Hero({ onShowCourier }) {
   const [showInstructions, setShowInstructions] = useState(false);
@@ -7,10 +9,9 @@ function Hero({ onShowCourier }) {
   const [fade, setFade] = useState(true);
 
   const images = [
+    img1,
     'https://img.freepik.com/free-photo/real-food-pyramid-assortment-top-view_23-2150238927.jpg?semt=ais_hybrid&w=740&q=80',
-    'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&h=350&q=80',
-    'https://images.unsplash.com/photo-1607082349566-187342175e2f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&h=350&q=80',
-    'https://images.unsplash.com/photo-1551232864-3f0890e580d9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&h=350&q=80',
+    img2,
   ];
 
   useEffect(() => {
@@ -44,11 +45,11 @@ function Hero({ onShowCourier }) {
                 minWidth: '300px',
               }}
             >
-              <h1>Стильді тауарлар бір жерде</h1>
+              <h1>Надежная служба доставки</h1>
               <p>
-                QAMQOR - бұл сіздің сүйікті брендтеріңіз мен тауарларыңызды таба
-                алатын жер. Біз сізге ең жақсы сапаны және ерекше тәжірибені
-                ұсынамыз.
+                QAMQOR — сервис быстрой доставки ваших покупок и посылок.
+                Заказывайте из любого места, а мы позаботимся о том, чтобы всё
+                прибыло к вам в лучшем виде. Просто, надежно, вовремя.
               </p>
               <div className="hero-buttons">
                 <button
@@ -56,14 +57,14 @@ function Hero({ onShowCourier }) {
                   onClick={() => onShowCourier?.(true)}
                 >
                   <i className="fas fa-shopping-bag"></i>
-                  <span>Курьер шақыру</span>
+                  <span>Вызов курьера</span>
                 </button>
                 <button
                   className="btn secondary"
                   onClick={() => setShowInstructions(true)}
                 >
                   <i className="fas fa-list"></i>
-                  <span>Нұсқаулық</span>
+                  <span>Инструкция</span>
                 </button>
               </div>
             </div>

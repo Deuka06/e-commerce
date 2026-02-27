@@ -8,8 +8,9 @@ function Footer() {
           <div className="footer-section">
             <h3>Qamqor</h3>
             <p>
-              Сіздің сенімді интернет-дүкеніңіз. Біз сізге ең жақсы сапаны және
-              ерекше тәжірибені ұсынамыз.
+              Служба курьерской доставки Qamqor. Быстрая транспортировка товаров
+              и бережное отношение к вашим заказам. Работаем для вашего комфорта
+              ежедневно.
             </p>
             <div className="social-links">
               <a href="#">
@@ -21,17 +22,16 @@ function Footer() {
             </div>
           </div>
           <div className="footer-section">
-            <h3>Байланыс</h3>
+            <h3>Контакты</h3>
             <ul>
               <li>
                 <a href="#">
-                  <i className="fas fa-map-marker-alt"></i> Алматы, Абай көш.
-                  123
+                  <i className="fas fa-map-marker-alt"></i> Алматы, ул. Абай 123
                 </a>
               </li>
               <li>
                 <a href="#">
-                  <i className="fas fa-phone"></i> +7 (777) 123-45-67
+                  <i className="fas fa-phone"></i> +7 (771) 325 9316
                 </a>
               </li>
               <li>
@@ -42,9 +42,7 @@ function Footer() {
             </ul>
           </div>
         </div>
-        <div className="copyright">
-          &copy; 2026 Qamqor. Барлық құқықтар қорғалған.
-        </div>
+        <div className="copyright">&copy; 2026 Qamqor. Все права защищены.</div>
       </div>
     </footer>
   );

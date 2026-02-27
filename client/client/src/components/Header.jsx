@@ -47,12 +47,12 @@ function Header({
                     onHomeClick();
                   }}
                 >
-                  <i className="fas fa-home"></i> Басты бет
+                  <i className="fas fa-home"></i> Главная
                 </a>
               </li>
               <li>
                 <a href="#footer" onClick={handleContactClick}>
-                  <i className="fas fa-phone"></i> Байланыс
+                  <i className="fas fa-phone"></i> Контакты
                 </a>
               </li>
             </ul>
@@ -69,7 +69,7 @@ function Header({
           <div className="user-actions">
             <button className="secondary" onClick={onCartClick}>
               <i className="fas fa-shopping-cart"></i>
-              <span>Себет ({cartCount})</span>
+              <span>Корзина ({cartCount})</span>
             </button>
             <button
               className="btn btn-primary"
@@ -78,7 +78,7 @@ function Header({
               <i
                 className={`fas ${isAuthenticated ? 'fa-user-circle' : 'fa-sign-in-alt'}`}
               ></i>
-              <span>{isAuthenticated ? user?.name || 'Профиль' : 'Кіру'}</span>
+              <span>{isAuthenticated ? user?.name || 'Профиль' : 'Вход'}</span>
             </button>
           </div>
         </div>
@@ -96,7 +96,7 @@ function Header({
                     closeMobileMenu();
                   }}
                 >
-                  <i className="fas fa-home"></i> Басты бет
+                  <i className="fas fa-home"></i> Главная
                 </a>
               </li>
               <li>
@@ -107,7 +107,7 @@ function Header({
                     closeMobileMenu();
                   }}
                 >
-                  <i className="fas fa-phone"></i> Байланыс
+                  <i className="fas fa-phone"></i> Контакты
                 </a>
               </li>
             </ul>

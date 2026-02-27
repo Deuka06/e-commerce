@@ -39,10 +39,10 @@ function ProfilePage({ user, onLogout, onBack }) {
   // Статусты қазақшаға аудару
   const getStatusText = (status) => {
     const statusMap = {
-      pending: 'Тексерілуде',
-      accepted: 'Қабылданды',
-      delivered: 'Жеткізілді',
-      cancelled: 'Бас тартылды',
+      pending: 'В ожидании',
+      accepted: 'В процессе',
+      delivered: 'Завершен',
+      cancelled: 'Отклонен',
     };
     return statusMap[status?.toLowerCase()] || status;
   };
@@ -63,10 +63,12 @@ function ProfilePage({ user, onLogout, onBack }) {
   const OrdersContent = () => {
     if (loading)
       return (
-        <p style={{ textAlign: 'center', padding: '20px' }}>Жүктелуде...</p>
+        <p style={{ textAlign: 'center', padding: '20px' }}>Загрузка...</p>
       );
     if (error)
-      return <p style={{ color: 'red', textAlign: 'center' }}>Қате: {error}</p>;
+      return (
+        <p style={{ color: 'red', textAlign: 'center' }}>Ошибка: {error}</p>
+      );
 
     if (!orders || orders.length === 0) {
       return (
@@ -80,7 +82,7 @@ function ProfilePage({ user, onLogout, onBack }) {
               display: 'block',
             }}
           ></i>
-          <p style={{ color: '#999' }}>Сізде әзірге тапсырыстар жоқ</p>
+          <p style={{ color: '#999' }}>У вас пока нет заказов</p>
         </div>
       );
     }
@@ -132,14 +134,14 @@ function ProfilePage({ user, onLogout, onBack }) {
   const menuItems = [
     {
       id: 'account',
-      label: 'Профиль параметрлері',
+      label: 'Настройки профиля',
       icon: 'fas fa-user-cog',
       color: '#6c63ff',
       bgColor: '#f0efff',
     },
     {
       id: 'orders',
-      label: 'Менің тапсырыстарым',
+      label: 'Мои заказы',
       icon: 'fas fa-shopping-bag',
       color: '#ff6584',
       bgColor: '#fff0f3',
@@ -183,7 +185,7 @@ function ProfilePage({ user, onLogout, onBack }) {
               </div>
               <div>
                 <h2 style={{ fontSize: '1.2rem', margin: 0 }}>
-                  {user?.name || 'Пайдаланушы'}
+                  {user?.name || 'Пользователь'}
                 </h2>
                 <p style={{ color: '#666', fontSize: '0.9rem', margin: 0 }}>
                   {user?.email}
@@ -258,7 +260,7 @@ function ProfilePage({ user, onLogout, onBack }) {
               boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
             }}
           >
-            Шығу
+            Выход
           </button>
         </div>
       );
@@ -308,7 +310,7 @@ function ProfilePage({ user, onLogout, onBack }) {
             ) : (
               <div>
                 <p>
-                  <strong>Аты:</strong> {user?.name}
+                  <strong>Имя:</strong> {user?.name}
                 </p>
                 <p>
                   <strong>Email:</strong> {user?.email}
@@ -330,9 +332,7 @@ function ProfilePage({ user, onLogout, onBack }) {
         className="container"
         style={{ maxWidth: '1100px', margin: '0 auto' }}
       >
-        <h1 style={{ marginBottom: '2rem', fontWeight: '300' }}>
-          Менің аккаунтым
-        </h1>
+        <h1 style={{ marginBottom: '2rem', fontWeight: '300' }}>Мой аккаунт</h1>
         <div
           style={{
             display: 'grid',
@@ -413,7 +413,7 @@ function ProfilePage({ user, onLogout, onBack }) {
                 className="fas fa-sign-out-alt"
                 style={{ marginRight: '10px' }}
               ></i>{' '}
-              Шығу
+              Выход
             </button>
           </div>
 
@@ -435,7 +435,7 @@ function ProfilePage({ user, onLogout, onBack }) {
               <div style={{ display: 'grid', gap: '1rem' }}>
                 <div>
                   <label style={{ display: 'block', color: '#888' }}>
-                    Толық аты-жөні
+                    Полное ФИО
                   </label>{' '}
                   <input
                     type="text"
@@ -446,7 +446,7 @@ function ProfilePage({ user, onLogout, onBack }) {
                 </div>
                 <div>
                   <label style={{ display: 'block', color: '#888' }}>
-                    Электронды пошта
+                    Электронная почта
                   </label>{' '}
                   <input
                     type="text"

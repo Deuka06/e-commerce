@@ -42,14 +42,14 @@ function AuthModal({ isOpen, onClose }) {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.email) newErrors.email = 'Email қажет';
-    if (!formData.password) newErrors.password = 'Құпия сөз қажет';
+    if (!formData.email) newErrors.email = 'Требуется email';
+    if (!formData.password) newErrors.password = 'Требуется пароль';
 
     if (!isLogin) {
-      if (!formData.name) newErrors.name = 'Аты-жөніңіз қажет';
-      if (!formData.phone) newErrors.phone = 'Телефон нөмірі қажет';
+      if (!formData.name) newErrors.name = 'ФИО';
+      if (!formData.phone) newErrors.phone = 'Необходим номер телефона.';
       if (formData.password !== formData.confirmPassword) {
-        newErrors.confirmPassword = 'Құпия сөздер сәйкес келмейді';
+        newErrors.confirmPassword = 'Пароли не совпадают';
       }
     }
     setErrors(newErrors);
@@ -96,7 +96,7 @@ function AuthModal({ isOpen, onClose }) {
     <div className="modal" style={{ display: 'flex' }}>
       <div className="modal-content">
         <div className="modal-header">
-          <h2>{isLogin ? 'Кіру' : 'Тіркелу'}</h2>
+          <h2>{isLogin ? 'Войти' : 'Регистрация'}</h2>
           <button className="close-modal" onClick={onClose}>
             &times;
           </button>
@@ -113,21 +113,21 @@ function AuthModal({ isOpen, onClose }) {
             {!isLogin && (
               <>
                 <div className="form-group">
-                  <label htmlFor="name">Аты-жөніңіз</label>
+                  <label htmlFor="name">ФИО</label>
                   <input
                     type="text"
                     id="name"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    placeholder="Аты-жөніңізді енгізіңіз"
+                    placeholder="Введите свое имя"
                   />
                   {errors.name && (
                     <div className="error-message">{errors.name}</div>
                   )}
                 </div>
                 <div className="form-group">
-                  <label htmlFor="phone">Телефон нөмірі</label>
+                  <label htmlFor="phone">Номер телефона</label>
                   <input
                     type="text"
                     id="phone"
@@ -159,7 +159,7 @@ function AuthModal({ isOpen, onClose }) {
             </div>
 
             <div className="form-group">
-              <label htmlFor="password">Құпия сөз</label>
+              <label htmlFor="password">Пороль</label>
               <input
                 type="password"
                 id="password"
@@ -175,7 +175,7 @@ function AuthModal({ isOpen, onClose }) {
 
             {!isLogin && (
               <div className="form-group">
-                <label htmlFor="confirmPassword">Құпия сөзді растау</label>
+                <label htmlFor="confirmPassword">Подтвердите пароль</label>
                 <input
                   type="password"
                   id="confirmPassword"
@@ -195,7 +195,7 @@ function AuthModal({ isOpen, onClose }) {
               className="btn btn-primary"
               disabled={isLoading}
             >
-              {isLoading ? 'Жүктелуде...' : isLogin ? 'Кіру' : 'Тіркелу'}
+              {isLoading ? 'Загрузка...' : isLogin ? 'Войти' : 'Регистрация'}
             </button>
           </form>
 
@@ -207,10 +207,10 @@ function AuthModal({ isOpen, onClose }) {
                 fontSize: '0.9rem',
               }}
             >
-              {isLogin ? 'Аккаунтыңыз жоқ па?' : 'Аккаунтыңыз бар ма?'}
+              {isLogin ? 'У вас нет аккаунта?' : 'У вас есть аккаунт?'}
             </p>
             <button onClick={toggleAuthMode} className="link-button">
-              {isLogin ? 'Тіркелу' : 'Кіру'}
+              {isLogin ? 'Регистрация' : 'Войти'}
             </button>
           </div>
         </div>

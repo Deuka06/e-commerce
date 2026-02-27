@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { formatPrice } from "../utils/helpers";
+import React, { useState } from 'react';
+import { formatPrice } from '../utils/helpers';
 
 function Sidebar({
   products,
@@ -10,7 +10,7 @@ function Sidebar({
 }) {
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(100000);
-  const [selectedSort, setSelectedSort] = useState("popular");
+  const [selectedSort, setSelectedSort] = useState('popular');
   const [selectedCategories] = useState(
     selectedCategory ? [selectedCategory] : [],
   );
@@ -30,13 +30,13 @@ function Sidebar({
 
     // 3. Сұрыптау (Sorting) - Мұнда қате жоқ, бірақ дұрыс шақырылуы тиіс
     switch (sort) {
-      case "price-low":
+      case 'price-low':
         filtered.sort((a, b) => a.price - b.price);
         break;
-      case "price-high":
+      case 'price-high':
         filtered.sort((a, b) => b.price - a.price);
         break;
-      case "hot":
+      case 'hot':
         // shuffleArray функциясын қолдану
         const newArray = [...filtered];
         for (let i = newArray.length - 1; i > 0; i--) {
@@ -55,7 +55,7 @@ function Sidebar({
 
   const handlePriceChange = (type, value) => {
     const numValue = parseInt(value);
-    if (type === "min") {
+    if (type === 'min') {
       setMinPrice(numValue);
       applyFilters(selectedSort, numValue, maxPrice);
     } else {
@@ -82,87 +82,90 @@ function Sidebar({
     <aside className="sidebar" style={style}>
       <div
         style={{
-          marginBottom: "1rem",
-          paddingBottom: "1rem",
-          borderBottom: "1px solid #e0e0e0",
-        }}>
+          marginBottom: '1rem',
+          paddingBottom: '1rem',
+          borderBottom: '1px solid #e0e0e0',
+        }}
+      >
         <button
           onClick={onBack}
           style={{
-            background: "transparent",
-            color: "var(--primary)",
-            border: "1px solid var(--primary)",
-            padding: "0.5rem 1rem",
-            borderRadius: "5px",
-            cursor: "pointer",
-            width: "100%",
-            transition: "var(--transition)",
+            background: 'transparent',
+            color: 'var(--primary)',
+            border: '1px solid var(--primary)',
+            padding: '0.5rem 1rem',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            width: '100%',
+            transition: 'var(--transition)',
           }}
           onMouseEnter={(e) => {
-            e.target.style.background = "var(--primary)";
-            e.target.style.color = "white";
+            e.target.style.background = 'var(--primary)';
+            e.target.style.color = 'white';
           }}
           onMouseLeave={(e) => {
-            e.target.style.background = "transparent";
-            e.target.style.color = "var(--primary)";
-          }}>
+            e.target.style.background = 'transparent';
+            e.target.style.color = 'var(--primary)';
+          }}
+        >
           <i
             className="fas fa-arrow-left"
-            style={{ marginRight: "0.5rem" }}></i>
-          Қайта оралу
+            style={{ marginRight: '0.5rem' }}
+          ></i>
+          Назад
         </button>
       </div>
 
       <h3>
-        <i className="fas fa-filter"></i> Сүзгілер
+        <i className="fas fa-filter"></i> Фильтр
       </h3>
 
       <div className="filter-options">
         <h4>
-          <i className="fas fa-sort"></i> Сұрыптау
+          <i className="fas fa-sort"></i> Сортировка
         </h4>
         <label>
           <input
             type="radio"
             name="sort"
             value="popular"
-            checked={selectedSort === "popular"}
+            checked={selectedSort === 'popular'}
             onChange={(e) => handleSortChange(e.target.value)}
-          />{" "}
-          Популярлы
+          />{' '}
+          Популярный
         </label>
         <label>
           <input
             type="radio"
             name="sort"
             value="price-low"
-            checked={selectedSort === "price-low"}
+            checked={selectedSort === 'price-low'}
             onChange={(e) => handleSortChange(e.target.value)}
-          />{" "}
-          Бағасы бойынша (өсу)
+          />{' '}
+          По возрастанию
         </label>
         <label>
           <input
             type="radio"
             name="sort"
             value="price-high"
-            checked={selectedSort === "price-high"}
+            checked={selectedSort === 'price-high'}
             onChange={(e) => handleSortChange(e.target.value)}
-          />{" "}
-          Бағасы бойынша (кему)
+          />{' '}
+          По убыванию
         </label>
       </div>
 
       <div className="filter-options">
         <h4>
-          <i className="fas fa-dollar-sign"></i> Баға диапазоны
+          <i className="fas fa-dollar-sign"></i> Ценовой диапазон
         </h4>
         <input
           type="range"
           min="0"
           max="100000"
           value={minPrice}
-          onChange={(e) => handlePriceChange("min", e.target.value)}
+          onChange={(e) => handlePriceChange('min', e.target.value)}
           className="price-range"
         />
         <input
@@ -170,7 +173,7 @@ function Sidebar({
           min="0"
           max="100000"
           value={maxPrice}
-          onChange={(e) => handlePriceChange("max", e.target.value)}
+          onChange={(e) => handlePriceChange('max', e.target.value)}
           className="price-range"
         />
         <div className="price-values">

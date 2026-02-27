@@ -242,7 +242,7 @@ function InstructionsModal({ isOpen, onClose }) {
       <div style={applyMediaQueries(styles.container)}>
         <div style={applyMediaQueries(styles.header)}>
           <h3 style={applyMediaQueries(styles.title)}>
-            StyleShop веб-сайтын қалай пайдалану керек
+            Инструкция по использованию сервиса Qamqor
           </h3>
           <button
             style={applyMediaQueries(styles.closeButton)}
@@ -260,13 +260,14 @@ function InstructionsModal({ isOpen, onClose }) {
                 style={applyMediaQueries(styles.stepIcon)}
               ></i>
               <h4 style={applyMediaQueries(styles.stepTitle)}>
-                1. Тауарларды іздеу
+                1. Регистрация и вход
               </h4>
             </div>
             <p style={applyMediaQueries(styles.stepText)}>
-              Сіздің сүйікті тауарларды табу үшін сілтемелер немесе сүзгі
-              опцияларын пайдаланыңыз. Баға, категория және сұрыптау бойынша
-              іздеп табыңыз.
+              Для того чтобы воспользоваться всеми функциями сервиса, пройдите
+              быструю регистрацию или войдите в личный кабинет. Это позволит вам
+              отслеживать ваши заказы и сохранять контактные данные для будущих
+              отправок.
             </p>
           </div>
 
@@ -277,12 +278,14 @@ function InstructionsModal({ isOpen, onClose }) {
                 style={applyMediaQueries(styles.stepIcon)}
               ></i>
               <h4 style={applyMediaQueries(styles.stepTitle)}>
-                2. Себетке тауар қосу
+                2. Поиск и выбор товаров
               </h4>
             </div>
             <p style={applyMediaQueries(styles.stepText)}>
-              Тауар картасындағы "Себетке қосу" батырмасын басыңыз. Сіз бірнеше
-              тауарды қоса аласыз және оларды себетте сақтай аласыз.
+              Вы можете выбрать необходимые товары напрямую из нашего каталога.
+              Добавляйте их в корзину, формируя ваш общий заказ. Если у вас уже
+              есть готовая посылка, вы можете оформить её доставку через наших
+              курьеров.
             </p>
           </div>
 
@@ -293,13 +296,14 @@ function InstructionsModal({ isOpen, onClose }) {
                 style={applyMediaQueries(styles.stepIcon)}
               ></i>
               <h4 style={applyMediaQueries(styles.stepTitle)}>
-                3. Себетті қарау
+                3. Оформление заказа и вызов курьера
               </h4>
             </div>
             <p style={applyMediaQueries(styles.stepText)}>
-              Сол жақ жүктемелік пәндіңіздегі "Себет" батырмасын басыңыз.
-              Өзіңіздің таңдалған тауарларыңыз көрсетіліп тұр және оларды жойып
-              жібере аласыз.
+              Перейдите в корзину и нажмите «Оформить заказ». В разделе
+              «Контактные данные» обязательно укажите: Ваше полное ФИО; Выберите
+              учреждение (место доставки); Укажите данные получателя и
+              контактный номер телефона.
             </p>
           </div>
 
@@ -310,12 +314,14 @@ function InstructionsModal({ isOpen, onClose }) {
                 style={applyMediaQueries(styles.stepIcon)}
               ></i>
               <h4 style={applyMediaQueries(styles.stepTitle)}>
-                4. Төлем әдістері
+                4. Оплата и подтверждение
               </h4>
             </div>
             <p style={applyMediaQueries(styles.stepText)}>
-              "Тапсырыс беру" батырмасын басыңыз. Төлем ақпаратын енгізіңіз және
-              құнды төлеңіз. Біз қауіпсіз төлем қызметін қолданамыз.
+              Оплатите полную стоимость через Kaspi. После оплаты заполните
+              форму подтверждения. Важно: допустимый вес одной посылки — 20 кг.
+              За каждое дополнительное место взимается доплата в размере 2 000
+              ₸.
             </p>
           </div>
 
@@ -325,11 +331,16 @@ function InstructionsModal({ isOpen, onClose }) {
                 className="fas fa-truck"
                 style={applyMediaQueries(styles.stepIcon)}
               ></i>
-              <h4 style={applyMediaQueries(styles.stepTitle)}>5. Жеткізу</h4>
+              <h4 style={applyMediaQueries(styles.stepTitle)}>
+                5. График и сроки доставки
+              </h4>
             </div>
             <p style={applyMediaQueries(styles.stepText)}>
-              Тапсырысты жіберген кейін, сіз жеткізу номерін аласыз. Сіздің
-              заказдарды қалай жіберіп беретінімізді көруге болады.
+              Мы осуществляем доставку в учреждения по фиксированному графику:
+              Дни доставки: Понедельник, Среда, Пятница. Срок: Ваш заказ будет
+              доставлен в ближайший из этих трех дней после оформления.
+              Контроль: Вы можете отслеживать статус своих отправлений в разделе
+              «Мои заказы» в личном профиле.
             </p>
           </div>
 
@@ -340,17 +351,16 @@ function InstructionsModal({ isOpen, onClose }) {
             ></i>
             <div style={applyMediaQueries(styles.infoContent)}>
               <strong style={applyMediaQueries(styles.infoStrong)}>
-                Сұрақтар бар ма?
+                Есть вопросы?
               </strong>
               <span style={applyMediaQueries(styles.infoText)}>
-                Біздің қолдау командасына{' '}
+                Свяжитесь с нашей службой поддержки{' '}
                 <a
-                  href="mailto:info@styleshop.kz"
+                  href="mailto:info@qamkor.kz"
                   style={applyMediaQueries(styles.emailLink)}
                 >
-                  email арқылы
+                  по электронной почте
                 </a>{' '}
-                хабарласыңыз.
               </span>
             </div>
           </div>
@@ -361,7 +371,7 @@ function InstructionsModal({ isOpen, onClose }) {
             style={applyMediaQueries(styles.primaryButton)}
             onClick={onClose}
           >
-            Түсіндім
+            Я понял
           </button>
         </div>
       </div>

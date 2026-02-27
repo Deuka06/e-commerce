@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 function ProductModal({ isOpen, onClose, onSubmit }) {
   const [formData, setFormData] = useState({
-    name: "",
-    price: "",
-    category: "",
-    description: "",
-    image: "",
+    name: '',
+    price: '',
+    category: '',
+    description: '',
+    image: '',
   });
 
   const handleChange = (e) => {
@@ -27,11 +27,11 @@ function ProductModal({ isOpen, onClose, onSubmit }) {
       image: formData.image,
     });
     setFormData({
-      name: "",
-      price: "",
-      category: "",
-      description: "",
-      image: "",
+      name: '',
+      price: '',
+      category: '',
+      description: '',
+      image: '',
     });
     onClose();
   };
@@ -39,17 +39,17 @@ function ProductModal({ isOpen, onClose, onSubmit }) {
   if (!isOpen) return null;
 
   return (
-    <div className="modal" style={{ display: "flex" }}>
+    <div className="modal" style={{ display: 'flex' }}>
       <div className="modal-content">
         <div className="modal-header">
-          <h3>Тауар қосу</h3>
+          <h3>Добавить товар</h3>
           <button className="close-modal" onClick={onClose}>
             &times;
           </button>
         </div>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="name">Тауар атауы</label>
+            <label htmlFor="name">Название товара</label>
             <input
               type="text"
               id="name"
@@ -61,7 +61,7 @@ function ProductModal({ isOpen, onClose, onSubmit }) {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="price">Бағасы</label>
+            <label htmlFor="price">Цена</label>
             <input
               type="number"
               id="price"
@@ -80,30 +80,33 @@ function ProductModal({ isOpen, onClose, onSubmit }) {
               className="form-control"
               value={formData.category}
               onChange={handleChange}
-              required>
-              <option value="">Категорияны таңдаңыз</option>
+              required
+            >
+              <option value="">Выберите категорию</option>
               <option value="electronics">Электроника</option>
-              <option value="clothing">Киім</option>
-              <option value="home">Үйге арналған</option>
+              <option value="clothing">Одежда</option>
+              <option value="home">Для дома</option>
               <option value="sports">Спорт</option>
             </select>
           </div>
           <div className="form-group">
-            <label htmlFor="description">Сипаттама</label>
+            <label htmlFor="description">Описание</label>
             <textarea
               id="description"
               name="description"
               className="form-control"
               rows="3"
               value={formData.description}
-              onChange={handleChange}></textarea>
+              onChange={handleChange}
+            ></textarea>
           </div>
           <button
             type="submit"
             className="btn btn-primary"
-            style={{ width: "100%" }}>
+            style={{ width: '100%' }}
+          >
             <i className="fas fa-save"></i>
-            <span>Сақтау</span>
+            <span>Сохранить</span>
           </button>
         </form>
       </div>

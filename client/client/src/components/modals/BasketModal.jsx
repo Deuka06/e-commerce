@@ -35,14 +35,14 @@ function BasketModal({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="modal-header">
-          <h2>Себет</h2>
+          <h2>Корзина</h2>
           <button className="close-modal" onClick={onClose}>
             &times;
           </button>
         </div>
         <div className="modal-body">
           {cartItems.length === 0 ? (
-            <p className="empty-message">Себет бос</p>
+            <p className="empty-message">Корзина пуста</p>
           ) : (
             <>
               {cartItems.map((item, index) => (
@@ -85,9 +85,7 @@ function BasketModal({
                   </div>
                 </div>
               ))}
-              <div className="basket-total">
-                Барлығы: {formatPrice(total)} ₸
-              </div>
+              <div className="basket-total">Итого: {formatPrice(total)} ₸</div>
             </>
           )}
         </div>
@@ -100,7 +98,7 @@ function BasketModal({
               onCheckout();
             }}
           >
-            Тапсырыс беру
+            Оформить заказ
           </button>
         )}
       </div>
