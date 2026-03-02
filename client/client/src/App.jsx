@@ -1,26 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { verifyToken, logout } from './store/authSlice';
-import Header from './components/Header';
-import Hero from './components/Hero';
-import ClientPanel from './pages/ClientPanel';
-import CourierInstructions from './components/CourierInstructions';
-import Payment from './components/Payment';
-import ProfilePage from './pages/ProfilePage';
-import Notification from './components/Notification';
-import Footer from './components/Footer';
-import ProductModal from './components/modals/ProductModal';
-import OrderModal from './components/modals/OrderModal';
-import BasketModal from './components/modals/BasketModal';
-import AuthModal from './components/modals/AuthModal';
-import { fetchProductsByCategory } from './store/productSlice';
-import { initialProducts, initialOrders } from './data/productData';
-import './styles/global.css';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { verifyToken, logout } from "./store/authSlice";
+import Header from "./components/Header";
+import Hero from "./components/Hero";
+import ClientPanel from "./pages/ClientPanel";
+import CourierInstructions from "./components/CourierInstructions";
+import Payment from "./components/Payment";
+import ProfilePage from "./pages/ProfilePage";
+import Notification from "./components/Notification";
+import Footer from "./components/Footer";
+import ProductModal from "./components/modals/ProductModal";
+import OrderModal from "./components/modals/OrderModal";
+import BasketModal from "./components/modals/BasketModal";
+import AuthModal from "./components/modals/AuthModal";
+import { fetchProductsByCategory } from "./store/productSlice";
+import { initialProducts, initialOrders } from "./data/productData";
+import "./styles/global.css";
 
 function App() {
   const dispatch = useDispatch();
   const { user, isAuthenticated } = useSelector((state) => state.auth);
-  const [currentPage, setCurrentPage] = useState('home'); // 'home', 'cart', 'courier', 'profile', 'payment'
+  const [currentPage, setCurrentPage] = useState("home"); // 'home', 'cart', 'courier', 'profile', 'payment'
   const [products, setProducts] = useState(initialProducts);
   const { itemProducts } = useSelector((state) => state.products);
   const [orders, setOrders] = useState(initialOrders);
@@ -35,7 +35,7 @@ function App() {
   useEffect(() => {
     dispatch(fetchProductsByCategory());
     // Проверяем токен при загрузке приложения
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (token) {
       dispatch(verifyToken());
     }
@@ -45,8 +45,8 @@ function App() {
   useEffect(() => {
     if (isAuthenticated && showAuthModal) {
       setShowAuthModal(false);
-      setCurrentPage('profile');
-      showNotification('Авторизация прошла успешно!', 'success');
+      setCurrentPage("profile");
+      showNotification("Авторизация прошла успешно!", "success");
     }
   }, [isAuthenticated, showAuthModal]);
 
@@ -73,7 +73,7 @@ function App() {
         // Серверден келген тауардың барлық деректерін (аты, бағасы, суреті) себетке сақтаймыз
         setCart([...cart, { ...product, quantity: 1 }]);
       }
-      showNotification('Товар добавлен в корзину!', 'success');
+      showNotification("Товар добавлен в корзину!", "success");
     }
   };
 
@@ -81,13 +81,15 @@ function App() {
     setCart(cart.filter((_, i) => i !== index));
   };
 
+  // console.log("Менің API адресім:", import.meta.env.VITE_API_URL);
+
   const updateCartQuantity = (index, change) => {
     const updatedCart = [...cart];
     const newQuantity = (updatedCart[index].quantity || 1) + change;
 
     if (newQuantity <= 0) {
       setCart(cart.filter((_, i) => i !== index));
-      showNotification('Товар удален из корзины!', 'success');
+      showNotification("Товар удален из корзины!", "success");
     } else {
       updatedCart[index] = {
         ...updatedCart[index],
@@ -103,39 +105,39 @@ function App() {
       ...newProduct,
     };
     setProducts([...products, product]);
-    showNotification('Товар успешно добавлен!', 'success');
+    showNotification("Товар успешно добавлен!", "success");
   };
 
   const placeOrder = (orderData) => {
     const newOrder = {
-      id: `ORD-${String(orders.length + 1).padStart(4, '0')}`,
+      id: `ORD-${String(orders.length + 1).padStart(4, "0")}`,
       customer: orderData.name,
       product: orderData.productName,
-      date: new Date().toLocaleDateString('kk-KZ'),
+      date: new Date().toLocaleDateString("kk-KZ"),
       amount: orderData.amount,
-      status: 'pending',
+      status: "pending",
     };
     setOrders([...orders, newOrder]);
     setCart([]);
-    showNotification('Заказ успешно размещен!', 'success');
+    showNotification("Заказ успешно размещен!", "success");
   };
 
   const handlePaymentSuccess = () => {
     setCart([]);
-    setCurrentPage('home');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    showNotification('Платеж успешно завершен!', 'success');
+    setCurrentPage("home");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    showNotification("Платеж успешно завершен!", "success");
   };
 
   const handleLogout = () => {
     dispatch(logout());
-    setCurrentPage('home');
-    showNotification('Вы вышли', 'success');
+    setCurrentPage("home");
+    showNotification("Вы вышли", "success");
   };
 
   const handleProfileClick = () => {
     if (isAuthenticated) {
-      setCurrentPage('profile');
+      setCurrentPage("profile");
     } else {
       setShowAuthModal(true);
     }
@@ -144,10 +146,10 @@ function App() {
   // Render current page content
   const renderPage = () => {
     switch (currentPage) {
-      case 'home':
+      case "home":
         return (
           <>
-            <Hero onShowCourier={() => setCurrentPage('courier')} />
+            <Hero onShowCourier={() => setCurrentPage("courier")} />
             <ClientPanel
               products={itemProducts}
               onAddToCart={addToCart}
@@ -158,40 +160,40 @@ function App() {
             />
           </>
         );
-      case 'cart':
+      case "cart":
         return (
           <BasketModal
             isOpen={true}
-            onClose={() => setCurrentPage('home')}
+            onClose={() => setCurrentPage("home")}
             cartItems={cart}
             onRemoveItem={removeFromCart}
             onUpdateQuantity={updateCartQuantity}
-            onCheckout={() => setCurrentPage('payment')}
+            onCheckout={() => setCurrentPage("payment")}
           />
         );
-      case 'courier':
-        return <CourierInstructions onClose={() => setCurrentPage('home')} />;
-      case 'payment':
+      case "courier":
+        return <CourierInstructions onClose={() => setCurrentPage("home")} />;
+      case "payment":
         return (
           <Payment
             cartItems={cart}
-            onClose={() => setCurrentPage('home')}
+            onClose={() => setCurrentPage("home")}
             onPaymentSuccess={handlePaymentSuccess}
             showNavBar={true}
           />
         );
-      case 'profile':
+      case "profile":
         if (isAuthenticated) {
           return (
             <ProfilePage
               user={user}
               onLogout={handleLogout}
-              onBack={() => setCurrentPage('home')}
+              onBack={() => setCurrentPage("home")}
             />
           );
         } else {
           setShowAuthModal(true);
-          setCurrentPage('home');
+          setCurrentPage("home");
           return null;
         }
       default:
@@ -203,9 +205,9 @@ function App() {
     <div className="app">
       <Header
         cartCount={cart.length}
-        onCartClick={() => setCurrentPage('cart')}
+        onCartClick={() => setCurrentPage("cart")}
         onLoginClick={handleProfileClick}
-        onHomeClick={() => setCurrentPage('home')}
+        onHomeClick={() => setCurrentPage("home")}
         isAuthenticated={isAuthenticated}
         user={user}
         onProfileClick={handleProfileClick}
@@ -241,37 +243,33 @@ function App() {
       {/* Bottom Navigation Bar for Mobile */}
       <nav className="bottom-navbar">
         <button
-          className={`bottom-nav-item ${currentPage === 'home' ? 'active' : ''}`}
-          onClick={() => setCurrentPage('home')}
-          title="Главная"
-        >
+          className={`bottom-nav-item ${currentPage === "home" ? "active" : ""}`}
+          onClick={() => setCurrentPage("home")}
+          title="Главная">
           <i className="fas fa-home"></i>
           <span>Главная</span>
         </button>
         <button
-          className={`bottom-nav-item ${currentPage === 'cart' ? 'active' : ''}`}
-          onClick={() => setCurrentPage('cart')}
-          title="Корзина"
-        >
+          className={`bottom-nav-item ${currentPage === "cart" ? "active" : ""}`}
+          onClick={() => setCurrentPage("cart")}
+          title="Корзина">
           <i className="fas fa-shopping-cart"></i>
           <span>Корзина</span>
           {cart.length > 0 && <span className="cart-badge">{cart.length}</span>}
         </button>
         <button
-          className={`bottom-nav-item ${currentPage === 'courier' ? 'active' : ''}`}
-          onClick={() => setCurrentPage('courier')}
-          title="Курьер"
-        >
+          className={`bottom-nav-item ${currentPage === "courier" ? "active" : ""}`}
+          onClick={() => setCurrentPage("courier")}
+          title="Курьер">
           <i className="fas fa-truck"></i>
           <span>Курьер</span>
         </button>
         <button
-          className={`bottom-nav-item ${currentPage === 'profile' ? 'active' : ''}`}
+          className={`bottom-nav-item ${currentPage === "profile" ? "active" : ""}`}
           onClick={handleProfileClick}
-          title={isAuthenticated ? 'Профиль' : 'Войти'}
-        >
+          title={isAuthenticated ? "Профиль" : "Войти"}>
           <i className="fas fa-user"></i>
-          <span>{isAuthenticated ? 'Профиль' : 'Войти'}</span>
+          <span>{isAuthenticated ? "Профиль" : "Войти"}</span>
         </button>
       </nav>
 
