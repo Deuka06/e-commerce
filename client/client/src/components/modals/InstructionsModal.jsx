@@ -1,223 +1,223 @@
-import React from 'react';
+import React from "react";
 
 function InstructionsModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   const styles = {
     overlay: {
-      position: 'fixed',
+      position: "fixed",
       top: 0,
       left: 0,
       right: 0,
       bottom: 0,
-      background: 'rgba(0, 0, 0, 0.5)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '1rem',
+      background: "rgba(0, 0, 0, 0.5)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "1rem",
       zIndex: 1000,
-      animation: 'fadeIn 0.3s ease',
+      animation: "fadeIn 0.3s ease",
     },
     container: {
-      background: 'white',
-      borderRadius: '12px',
-      width: '100%',
-      maxWidth: '700px',
-      maxHeight: '90vh',
-      overflowY: 'auto',
-      boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
-      animation: 'slideUp 0.3s ease',
-      '@media (max-width: 768px)': {
-        maxHeight: '85vh',
+      background: "white",
+      borderRadius: "12px",
+      width: "100%",
+      maxWidth: "700px",
+      maxHeight: "90vh",
+      overflowY: "auto",
+      boxShadow: "0 20px 40px rgba(0, 0, 0, 0.1)",
+      animation: "slideUp 0.3s ease",
+      "@media (max-width: 768px)": {
+        maxHeight: "85vh",
         margin: 0,
       },
-      '@media (max-width: 480px)': {
-        maxHeight: '80vh',
+      "@media (max-width: 480px)": {
+        maxHeight: "80vh",
       },
     },
     header: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: '1.5rem 1.5rem 1rem',
-      borderBottom: '1px solid #e0e0e0',
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      padding: "1.5rem 1.5rem 1rem",
+      borderBottom: "1px solid #e0e0e0",
     },
     title: {
       margin: 0,
-      fontSize: '1.4rem',
-      color: '#333',
-      '@media (max-width: 768px)': {
-        fontSize: '1.2rem',
+      fontSize: "1.4rem",
+      color: "#333",
+      "@media (max-width: 768px)": {
+        fontSize: "1.2rem",
       },
-      '@media (max-width: 480px)': {
-        fontSize: '1.1rem',
+      "@media (max-width: 480px)": {
+        fontSize: "1.1rem",
       },
     },
     closeButton: {
-      background: 'none',
-      border: 'none',
-      fontSize: '2rem',
-      cursor: 'pointer',
-      color: '#666',
+      background: "none",
+      border: "none",
+      fontSize: "2rem",
+      cursor: "pointer",
+      color: "#666",
       padding: 0,
-      width: '40px',
-      height: '40px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      transition: 'color 0.2s',
-      ':hover': {
-        color: '#3498db',
+      width: "40px",
+      height: "40px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      transition: "color 0.2s",
+      ":hover": {
+        color: "#3498db",
       },
-      '@media (max-width: 768px)': {
-        fontSize: '1.75rem',
-        width: '36px',
-        height: '36px',
+      "@media (max-width: 768px)": {
+        fontSize: "1.75rem",
+        width: "36px",
+        height: "36px",
       },
     },
     body: {
-      padding: '1.5rem',
-      color: '#333',
-      '@media (max-width: 768px)': {
-        padding: '1.25rem',
+      padding: "1.5rem",
+      color: "#333",
+      "@media (max-width: 768px)": {
+        padding: "1.25rem",
       },
-      '@media (max-width: 480px)': {
-        padding: '1rem',
+      "@media (max-width: 480px)": {
+        padding: "1rem",
       },
     },
     instructionStep: {
-      marginBottom: '1.5rem',
-      '@media (max-width: 768px)': {
-        marginBottom: '1.25rem',
+      marginBottom: "1.5rem",
+      "@media (max-width: 768px)": {
+        marginBottom: "1.25rem",
       },
     },
     stepHeader: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '0.75rem',
-      marginBottom: '0.5rem',
-      '@media (max-width: 768px)': {
-        gap: '0.5rem',
+      display: "flex",
+      alignItems: "center",
+      gap: "0.75rem",
+      marginBottom: "0.5rem",
+      "@media (max-width: 768px)": {
+        gap: "0.5rem",
       },
     },
     stepIcon: {
-      color: '#3498db',
-      fontSize: '1.2rem',
-      minWidth: '24px',
-      '@media (max-width: 768px)': {
-        fontSize: '1.1rem',
+      color: "#3498db",
+      fontSize: "1.2rem",
+      minWidth: "24px",
+      "@media (max-width: 768px)": {
+        fontSize: "1.1rem",
       },
     },
     stepTitle: {
       margin: 0,
-      fontSize: '1.1rem',
-      color: '#3498db',
-      '@media (max-width: 768px)': {
-        fontSize: '1rem',
+      fontSize: "1.1rem",
+      color: "#3498db",
+      "@media (max-width: 768px)": {
+        fontSize: "1rem",
       },
-      '@media (max-width: 480px)': {
-        fontSize: '0.95rem',
+      "@media (max-width: 480px)": {
+        fontSize: "0.95rem",
       },
     },
     stepText: {
-      margin: '0 0 0 2.5rem',
-      color: '#666',
-      lineHeight: '1.6',
-      fontSize: '0.95rem',
-      '@media (max-width: 768px)': {
-        marginLeft: '2rem',
-        fontSize: '0.9rem',
+      margin: "0 0 0 2.5rem",
+      color: "#666",
+      lineHeight: "1.6",
+      fontSize: "0.95rem",
+      "@media (max-width: 768px)": {
+        marginLeft: "2rem",
+        fontSize: "0.9rem",
       },
-      '@media (max-width: 480px)': {
-        marginLeft: '1.75rem',
+      "@media (max-width: 480px)": {
+        marginLeft: "1.75rem",
       },
-      '@media (max-width: 360px)': {
-        marginLeft: '1.5rem',
-        fontSize: '0.85rem',
+      "@media (max-width: 360px)": {
+        marginLeft: "1.5rem",
+        fontSize: "0.85rem",
       },
     },
     infoBox: {
-      background: 'rgba(108, 99, 255, 0.1)',
-      padding: '1.25rem',
-      borderRadius: '8px',
-      borderLeft: '4px solid #3498db',
-      display: 'flex',
-      alignItems: 'flex-start',
-      gap: '0.75rem',
-      marginTop: '2rem',
-      '@media (max-width: 768px)': {
-        padding: '1rem',
-        flexDirection: 'column',
-        gap: '0.5rem',
+      background: "rgba(108, 99, 255, 0.1)",
+      padding: "1.25rem",
+      borderRadius: "8px",
+      borderLeft: "4px solid #3498db",
+      display: "flex",
+      alignItems: "flex-start",
+      gap: "0.75rem",
+      marginTop: "2rem",
+      "@media (max-width: 768px)": {
+        padding: "1rem",
+        flexDirection: "column",
+        gap: "0.5rem",
       },
-      '@media (max-width: 480px)': {
-        padding: '0.875rem',
+      "@media (max-width: 480px)": {
+        padding: "0.875rem",
       },
     },
     infoIcon: {
-      color: '#3498db',
-      fontSize: '1.2rem',
+      color: "#3498db",
+      fontSize: "1.2rem",
       flexShrink: 0,
-      marginTop: '2px',
-      '@media (max-width: 768px)': {
+      marginTop: "2px",
+      "@media (max-width: 768px)": {
         marginTop: 0,
       },
     },
     infoContent: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '0.25rem',
-      '@media (max-width: 480px)': {
-        gap: '0.125rem',
+      display: "flex",
+      flexDirection: "column",
+      gap: "0.25rem",
+      "@media (max-width: 480px)": {
+        gap: "0.125rem",
       },
     },
     infoStrong: {
-      color: '#333',
-      fontSize: '0.95rem',
-      '@media (max-width: 480px)': {
-        fontSize: '0.85rem',
+      color: "#333",
+      fontSize: "0.95rem",
+      "@media (max-width: 480px)": {
+        fontSize: "0.85rem",
       },
     },
     infoText: {
-      color: '#333',
-      fontSize: '0.9rem',
-      lineHeight: '1.5',
-      '@media (max-width: 480px)': {
-        fontSize: '0.85rem',
+      color: "#333",
+      fontSize: "0.9rem",
+      lineHeight: "1.5",
+      "@media (max-width: 480px)": {
+        fontSize: "0.85rem",
       },
     },
     emailLink: {
-      color: '#6c63ff',
-      textDecoration: 'none',
-      fontWeight: '500',
-      ':hover': {
-        textDecoration: 'underline',
+      color: "#6c63ff",
+      textDecoration: "none",
+      fontWeight: "500",
+      ":hover": {
+        textDecoration: "underline",
       },
     },
     footer: {
-      padding: '1rem 1.5rem',
-      borderTop: '1px solid #e0e0e0',
-      textAlign: 'right',
-      '@media (max-width: 768px)': {
-        padding: '1rem 1.25rem',
+      padding: "1rem 1.5rem",
+      borderTop: "1px solid #e0e0e0",
+      textAlign: "right",
+      "@media (max-width: 768px)": {
+        padding: "1rem 1.25rem",
       },
     },
     primaryButton: {
-      padding: '0.7rem 2rem',
-      border: 'none',
-      borderRadius: '6px',
-      fontSize: '1rem',
-      cursor: 'pointer',
-      transition: 'all 0.2s',
-      background: '#3498db',
-      color: 'white',
-      ':hover': {
-        background: '#2980b9',
-        transform: 'translateY(-1px)',
+      padding: "0.7rem 2rem",
+      border: "none",
+      borderRadius: "6px",
+      fontSize: "1rem",
+      cursor: "pointer",
+      transition: "all 0.2s",
+      background: "#3498db",
+      color: "white",
+      ":hover": {
+        background: "#2980b9",
+        transform: "translateY(-1px)",
       },
-      '@media (max-width: 768px)': {
-        padding: '0.6rem 1.75rem',
-        width: '100%',
+      "@media (max-width: 768px)": {
+        padding: "0.6rem 1.75rem",
+        width: "100%",
       },
     },
   };
@@ -226,7 +226,7 @@ function InstructionsModal({ isOpen, onClose }) {
   const applyMediaQueries = (baseStyle) => {
     const result = { ...baseStyle };
     Object.keys(baseStyle).forEach((key) => {
-      if (key.startsWith('@media')) {
+      if (key.startsWith("@media")) {
         const mediaQuery = key;
         const mediaStyles = baseStyle[key];
         delete result[mediaQuery];
@@ -242,12 +242,11 @@ function InstructionsModal({ isOpen, onClose }) {
       <div style={applyMediaQueries(styles.container)}>
         <div style={applyMediaQueries(styles.header)}>
           <h3 style={applyMediaQueries(styles.title)}>
-            Инструкция по использованию сервиса Qamqor
+            Инструкция по использованию сервиса Qamkor
           </h3>
           <button
             style={applyMediaQueries(styles.closeButton)}
-            onClick={onClose}
-          >
+            onClick={onClose}>
             &times;
           </button>
         </div>
@@ -257,8 +256,7 @@ function InstructionsModal({ isOpen, onClose }) {
             <div style={applyMediaQueries(styles.stepHeader)}>
               <i
                 className="fas fa-search"
-                style={applyMediaQueries(styles.stepIcon)}
-              ></i>
+                style={applyMediaQueries(styles.stepIcon)}></i>
               <h4 style={applyMediaQueries(styles.stepTitle)}>
                 1. Регистрация и вход
               </h4>
@@ -275,8 +273,7 @@ function InstructionsModal({ isOpen, onClose }) {
             <div style={applyMediaQueries(styles.stepHeader)}>
               <i
                 className="fas fa-shopping-cart"
-                style={applyMediaQueries(styles.stepIcon)}
-              ></i>
+                style={applyMediaQueries(styles.stepIcon)}></i>
               <h4 style={applyMediaQueries(styles.stepTitle)}>
                 2. Поиск и выбор товаров
               </h4>
@@ -293,8 +290,7 @@ function InstructionsModal({ isOpen, onClose }) {
             <div style={applyMediaQueries(styles.stepHeader)}>
               <i
                 className="fas fa-list"
-                style={applyMediaQueries(styles.stepIcon)}
-              ></i>
+                style={applyMediaQueries(styles.stepIcon)}></i>
               <h4 style={applyMediaQueries(styles.stepTitle)}>
                 3. Оформление заказа и вызов курьера
               </h4>
@@ -311,8 +307,7 @@ function InstructionsModal({ isOpen, onClose }) {
             <div style={applyMediaQueries(styles.stepHeader)}>
               <i
                 className="fas fa-credit-card"
-                style={applyMediaQueries(styles.stepIcon)}
-              ></i>
+                style={applyMediaQueries(styles.stepIcon)}></i>
               <h4 style={applyMediaQueries(styles.stepTitle)}>
                 4. Оплата и подтверждение
               </h4>
@@ -329,8 +324,7 @@ function InstructionsModal({ isOpen, onClose }) {
             <div style={applyMediaQueries(styles.stepHeader)}>
               <i
                 className="fas fa-truck"
-                style={applyMediaQueries(styles.stepIcon)}
-              ></i>
+                style={applyMediaQueries(styles.stepIcon)}></i>
               <h4 style={applyMediaQueries(styles.stepTitle)}>
                 5. График и сроки доставки
               </h4>
@@ -347,20 +341,18 @@ function InstructionsModal({ isOpen, onClose }) {
           <div style={applyMediaQueries(styles.infoBox)}>
             <i
               className="fas fa-info-circle"
-              style={applyMediaQueries(styles.infoIcon)}
-            ></i>
+              style={applyMediaQueries(styles.infoIcon)}></i>
             <div style={applyMediaQueries(styles.infoContent)}>
               <strong style={applyMediaQueries(styles.infoStrong)}>
                 Есть вопросы?
               </strong>
               <span style={applyMediaQueries(styles.infoText)}>
-                Свяжитесь с нашей службой поддержки{' '}
+                Свяжитесь с нашей службой поддержки{" "}
                 <a
                   href="mailto:info@qamkor.kz"
-                  style={applyMediaQueries(styles.emailLink)}
-                >
+                  style={applyMediaQueries(styles.emailLink)}>
                   по электронной почте
-                </a>{' '}
+                </a>{" "}
               </span>
             </div>
           </div>
@@ -369,8 +361,7 @@ function InstructionsModal({ isOpen, onClose }) {
         <div style={applyMediaQueries(styles.footer)}>
           <button
             style={applyMediaQueries(styles.primaryButton)}
-            onClick={onClose}
-          >
+            onClick={onClose}>
             Я понял
           </button>
         </div>

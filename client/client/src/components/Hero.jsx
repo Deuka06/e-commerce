@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import InstructionsModal from './modals/InstructionsModal';
-import img1 from '../assets/img1.png';
-import img2 from '../assets/img2.png';
+import React, { useState, useEffect } from "react";
+import InstructionsModal from "./modals/InstructionsModal";
+import img1 from "../assets/img1.png";
+import img2 from "../assets/img2.png";
 
 function Hero({ onShowCourier }) {
   const [showInstructions, setShowInstructions] = useState(false);
@@ -10,7 +10,7 @@ function Hero({ onShowCourier }) {
 
   const images = [
     img1,
-    'https://img.freepik.com/free-photo/real-food-pyramid-assortment-top-view_23-2150238927.jpg?semt=ais_hybrid&w=740&q=80',
+    "https://img.freepik.com/free-photo/real-food-pyramid-assortment-top-view_23-2150238927.jpg?semt=ais_hybrid&w=740&q=80",
     img2,
   ];
 
@@ -33,36 +33,32 @@ function Hero({ onShowCourier }) {
           <div
             className="hero-content"
             style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              alignItems: 'center',
-            }}
-          >
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+            }}>
             <div
               className="hero-text"
               style={{
                 flex: 1,
-                minWidth: '300px',
-              }}
-            >
+                minWidth: "300px",
+              }}>
               <h1>Надежная служба доставки</h1>
               <p>
-                QAMQOR — сервис быстрой доставки ваших покупок и посылок.
+                QAMkOR — сервис быстрой доставки ваших покупок и посылок.
                 Заказывайте из любого места, а мы позаботимся о том, чтобы всё
                 прибыло к вам в лучшем виде. Просто, надежно, вовремя.
               </p>
               <div className="hero-buttons">
                 <button
                   className="btn btn-primary"
-                  onClick={() => onShowCourier?.(true)}
-                >
+                  onClick={() => onShowCourier?.(true)}>
                   <i className="fas fa-shopping-bag"></i>
                   <span>Вызвать курьера</span>
                 </button>
                 <button
                   className="btn secondary"
-                  onClick={() => setShowInstructions(true)}
-                >
+                  onClick={() => setShowInstructions(true)}>
                   <i className="fas fa-list"></i>
                   <span>Инструкция</span>
                 </button>
@@ -73,37 +69,35 @@ function Hero({ onShowCourier }) {
               className="hero-images"
               style={{
                 flex: 1,
-                minWidth: '300px',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-              }}
-            >
+                minWidth: "300px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}>
               <div
                 className="image-container"
                 style={{
-                  width: '100%',
-                  maxWidth: '500px',
-                  height: '350px',
-                  left: '70px',
-                  borderRadius: 'var(--border-radius-lg)',
-                  overflow: 'hidden',
-                  boxShadow: '0 15px 30px rgba(52, 152, 219, 0.2)',
-                  position: 'relative',
-                }}
-              >
+                  width: "100%",
+                  maxWidth: "500px",
+                  height: "350px",
+                  left: "70px",
+                  borderRadius: "var(--border-radius-lg)",
+                  overflow: "hidden",
+                  boxShadow: "0 15px 30px rgba(52, 152, 219, 0.2)",
+                  position: "relative",
+                }}>
                 <img
                   src={images[currentImageIndex]}
                   alt="Stylish shopping items"
                   style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    position: 'absolute',
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    position: "absolute",
                     top: 0,
                     left: 0,
                     opacity: fade ? 1 : 0,
-                    transition: 'opacity 0.5s ease-in-out',
+                    transition: "opacity 0.5s ease-in-out",
                   }}
                 />
               </div>
@@ -111,29 +105,28 @@ function Hero({ onShowCourier }) {
               <div
                 className="image-indicators"
                 style={{
-                  display: 'flex',
-                  paddingLeft: '170px',
-                  justifyContent: 'center',
-                  marginTop: '15px',
-                  gap: '8px',
-                }}
-              >
+                  display: "flex",
+                  paddingLeft: "170px",
+                  justifyContent: "center",
+                  marginTop: "15px",
+                  gap: "8px",
+                }}>
                 {images.map((_, index) => (
                   <button
                     key={index}
                     className="indicator-dot"
                     style={{
-                      width: '12px',
-                      height: '12px',
-                      borderRadius: '50%',
+                      width: "12px",
+                      height: "12px",
+                      borderRadius: "50%",
                       backgroundColor:
-                        index === currentImageIndex ? '#3498db' : '#e0e0e0',
-                      border: 'none',
-                      cursor: 'pointer',
+                        index === currentImageIndex ? "#3498db" : "#e0e0e0",
+                      border: "none",
+                      cursor: "pointer",
                       padding: 0,
                       transform:
-                        index === currentImageIndex ? 'scale(1.2)' : 'scale(1)',
-                      transition: 'all 0.3s ease',
+                        index === currentImageIndex ? "scale(1.2)" : "scale(1)",
+                      transition: "all 0.3s ease",
                     }}
                     onClick={() => {
                       setFade(false);

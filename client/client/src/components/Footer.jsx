@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 function Footer() {
   return (
@@ -6,9 +6,9 @@ function Footer() {
       <div className="container">
         <div className="footer-content">
           <div className="footer-section">
-            <h3>Qamqor</h3>
+            <h3>Qamkor</h3>
             <p>
-              Служба курьерской доставки Qamqor. Быстрая транспортировка товаров
+              Служба курьерской доставки Qamkor. Быстрая транспортировка товаров
               и бережное отношение к вашим заказам. Работаем для вашего комфорта
               ежедневно.
             </p>
@@ -36,13 +36,14 @@ function Footer() {
               </li>
               <li>
                 <a href="#">
-                  <i className="fas fa-envelope"></i> info@qamqor.kz
+                  <i className="fas fa-envelope"></i>{" "}
+                  sharipkhanalikhan@gmail.com
                 </a>
               </li>
             </ul>
           </div>
         </div>
-        <div className="copyright">&copy; 2026 Qamqor. Все права защищены.</div>
+        <div className="copyright">&copy; 2026 Qamkor. Все права защищены.</div>
       </div>
     </footer>
   );

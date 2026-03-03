@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 function Header({
   cartCount,
@@ -17,9 +17,9 @@ function Header({
 
   const handleContactClick = (e) => {
     e.preventDefault();
-    const footer = document.getElementById('footer');
+    const footer = document.getElementById("footer");
     if (footer) {
-      footer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      footer.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 
@@ -30,10 +30,9 @@ function Header({
           <div
             className="logo"
             onClick={onHomeClick}
-            style={{ cursor: 'pointer' }}
-          >
+            style={{ cursor: "pointer" }}>
             <i className="fas fa-gem"></i>
-            <span>Qamqor</span>
+            <span>Qamkor</span>
           </div>
 
           {/* Desktop Navigation */}
@@ -45,8 +44,7 @@ function Header({
                   onClick={(e) => {
                     e.preventDefault();
                     onHomeClick();
-                  }}
-                >
+                  }}>
                   <i className="fas fa-home"></i> Главная
                 </a>
               </li>
@@ -61,9 +59,8 @@ function Header({
           {/* Mobile Menu Toggle */}
           <button
             className="mobile-menu-toggle"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            <i className={`fas ${mobileMenuOpen ? 'fa-times' : 'fa-bars'}`}></i>
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+            <i className={`fas ${mobileMenuOpen ? "fa-times" : "fa-bars"}`}></i>
           </button>
 
           <div className="user-actions">
@@ -73,12 +70,10 @@ function Header({
             </button>
             <button
               className="btn btn-primary"
-              onClick={isAuthenticated ? onProfileClick : onLoginClick}
-            >
+              onClick={isAuthenticated ? onProfileClick : onLoginClick}>
               <i
-                className={`fas ${isAuthenticated ? 'fa-user-circle' : 'fa-sign-in-alt'}`}
-              ></i>
-              <span>{isAuthenticated ? user?.name || 'Профиль' : 'Вход'}</span>
+                className={`fas ${isAuthenticated ? "fa-user-circle" : "fa-sign-in-alt"}`}></i>
+              <span>{isAuthenticated ? user?.name || "Профиль" : "Вход"}</span>
             </button>
           </div>
         </div>
@@ -94,8 +89,7 @@ function Header({
                     e.preventDefault();
                     onHomeClick();
                     closeMobileMenu();
-                  }}
-                >
+                  }}>
                   <i className="fas fa-home"></i> Главная
                 </a>
               </li>
@@ -105,8 +99,7 @@ function Header({
                   onClick={(e) => {
                     handleContactClick(e);
                     closeMobileMenu();
-                  }}
-                >
+                  }}>
                   <i className="fas fa-phone"></i> Контакты
                 </a>
               </li>
