@@ -1,12 +1,18 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import API from "../api/axios";
 
 // Серверден категорияларды алу үшін AsyncThunk
 export const fetchCategories = createAsyncThunk(
   "categories/fetchCategories",
-  async () => {
-    const response = await axios.get("http://46.247.41.196/api/v1/categories");
-    return response.data;
+  async (_, { rejectWithValue }) => {
+    try {
+      // Бұл жерде API қолданамыз. Ол автоматты түрде "/api/v1/categories"-ке сұраныс жібереді
+      const response = await API.get("/categories");
+      return response.data;
+    } catch (error) {
+      // Қатені әдемілеп ұстау үшін
+      return rejectWithValue(error.response?.data || error.message);
+    }
   },
 );
 
