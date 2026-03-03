@@ -26,12 +26,12 @@ function Footer() {
             <ul>
               <li>
                 <a href="#">
-                  <i className="fas fa-map-marker-alt"></i> Алматы, ул. Абай 123
+                  <i className="fas fa-map-marker-alt"></i> Алматы, пр. Абая 150
                 </a>
               </li>
               <li>
                 <a href="#">
-                  <i className="fas fa-phone"></i> +7 (771) 325 9316
+                  <i className="fas fa-phone"></i> +7 (777) 103 9971
                 </a>
               </li>
               <li>
