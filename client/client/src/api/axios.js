@@ -8,7 +8,7 @@ const api = axios.create({
   },
 });
 
-// Әр сұраныс сайын localStorage-тан токенді тексеріп, қосып отырады
+// Әр сұраныс сайын localStorage-тан токенді тексеріп және қосып отырады
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {
