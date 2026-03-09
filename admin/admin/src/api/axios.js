@@ -2,7 +2,7 @@ import axios from "axios";
 
 const api = axios.create({
   // Swagger-дегі Production Server мекенжайы
-  baseURL: "/api/v1",
+  baseURL: "https://qamkor.kz/api/v1",
   headers: {
     "Content-Type": "application/json",
   },
