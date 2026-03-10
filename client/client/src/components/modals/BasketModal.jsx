@@ -48,7 +48,7 @@ function BasketModal({
                 <div key={index} className="basket-item">
                   <div className="basket-item-image-container">
                     <img
-                      src={item.imageUrl}
+                      src={item.image}
                       alt={item.name}
                       className="basket-item-img"
                       onError={(e) => {
