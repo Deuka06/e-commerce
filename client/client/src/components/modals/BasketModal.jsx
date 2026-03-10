@@ -46,17 +46,6 @@ function BasketModal({
             <>
               {cartItems.map((item, index) => (
                 <div key={index} className="basket-item">
-                  <div className="basket-item-image-container">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="basket-item-img"
-                      onError={(e) => {
-                        e.target.src =
-                          "https://via.placeholder.com/80?text=No+Image";
-                      }}
-                    />
-                  </div>
                   <div className="basket-item-info">
                     <div className="basket-item-name">{item.name}</div>
                     <div className="basket-item-price">
@@ -325,37 +314,6 @@ function BasketModal({
             width: calc(100% - 1.75rem) !important;
           }
         }
-
-        /* Сурет контейнері */
-.basket-item-image-container {
-  width: 60px;
-  height: 60px;
-  flex-shrink: 0;
-  border-radius: 8px;
-  overflow: hidden;
-  background: #f9f9f9;
-  border: 1px solid #eee;
-}
-
-/* Нақты суреттің стилі */
-.basket-item-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Мобильді нұсқа үшін түзету (media max-width: 768px ішіне салыңыз) */
-@media (max-width: 768px) {
-  .basket-item {
-    flex-direction: row !important; /* Сурет пен текст қатар тұруы үшін */
-    align-items: center !important;
-  }
-  
-  .basket-item-image-container {
-    width: 50px;
-    height: 50px;
-  }
-}
       `}</style>
     </div>
   );

@@ -229,10 +229,36 @@ function Payment({ cartItems, onClose, onPaymentSuccess, showNavBar = true }) {
                       style={{
                         display: "flex",
                         justifyContent: "space-between",
+                        alignItems: "center",
                         padding: "0.8rem 0",
                         borderBottom: "1px solid #e0e0e0",
                         fontSize: "0.95rem",
+                        gap: "1rem",
                       }}>
+                      <div
+                        style={{
+                          width: "50px",
+                          height: "50px",
+                          borderRadius: "8px",
+                          overflow: "hidden",
+                          flexShrink: 0,
+                          background: "#f5f5f5",
+                          border: "1px solid #eee",
+                        }}>
+                        <img
+                          src={item.image || item.imageUrl} // Екі нұсқаны да тексереміз
+                          alt={item.name}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                          }}
+                          onError={(e) => {
+                            e.target.src =
+                              "https://via.placeholder.com/50?text=No+Img";
+                          }}
+                        />
+                      </div>
                       <span
                         style={{
                           color: "var(--dark)",
