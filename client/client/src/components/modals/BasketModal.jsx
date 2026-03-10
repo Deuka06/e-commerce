@@ -1,5 +1,5 @@
-import React from 'react';
-import { formatPrice } from '../../utils/helpers';
+import React from "react";
+import { formatPrice } from "../../utils/helpers";
 
 function BasketModal({
   isOpen,
@@ -11,13 +11,13 @@ function BasketModal({
 }) {
   React.useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     }
 
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, [isOpen]);
 
@@ -29,11 +29,10 @@ function BasketModal({
   );
 
   return (
-    <div className="modal" style={{ display: 'flex' }} onClick={onClose}>
+    <div className="modal" style={{ display: "flex" }} onClick={onClose}>
       <div
         className="modal-content basket-modal-content"
-        onClick={(e) => e.stopPropagation()}
-      >
+        onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>Корзина</h2>
           <button className="close-modal" onClick={onClose}>
@@ -47,10 +46,21 @@ function BasketModal({
             <>
               {cartItems.map((item, index) => (
                 <div key={index} className="basket-item">
+                  <div className="basket-item-image-container">
+                    <img
+                      src={item.imageUrl}
+                      alt={item.name}
+                      className="basket-item-img"
+                      onError={(e) => {
+                        e.target.src =
+                          "https://via.placeholder.com/80?text=No+Image";
+                      }}
+                    />
+                  </div>
                   <div className="basket-item-info">
                     <div className="basket-item-name">{item.name}</div>
                     <div className="basket-item-price">
-                      {formatPrice(item.price)} ₸{' '}
+                      {formatPrice(item.price)} ₸{" "}
                       {item.quantity > 1 && (
                         <span className="basket-item-subtotal">
                           × {item.quantity}
@@ -62,8 +72,7 @@ function BasketModal({
                     <div className="quantity-controls">
                       <button
                         className="btn btn-secondary quantity-btn"
-                        onClick={() => onUpdateQuantity(index, -1)}
-                      >
+                        onClick={() => onUpdateQuantity(index, -1)}>
                         -
                       </button>
                       <span className="quantity-display">
@@ -71,15 +80,13 @@ function BasketModal({
                       </span>
                       <button
                         className="btn btn-secondary quantity-btn"
-                        onClick={() => onUpdateQuantity(index, 1)}
-                      >
+                        onClick={() => onUpdateQuantity(index, 1)}>
                         +
                       </button>
                     </div>
                     <button
                       className="btn btn-secondary delete-btn"
-                      onClick={() => onRemoveItem(index)}
-                    >
+                      onClick={() => onRemoveItem(index)}>
                       <i className="fas fa-trash"></i>
                     </button>
                   </div>
@@ -92,12 +99,11 @@ function BasketModal({
         {cartItems.length > 0 && (
           <button
             className="btn btn-primary"
-            style={{ width: '100%', marginTop: '1rem' }}
+            style={{ width: "100%", marginTop: "1rem" }}
             onClick={() => {
-              window.scrollTo({ top: 0, behavior: 'instant' });
+              window.scrollTo({ top: 0, behavior: "instant" });
               onCheckout();
-            }}
-          >
+            }}>
             Оформить заказ
           </button>
         )}
@@ -319,6 +325,37 @@ function BasketModal({
             width: calc(100% - 1.75rem) !important;
           }
         }
+
+        /* Сурет контейнері */
+.basket-item-image-container {
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f9f9f9;
+  border: 1px solid #eee;
+}
+
+/* Нақты суреттің стилі */
+.basket-item-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Мобильді нұсқа үшін түзету (media max-width: 768px ішіне салыңыз) */
+@media (max-width: 768px) {
+  .basket-item {
+    flex-direction: row !important; /* Сурет пен текст қатар тұруы үшін */
+    align-items: center !important;
+  }
+  
+  .basket-item-image-container {
+    width: 50px;
+    height: 50px;
+  }
+}
       `}</style>
     </div>
   );
