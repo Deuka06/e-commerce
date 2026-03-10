@@ -76,6 +76,7 @@ function Payment({ cartItems, onClose, onPaymentSuccess, showNavBar = true }) {
       deliveryTo: formData.nameOfRecipient,
       totalAmount: total,
       items: cartItems.map((item) => ({
+        image: item.image || item.imageUrl, // Екі нұсқаны да тексереміз
         name: item.name,
         quantity: item.quantity || 1,
         price: item.price,
