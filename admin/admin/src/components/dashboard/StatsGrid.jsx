@@ -1,5 +1,5 @@
-import React from 'react';
-import { formatPrice } from '../../utils/helpers';
+import React from "react";
+import { formatPrice } from "../../utils/helpers";
 
 function StatsGrid({ orders, isAnalytics }) {
   if (isAnalytics) {
@@ -26,8 +26,8 @@ function StatsGrid({ orders, isAnalytics }) {
   }
 
   const totalRevenue = orders.reduce((sum, order) => sum + order.amount, 0);
-  const completedOrders = orders.filter((o) => o.status === 'completed').length;
-  const pendingOrders = orders.filter((o) => o.status === 'pending').length;
+  const completedOrders = orders.filter((o) => o.status === "completed").length;
+  const pendingOrders = orders.filter((o) => o.status === "pending").length;
 
   return (
     <div className="stats-grid">
@@ -37,13 +37,6 @@ function StatsGrid({ orders, isAnalytics }) {
         </div>
         <div className="stat-value">{orders.length}</div>
         <div className="stat-label">Все заказы</div>
-      </div>
-      <div className="stat-card">
-        <div className="stat-icon">
-          <i className="fas fa-dollar-sign"></i>
-        </div>
-        <div className="stat-value">{orders.totalAmount} ₸</div>
-        <div className="stat-label">Общий доход</div>
       </div>
       <div className="stat-card">
         <div className="stat-icon">

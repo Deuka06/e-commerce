@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchCourierOrders } from '../../store/courierSlice';
-import { styles } from '../../styles/adminPanelStyles';
-import { getStatusText, getStatusStyle } from '../../utils/statusHelpers';
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCourierOrders } from "../../store/courierSlice";
+import { styles } from "../../styles/adminPanelStyles";
+import { getStatusText, getStatusStyle } from "../../utils/statusHelpers";
 
 function CourierOrdersTab({
   courierOrders,
@@ -30,7 +30,7 @@ function CourierOrdersTab({
   const totalPages =
     pagination?.totalPages || Math.ceil((orders?.length || 0) / ordersPerPage);
 
-  if (status === 'loading' && orders.length === 0) {
+  if (status === "loading" && orders.length === 0) {
     return <div style={styles.emptyState}>Загрузка...</div>;
   }
 
@@ -40,14 +40,12 @@ function CourierOrdersTab({
         style={{
           ...styles.cardHeader,
           ...(isMobile ? styles.cardHeaderMobile : {}),
-        }}
-      >
+        }}>
         <h3
           style={{
             ...styles.cardTitle,
             ...(isMobile ? styles.cardTitleMobile : {}),
-          }}
-        >
+          }}>
           🚚 Курьерские заказы ({pagination?.totalItems || orders?.length || 0})
         </h3>
       </div>
@@ -56,8 +54,7 @@ function CourierOrdersTab({
         style={{
           ...styles.cardBody,
           ...(isMobile ? styles.cardBodyMobile : {}),
-        }}
-      >
+        }}>
         {isMobile ? (
           <div style={styles.ordersCardsContainer}>
             {orders.length > 0 ? (
@@ -69,8 +66,7 @@ function CourierOrdersTab({
                       style={{
                         ...styles.statusBadge,
                         ...getStatusStyle(order.status),
-                      }}
-                    >
+                      }}>
                       {getStatusText(order.status)}
                     </div>
                   </div>
@@ -103,6 +99,12 @@ function CourierOrdersTab({
                         {order.deliveryTo}
                       </span>
                     </div>
+                    <div style={styles.orderCardRow}>
+                      <span style={styles.orderCardLabel}>Описание:</span>
+                      <span style={styles.orderCardValue}>
+                        {order.description}
+                      </span>
+                    </div>
                     {/* ... (басқа өрістер өзгеріссіз) ... */}
                   </div>
                   <div style={styles.orderCardFooter}>
@@ -111,8 +113,7 @@ function CourierOrdersTab({
                       onChange={(e) =>
                         handleStatusChange(order.id, e.target.value)
                       }
-                      style={styles.statusSelect}
-                    >
+                      style={styles.statusSelect}>
                       <option value="pending">В ожидании</option>
                       <option value="processing">В процессе</option>
                       <option value="completed">Завершен</option>
@@ -126,7 +127,7 @@ function CourierOrdersTab({
             )}
           </div>
         ) : (
-          <div style={{ overflowX: 'auto' }}>
+          <div style={{ overflowX: "auto" }}>
             <table style={styles.table}>
               <thead>
                 <tr style={styles.tableHeaderRow}>
@@ -150,7 +151,7 @@ function CourierOrdersTab({
                     <td style={styles.tableCell}>{order.institution}</td>
                     <td style={styles.tableCell}>{order.deliveryTo}</td>
                     <td style={styles.tableCell}>
-                      {new Date(order.createdAt).toLocaleDateString('kk-KZ')}
+                      {new Date(order.createdAt).toLocaleDateString("kk-KZ")}
                     </td>
                     <td style={styles.tableCell}>{order.description}</td>
                     {/* <td style={styles.tableCell}>
@@ -182,10 +183,9 @@ function CourierOrdersTab({
                 ...(currentPage === 1 ? styles.paginationBtnDisabled : {}),
               }}
               onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              {' '}
-              ←{' '}
+              disabled={currentPage === 1}>
+              {" "}
+              ←{" "}
             </button>
             <span style={styles.paginationInfo}>
               {currentPage} / {totalPages}
@@ -198,10 +198,9 @@ function CourierOrdersTab({
                   : {}),
               }}
               onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-            >
-              {' '}
-              →{' '}
+              disabled={currentPage === totalPages}>
+              {" "}
+              →{" "}
             </button>
           </div>
         )}
