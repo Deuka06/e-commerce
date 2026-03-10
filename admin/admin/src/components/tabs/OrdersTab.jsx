@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
-import OrdersTable from '../tables/OrdersTable';
-import OrderStatusModal from '../modals/OrderStatusModal';
-import { styles } from '../../styles/adminPanelStyles';
-import { getStatusText, getStatusStyle } from '../../utils/statusHelpers';
+import React, { useState } from "react";
+import OrdersTable from "../tables/OrdersTable";
+import OrderStatusModal from "../modals/OrderStatusModal";
+import { styles } from "../../styles/adminPanelStyles";
+import { getStatusText, getStatusStyle } from "../../utils/statusHelpers";
+import OrderDetailsModal from "../modals/OrderDetailsModal";
 
 function OrdersTab({ orders, onUpdateOrderStatus, isMobile }) {
   const [ordersPage, setOrdersPage] = useState(1);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = React.useState(false);
   const ordersPerPage = 6;
 
   const indexOfLastOrder = ordersPage * ordersPerPage;
@@ -36,14 +38,12 @@ function OrdersTab({ orders, onUpdateOrderStatus, isMobile }) {
         style={{
           ...styles.cardHeader,
           ...(isMobile ? styles.cardHeaderMobile : {}),
-        }}
-      >
+        }}>
         <h3
           style={{
             ...styles.cardTitle,
             ...(isMobile ? styles.cardTitleMobile : {}),
-          }}
-        >
+          }}>
           🛒 Все заказы ({orders?.length || 0})
         </h3>
       </div>
@@ -51,8 +51,7 @@ function OrdersTab({ orders, onUpdateOrderStatus, isMobile }) {
         style={{
           ...styles.cardBody,
           ...(isMobile ? styles.cardBodyMobile : {}),
-        }}
-      >
+        }}>
         {isMobile ? (
           <div style={styles.ordersCardsContainer}>
             {currentOrders.length > 0 ? (
@@ -64,8 +63,7 @@ function OrdersTab({ orders, onUpdateOrderStatus, isMobile }) {
                       style={{
                         ...styles.statusBadge,
                         ...getStatusStyle(order.status),
-                      }}
-                    >
+                      }}>
                       {getStatusText(order.status)}
                     </div>
                   </div>
@@ -77,15 +75,15 @@ function OrdersTab({ orders, onUpdateOrderStatus, isMobile }) {
                       </span>
                     </div>
                     <div style={styles.orderCardRow}>
-                      <span style={styles.orderCardLabel}>Email:</span>
+                      <span style={styles.orderCardLabel}>Телефон номер:</span>
                       <span style={styles.orderCardValue}>
-                        {order.customerEmail}
+                        {order.phoneNumber}
                       </span>
                     </div>
                     <div style={styles.orderCardRow}>
                       <span style={styles.orderCardLabel}>Сумма:</span>
                       <span style={styles.orderCardPrice}>
-                        {order.total?.toLocaleString()} ₸
+                        {order.totalAmount?.toLocaleString()} ₸
                       </span>
                     </div>
                     <div style={styles.orderCardRow}>
@@ -99,25 +97,46 @@ function OrdersTab({ orders, onUpdateOrderStatus, isMobile }) {
                       <span style={styles.orderCardValue}>
                         {new Date(
                           order.createdAt || Date.now(),
-                        ).toLocaleDateString('kk-KZ')}
+                        ).toLocaleDateString("kk-KZ")}
                       </span>
                     </div>
                   </div>
-                  <div style={styles.orderCardFooter}>
+                  <div
+                    style={{
+                      ...styles.orderCardFooter,
+                      gap: "8px",
+                      display: "flex",
+                    }}>
                     <button
                       onClick={() => handleOpenModal(order)}
                       style={{
                         ...styles.statusSelect,
-                        cursor: 'pointer',
-                        backgroundColor: '#3b82f6',
-                        color: '#fff',
-                        border: 'none',
-                        padding: '10px 16px',
-                        borderRadius: '8px',
-                        fontWeight: '500',
-                      }}
-                    >
+                        cursor: "pointer",
+                        backgroundColor: "#3b82f6",
+                        color: "#fff",
+                        border: "none",
+                        padding: "10px 16px",
+                        borderRadius: "8px",
+                        fontWeight: "500",
+                      }}>
                       Изменить статус
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectedOrder(order);
+                        setIsDetailsModalOpen(true); // Жаңа күй (state)
+                      }}
+                      style={{
+                        cursor: "pointer",
+                        backgroundColor: "#10b981", // Жасыл түс
+                        color: "#fff",
+                        border: "none",
+                        padding: "10px 12px",
+                        borderRadius: "8px",
+                        fontWeight: "500",
+                        flex: 1,
+                      }}>
+                      Детали
                     </button>
                   </div>
                 </div>
@@ -133,8 +152,7 @@ function OrdersTab({ orders, onUpdateOrderStatus, isMobile }) {
                     ...(ordersPage === 1 ? styles.paginationBtnDisabled : {}),
                   }}
                   onClick={() => handlePageChange(ordersPage - 1)}
-                  disabled={ordersPage === 1}
-                >
+                  disabled={ordersPage === 1}>
                   ←
                 </button>
                 <span style={styles.paginationInfo}>
@@ -148,15 +166,14 @@ function OrdersTab({ orders, onUpdateOrderStatus, isMobile }) {
                       : {}),
                   }}
                   onClick={() => handlePageChange(ordersPage + 1)}
-                  disabled={ordersPage === totalPages}
-                >
+                  disabled={ordersPage === totalPages}>
                   →
                 </button>
               </div>
             )}
           </div>
         ) : (
-          <div style={{ overflowX: 'auto' }}>
+          <div style={{ overflowX: "auto" }}>
             <OrdersTable
               orders={orders || []}
               onUpdateStatus={onUpdateOrderStatus}
@@ -170,6 +187,11 @@ function OrdersTab({ orders, onUpdateOrderStatus, isMobile }) {
         onClose={handleCloseModal}
         order={selectedOrder}
         onUpdateStatus={onUpdateOrderStatus}
+      />
+      <OrderDetailsModal
+        isOpen={isDetailsModalOpen}
+        onClose={() => setIsDetailsModalOpen(false)}
+        order={selectedOrder}
       />
     </div>
   );
