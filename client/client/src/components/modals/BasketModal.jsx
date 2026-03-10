@@ -23,8 +23,6 @@ function BasketModal({
 
   if (!isOpen) return null;
 
-  console.log("Корзина:", cartItems);
-
   const total = cartItems.reduce(
     (sum, item) => sum + item.price * (item.quantity || 1),
     0,
