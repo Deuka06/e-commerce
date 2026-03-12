@@ -17,6 +17,24 @@ import { fetchProductsByCategory } from "./store/productSlice";
 import { initialProducts, initialOrders } from "./data/productData";
 import "./styles/global.css";
 
+// WhatsApp батырмасы компоненті
+const WhatsAppSupport = () => {
+  const phoneNumber = "77713259316"; // Скриншоттағы номерді негізге алдым
+  const message = "Сәлеметсіз бе! Маған көмек керек.";
+  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+
+  return (
+    <a
+      href={whatsappUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="whatsapp-float">
+      <i className="fab fa-whatsapp"></i>
+      <span className="tooltip-text">Көмек керек пе?</span>
+    </a>
+  );
+};
+
 function App() {
   const dispatch = useDispatch();
   const { user, isAuthenticated } = useSelector((state) => state.auth);
@@ -275,6 +293,8 @@ function App() {
 
       <Footer />
 
+      <WhatsAppSupport />
+
       <style>{`
         .bottom-navbar {
           display: none;
@@ -395,6 +415,63 @@ function App() {
         @media (min-width: 769px) {
           .bottom-navbar {
             display: none !important;
+          }
+        }
+
+        .whatsapp-float {
+          position: fixed;
+          width: 60px;
+          height: 60px;
+          bottom: 30px;
+          right: 30px;
+          background-color: #25d366;
+          color: #fff;
+          border-radius: 50px;
+          text-align: center;
+          font-size: 30px;
+          box-shadow: 2px 2px 15px rgba(0,0,0,0.2);
+          z-index: 2000; /* Bottom Navbar-дан жоғары тұруы үшін */
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          text-decoration: none;
+          transition: all 0.3s ease;
+        }
+
+        .whatsapp-float:hover {
+          transform: scale(1.1);
+          color: white;
+        }
+
+        .tooltip-text {
+          visibility: hidden;
+          width: 120px;
+          background-color: #333;
+          color: #fff;
+          text-align: center;
+          border-radius: 6px;
+          padding: 5px;
+          position: absolute;
+          right: 125%;
+          font-size: 12px;
+          opacity: 0;
+          transition: opacity 0.3s;
+          pointer-events: none;
+        }
+
+        .whatsapp-float:hover .tooltip-text {
+          visibility: visible;
+          opacity: 1;
+        }
+
+        /* Мобильді нұсқада Bottom Navbar-ға кедергі жасамас үшін жоғары көтереміз */
+        @media (max-width: 768px) {
+          .whatsapp-float {
+            bottom: 90px; /* 70px (navbar) + 20px (арақашықтық) */
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            font-size: 25px;
           }
         }
       `}</style>
