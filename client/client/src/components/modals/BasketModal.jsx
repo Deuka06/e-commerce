@@ -46,21 +46,30 @@ function BasketModal({
             <>
               {cartItems.map((item, index) => (
                 <div key={index} className="basket-item">
-                  <div className="basket-item-info">
-                    <div className="basket-item-name">{item.name}</div>
-                    <div className="basket-item-price">
-                      {formatPrice(item.price)} ₸{" "}
-                      {item.quantity > 1 && (
-                        <span className="basket-item-subtotal">
-                          × {item.quantity}
-                        </span>
-                      )}
+                  {/* Сурет пен ақпаратты біріктіретін сол жақ блок */}
+                  <div className="basket-item-main">
+                    <div className="basket-item-image">
+                      <img
+                        src={item.image || item.imageUrl}
+                        alt={item.name}
+                        onError={(e) => {
+                          e.target.src = "https://via.placeholder.com/60";
+                        }}
+                      />
+                    </div>
+                    <div className="basket-item-info">
+                      <div className="basket-item-name">{item.name}</div>
+                      <div className="basket-item-price">
+                        {formatPrice(item.price)} ₸
+                      </div>
                     </div>
                   </div>
+
+                  {/* Басқару батырмалары (Оң жақ блок) */}
                   <div className="basket-item-controls">
                     <div className="quantity-controls">
                       <button
-                        className="btn btn-secondary quantity-btn"
+                        className="quantity-btn"
                         onClick={() => onUpdateQuantity(index, -1)}>
                         -
                       </button>
@@ -68,13 +77,13 @@ function BasketModal({
                         {item.quantity || 1}
                       </span>
                       <button
-                        className="btn btn-secondary quantity-btn"
+                        className="quantity-btn"
                         onClick={() => onUpdateQuantity(index, 1)}>
                         +
                       </button>
                     </div>
                     <button
-                      className="btn btn-secondary delete-btn"
+                      className="delete-btn"
                       onClick={() => onRemoveItem(index)}>
                       <i className="fas fa-trash"></i>
                     </button>
@@ -104,9 +113,33 @@ function BasketModal({
           justify-content: space-between;
           align-items: center;
           padding: 1rem;
-          border-bottom: 1px solid #e0e0e0;
+          border-bottom: 1px solid #f0f0f0;
           gap: 1rem;
         }
+
+        .basket-item-main {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          flex: 1;
+        }
+
+        .basket-item-image {
+          width: 60px;
+          height: 60px;
+          border-radius: 8px;
+          overflow: hidden;
+          flex-shrink: 0;
+          border: 1px solid #eee;
+        }
+
+        .basket-item-image img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+
 
         .basket-item-info {
           flex: 1;
@@ -115,8 +148,13 @@ function BasketModal({
 
         .basket-item-name {
           font-weight: 600;
-          margin-bottom: 0.25rem;
-          word-break: break-word;
+          font-size: 0.95rem;
+          line-height: 1.2;
+          margin-bottom: 4px;
+          display: -webkit-box;
+          -webkit-line-clamp: 2; /* Аты тым ұзын болса 2 жолдан соң қияды */
+          -webkit-box-orient: vertical;
+          overflow: hidden;
         }
 
         .basket-item-price {
@@ -204,10 +242,22 @@ function BasketModal({
           }
 
           .basket-item {
-            flex-direction: column;
-            align-items: flex-start;
-            padding: 1rem;
-            gap: 0.75rem;
+            flex-direction: row !important; /* Баған емес, қатар болып қалуы керек */
+            padding: 0.75rem;
+            gap: 0.5rem;
+          }
+
+          .basket-item-main {
+            gap: 0.5rem;
+          }
+
+          .basket-item-image {
+            width: 50px;
+            height: 50px;
+          }
+
+          .basket-item-name {
+            font-size: 0.85rem;
           }
 
           .basket-item-info {
@@ -215,20 +265,18 @@ function BasketModal({
           }
 
           .basket-item-controls {
-            width: 100%;
-            justify-content: space-between;
+            flex-direction: column-reverse; /* Мобильдіде батырмаларды ыңғайлы орналастыру */
+            align-items: flex-end;
+            gap: 0.5rem;
           }
 
           .quantity-controls {
-            flex: 1;
-            justify-content: center;
-            padding: 0.5rem;
+            padding: 0.15rem;
           }
 
           .quantity-btn {
-            min-width: 40px !important;
-            height: 40px;
-            font-size: 1.1rem;
+            min-width: 28px !important;
+            height: 28px;
           }
 
           .quantity-display {
