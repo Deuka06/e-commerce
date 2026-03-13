@@ -19,7 +19,7 @@ import "./styles/global.css";
 
 // WhatsApp батырмасы компоненті
 const WhatsAppSupport = () => {
-  const phoneNumber = "77713259316"; // Скриншоттағы номерді негізге алдым
+  const phoneNumber = "77771039971"; // Скриншоттағы номерді негізге алдым
   const message = "Сәлеметсіз бе! Маған көмек керек.";
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 

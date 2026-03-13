@@ -23,6 +23,15 @@ function Header({
     }
   };
 
+  const handleCartClick = () => {
+    if (isAuthenticated) {
+      onCartClick(); // Егер кірген болса, себетті ашамыз
+    } else {
+      alert("Себетті көру үшін алдымен жүйеге кіріңіз!"); // Немесе Notification қолдануға болады
+      onLoginClick(); // Авторизация терезесін ашамыз
+    }
+  };
+
   return (
     <header>
       <div className="container">
@@ -64,7 +73,7 @@ function Header({
           </button>
 
           <div className="user-actions">
-            <button className="secondary" onClick={onCartClick}>
+            <button className="secondary" onClick={handleCartClick}>
               <i className="fas fa-shopping-cart"></i>
               <span>Корзина ({cartCount})</span>
             </button>
